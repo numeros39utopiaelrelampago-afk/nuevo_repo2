@@ -1,0 +1,239 @@
+/* ==========================================
+   ESTILOS GENERALES Y RESET
+   ========================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background-color: #f8f9fa;
+    color: #333;
+    padding-bottom: 50px;
+}
+
+main {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 0 15px;
+}
+
+h1, h2, h3 {
+    margin-bottom: 15px;
+    color: #222;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid #ddd;
+    margin: 20px 0;
+}
+
+/* ==========================================
+   CABECERA Y NAVEGACIÓN
+   ========================================== */
+header {
+    background-color: #1e293b;
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    color: white;
+    font-size: 22px;
+    margin: 0;
+}
+
+header nav a {
+    color: #cbd5e1;
+    text-decoration: none;
+    margin-left: 15px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+header nav a:hover {
+    color: white;
+}
+
+header nav span {
+    margin-left: 15px;
+    color: #f1f5f9;
+}
+
+#cantidad-carrito {
+    background-color: #ef4444;
+    color: white;
+    border-radius: 10px;
+    padding: 2px 7px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* ==========================================
+   FORMULARIO DE FILTROS DEL CATÁLOGO
+   ========================================== */
+form {
+    background-color: white;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 20px;
+}
+
+form label {
+    font-weight: bold;
+    font-size: 14px;
+    margin-right: 5px;
+}
+
+form input[type="text"],
+form input[type="password"],
+form select {
+    padding: 7px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    margin-right: 15px;
+    font-size: 14px;
+}
+
+form button,
+button {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+form button:hover,
+button:hover {
+    background-color: #1d4ed8;
+}
+
+form a {
+    color: #64748b;
+    text-decoration: none;
+    font-size: 13px;
+    margin-left: 10px;
+}
+
+form a:hover {
+    text-decoration: underline;
+}
+
+/* ==========================================
+   GRILLA DE PRODUCTOS (CATÁLOGO)
+   ========================================== */
+.contenedor-productos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.tarjeta-producto {
+    background-color: white;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px;
+    padding: 16px !important;
+    width: 220px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.tarjeta-producto h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.tarjeta-producto p {
+    font-size: 14px;
+    color: #475569;
+    margin-bottom: 6px;
+}
+
+.tarjeta-producto button {
+    margin-top: 10px;
+    width: 100%;
+    background-color: #0f172a;
+}
+
+.tarjeta-producto button:hover {
+    background-color: #334155;
+}
+
+.tarjeta-producto img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover; /* Evita que la imagen se deforme o estire */
+    border-radius: 6px;
+    background-color: #f1f5f9;
+}
+
+/* ==========================================
+   TABLA DEL CARRITO Y TABLAS DEL PANEL
+   ========================================== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+table th,
+table td {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 14px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+table th {
+    background-color: #f1f5f9;
+    color: #334155;
+}
+
+table tr:hover {
+    background-color: #f8fafc;
+}
+
+/* ==========================================
+   BOTONES DE ACCIÓN SECUNDARIOS
+   ========================================== */
+button[onclick*="eliminarProducto"],
+a[href*="eliminar"] {
+    background-color: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fca5a5;
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+button[onclick*="eliminarProducto"]:hover,
+a[href*="eliminar"]:hover {
+    background-color: #dc2626;
+    color: white;
+}
+
+button[onclick*="vaciarCarrito"] {
+    background-color: #64748b;
+}
+
+button[onclick*="vaciarCarrito"]:hover {
+    background-color: #475569;
+}

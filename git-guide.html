@@ -1,0 +1,1990 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía Completa de Git — UTN PROG 4</title>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--blue:#58a6ff;--green:#3fb950;--yellow:#d29922;--red:#f85149;--orange:#ffa657;--purple:#bc8cff}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;font-size:15px;line-height:1.6}
+/* SIDEBAR */
+.sidebar{width:270px;background:var(--surface);border-right:1px solid var(--border);position:fixed;height:100vh;overflow-y:auto;padding:0 0 2rem;z-index:100;flex-shrink:0}
+.sidebar-logo{padding:1.25rem 1.25rem 1rem;border-bottom:1px solid var(--border);margin-bottom:.5rem}
+.sidebar-logo h1{font-size:1rem;font-weight:700;color:var(--text)}
+.sidebar-logo small{font-size:.75rem;color:var(--muted)}
+.nav-group{margin-top:.75rem}
+.nav-label{padding:.25rem 1.25rem;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.sidebar a{display:block;padding:.3rem 1.25rem .3rem 1.5rem;color:var(--muted);text-decoration:none;font-size:.82rem;border-left:2px solid transparent;transition:all .12s}
+.sidebar a:hover,.sidebar a.active{color:var(--text);background:var(--surface2);border-left-color:var(--blue)}
+/* MAIN */
+.main{margin-left:270px;flex:1;padding:2rem 3rem;max-width:960px}
+section{margin-bottom:4rem}
+h2{font-size:1.6rem;font-weight:700;margin-bottom:1rem;padding-bottom:.6rem;border-bottom:1px solid var(--border)}
+h3{font-size:1.1rem;font-weight:600;margin:1.5rem 0 .5rem;color:var(--text)}
+h4{font-size:.95rem;font-weight:600;margin:.75rem 0 .25rem;color:var(--muted)}
+p{margin-bottom:.6rem}
+ul,ol{padding-left:1.5rem;margin-bottom:.6rem}
+li{margin-bottom:.2rem}
+strong{color:var(--text)}
+/* HERO */
+.hero{background:linear-gradient(135deg,#161b22,#0d1117);border:1px solid var(--border);border-radius:10px;padding:2.5rem;margin-bottom:3rem;text-align:center}
+.hero h1{font-size:2.4rem;font-weight:800;background:linear-gradient(135deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.5rem}
+.hero p{color:var(--muted);max-width:560px;margin:0 auto}
+.badges{display:flex;gap:.4rem;justify-content:center;margin-top:1rem;flex-wrap:wrap}
+.badge{background:var(--surface2);border:1px solid var(--border);color:var(--muted);padding:.2rem .65rem;border-radius:20px;font-size:.72rem}
+/* CODE */
+.code-wrap{position:relative;margin:.6rem 0}
+pre{background:#010409;border:1px solid var(--border);border-radius:6px;padding:.85rem 1rem;overflow-x:auto;font-size:.82rem;font-family:'Consolas','Monaco',monospace;line-height:1.5}
+code{font-family:'Consolas','Monaco',monospace;font-size:.875em}
+p code,li code,td code{background:var(--surface2);padding:.1em .35em;border-radius:3px;color:var(--orange)}
+.copy-btn{position:absolute;top:.4rem;right:.4rem;background:var(--surface2);border:1px solid var(--border);color:var(--muted);padding:.15rem .45rem;border-radius:4px;font-size:.68rem;cursor:pointer;transition:all .15s}
+.copy-btn:hover{background:var(--border);color:var(--text)}
+.copy-btn.ok{color:var(--green);border-color:var(--green)}
+/* BOXES */
+.box{border-radius:6px;padding:.85rem 1.1rem;margin:.6rem 0;border-left:3px solid}
+.box-ok{background:rgba(63,185,80,.07);border-color:var(--green)}
+.box-err{background:rgba(248,81,73,.07);border-color:var(--red)}
+.box-ex{background:rgba(88,166,255,.07);border-color:var(--blue)}
+.box-warn{background:rgba(210,153,34,.07);border-color:var(--yellow)}
+.box-title{font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem;display:flex;align-items:center;gap:.4rem}
+.box-ok .box-title{color:var(--green)}
+.box-err .box-title{color:var(--red)}
+.box-ex .box-title{color:var(--blue)}
+.box-warn .box-title{color:var(--yellow)}
+/* CMD CARD */
+.cmd-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-bottom:2rem;overflow:hidden}
+.cmd-head{display:flex;align-items:center;gap:.75rem;padding:.85rem 1.25rem;background:var(--surface2);border-bottom:1px solid var(--border)}
+.cmd-tag{background:var(--blue);color:#000;font-family:monospace;font-size:.8rem;font-weight:700;padding:.2rem .65rem;border-radius:4px;white-space:nowrap}
+.cmd-subtitle{font-size:.9rem;font-weight:600;color:var(--text)}
+.cmd-body{padding:1.25rem}
+/* TABLE */
+table{width:100%;border-collapse:collapse;margin:.6rem 0;font-size:.84rem}
+th{text-align:left;padding:.45rem .7rem;background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-weight:600}
+td{padding:.45rem .7rem;border:1px solid var(--border);vertical-align:top}
+td:first-child{font-family:monospace;color:var(--orange);white-space:nowrap}
+/* STEPS */
+.steps{list-style:none;padding-left:0;counter-reset:s}
+.steps li{counter-increment:s;padding:.35rem 0 .35rem 2.2rem;position:relative;font-size:.88rem}
+.steps li::before{content:counter(s);position:absolute;left:0;top:.3rem;width:1.4rem;height:1.4rem;background:var(--blue);color:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700}
+/* ERROR BLOCK */
+.err-block{margin-bottom:1rem}
+.err-msg{font-family:monospace;font-size:.78rem;color:var(--red);background:rgba(248,81,73,.1);padding:.45rem .7rem;border-radius:4px;margin-bottom:.3rem;word-break:break-all}
+.err-why{font-size:.84rem;color:var(--muted);margin-bottom:.2rem}
+.err-fix{font-size:.84rem;color:var(--text)}
+/* FLOW */
+.flow{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin:.75rem 0;font-size:.82rem}
+.flow-box{background:var(--surface2);border:1px solid var(--border);padding:.35rem .75rem;border-radius:6px;text-align:center}
+.flow-arr{color:var(--muted)}
+/* TABS */
+.tab-bar{display:flex;border-bottom:1px solid var(--border);margin-bottom:0}
+.tab-btn{padding:.45rem 1rem;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;font-size:.84rem;margin-bottom:-1px;transition:all .12s}
+.tab-btn.on{color:var(--text);border-bottom-color:var(--blue)}
+.tab-pane{display:none;padding:.85rem 0 0}
+.tab-pane.on{display:block}
+/* QUICK REF */
+.qref-table td:first-child{color:var(--blue);font-weight:600}
+/* COLORS */
+.c-green{color:var(--green)}.c-red{color:var(--red)}.c-blue{color:var(--blue)}.c-yellow{color:var(--yellow)}.c-orange{color:var(--orange)}.c-purple{color:var(--purple)}.c-muted{color:var(--muted)}
+hr{border:none;border-top:1px solid var(--border);margin:1.25rem 0}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+@media(max-width:768px){.sidebar{display:none}.main{margin-left:0;padding:1rem}}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ SIDEBAR ═══════════ -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <h1>📘 Guía de Git</h1>
+    <small>UTN — Programación 4</small>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">Introducción</div>
+    <a href="#que-es">¿Qué es Git?</a>
+    <a href="#instalacion">Instalación</a>
+    <a href="#conceptos">Conceptos clave</a>
+    <a href="#config">Configuración inicial</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">Inicio</div>
+    <a href="#init">git init</a>
+    <a href="#clone">git clone</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">Inspección</div>
+    <a href="#status">git status</a>
+    <a href="#log">git log</a>
+    <a href="#diff">git diff</a>
+    <a href="#show">git show</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">Staging y Commits</div>
+    <a href="#add">git add</a>
+    <a href="#commit">git commit</a>
+    <a href="#restore">git restore</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">Ramas</div>
+    <a href="#branch">git branch</a>
+    <a href="#switch">git switch / checkout</a>
+    <a href="#merge">git merge</a>
+    <a href="#rebase">git rebase</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">Remotos</div>
+    <a href="#remote">git remote</a>
+    <a href="#fetch">git fetch</a>
+    <a href="#pull">git pull</a>
+    <a href="#push">git push</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">Deshacer</div>
+    <a href="#stash">git stash</a>
+    <a href="#reset">git reset</a>
+    <a href="#revert">git revert</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">Avanzado</div>
+    <a href="#tag">git tag</a>
+    <a href="#cherry">git cherry-pick</a>
+    <a href="#reflog">git reflog</a>
+    <a href="#gitignore">.gitignore</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">Referencia</div>
+    <a href="#flujo">Flujo colaborativo</a>
+    <a href="#quickref">Referencia rápida</a>
+  </div>
+</nav>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<main class="main">
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Guía Completa de Git</h1>
+  <p>Referencia práctica para la clase de Programación 4 — UTN. Comandos, errores comunes y ejercicios incrementales.</p>
+  <div class="badges">
+    <span class="badge">Git 2.40+</span>
+    <span class="badge">Windows &amp; Linux</span>
+    <span class="badge">Ejercicios incrementales</span>
+    <span class="badge">Errores y soluciones</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     QUÉ ES GIT
+══════════════════════════════════════════════ -->
+<section id="que-es">
+  <h2>¿Qué es Git?</h2>
+  <p><strong>Git</strong> es un sistema de control de versiones distribuido. Permite registrar el historial de cambios de cualquier conjunto de archivos, coordinar el trabajo entre múltiples personas y volver a cualquier estado anterior del proyecto.</p>
+
+  <p>Fue creado en 2005 por <strong>Linus Torvalds</strong> (el creador de Linux) para gestionar el kernel de Linux. Hoy es el estándar de facto en la industria del software.</p>
+
+  <h3>¿Para qué sirve?</h3>
+  <ul>
+    <li>Guardar el historial completo de cambios de un proyecto.</li>
+    <li>Trabajar en paralelo con ramas sin pisar el trabajo ajeno.</li>
+    <li>Colaborar con equipos distribuidos (GitHub, GitLab, Bitbucket).</li>
+    <li>Revertir errores a un estado anterior conocido.</li>
+    <li>Comparar versiones de archivos en el tiempo.</li>
+  </ul>
+
+  <h3>Git vs GitHub</h3>
+  <p><strong>Git</strong> es la herramienta local que gestiona el historial. <strong>GitHub</strong> es una plataforma en la nube que aloja repositorios Git y agrega funcionalidades de colaboración (pull requests, issues, etc.). Git funciona sin GitHub, pero GitHub requiere Git.</p>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     INSTALACIÓN
+══════════════════════════════════════════════ -->
+<section id="instalacion">
+  <h2>Instalación</h2>
+
+  <div class="tab-bar">
+    <button class="tab-btn on" onclick="openTab(event,'win')">Windows</button>
+    <button class="tab-btn" onclick="openTab(event,'lin')">Linux (Ubuntu/Debian)</button>
+    <button class="tab-btn" onclick="openTab(event,'mac')">macOS</button>
+  </div>
+
+  <div id="win" class="tab-pane on">
+    <h3>Instalación en Windows</h3>
+    <p><strong>Opción 1 — Instalador oficial (recomendado):</strong></p>
+    <ol>
+      <li>Ir a <code>https://git-scm.com/download/win</code></li>
+      <li>Descargar el instalador de 64 bits.</li>
+      <li>Ejecutar el instalador. En la pantalla <em>"Choosing the default editor"</em>, seleccionar Visual Studio Code (o el editor preferido).</li>
+      <li>En <em>"Adjusting your PATH"</em> elegir <strong>Git from the command line and also from 3rd-party software</strong>.</li>
+      <li>Dejar las demás opciones por defecto y finalizar.</li>
+    </ol>
+    <p><strong>Opción 2 — Winget (PowerShell):</strong></p>
+    <div class="code-wrap">
+      <pre><span class="c-muted"># En PowerShell como administrador:</span>
+winget install --id Git.Git -e --source winget</pre>
+      <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+    </div>
+    <p><strong>Verificar instalación:</strong></p>
+    <div class="code-wrap">
+      <pre>git --version
+<span class="c-green"># Salida esperada: git version 2.4x.x.windows.x</span></pre>
+      <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+    </div>
+    <div class="box box-warn">
+      <div class="box-title">⚠ Nota</div>
+      Después de instalar, abrir una <strong>nueva</strong> terminal (Git Bash, PowerShell o CMD) para que el PATH se actualice.
+    </div>
+  </div>
+
+  <div id="lin" class="tab-pane">
+    <h3>Instalación en Linux (Ubuntu / Debian)</h3>
+    <div class="code-wrap">
+      <pre>sudo apt update
+sudo apt install git -y
+git --version</pre>
+      <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+    </div>
+    <h4>Fedora / RHEL / CentOS</h4>
+    <div class="code-wrap">
+      <pre>sudo dnf install git -y</pre>
+      <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+    </div>
+    <h4>Arch Linux</h4>
+    <div class="code-wrap">
+      <pre>sudo pacman -S git</pre>
+      <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+    </div>
+  </div>
+
+  <div id="mac" class="tab-pane">
+    <h3>Instalación en macOS</h3>
+    <div class="code-wrap">
+      <pre><span class="c-muted"># Homebrew (recomendado):</span>
+brew install git
+
+<span class="c-muted"># O instalar Xcode Command Line Tools:</span>
+xcode-select --install</pre>
+      <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     CONCEPTOS CLAVE
+══════════════════════════════════════════════ -->
+<section id="conceptos">
+  <h2>Conceptos clave</h2>
+
+  <p>Antes de usar Git hay que entender las cuatro áreas en las que viven los archivos:</p>
+
+  <div class="flow">
+    <div class="flow-box"><strong>Working Directory</strong><br><small class="c-muted">Archivos en disco</small></div>
+    <div class="flow-arr">→ git add →</div>
+    <div class="flow-box"><strong>Staging Area</strong><br><small class="c-muted">Índice / caché</small></div>
+    <div class="flow-arr">→ git commit →</div>
+    <div class="flow-box"><strong>Local Repo</strong><br><small class="c-muted">Historial local</small></div>
+    <div class="flow-arr">→ git push →</div>
+    <div class="flow-box"><strong>Remote Repo</strong><br><small class="c-muted">GitHub / GitLab</small></div>
+  </div>
+
+  <table>
+    <tr><th>Concepto</th><th>Descripción</th></tr>
+    <tr><td>Repositorio (repo)</td><td>Carpeta controlada por Git que almacena el historial completo de cambios.</td></tr>
+    <tr><td>Commit</td><td>Instantánea (snapshot) del proyecto en un momento dado. Tiene un ID único (hash SHA-1).</td></tr>
+    <tr><td>Rama (branch)</td><td>Línea de desarrollo independiente. <code>main</code> es la rama principal por convención.</td></tr>
+    <tr><td>HEAD</td><td>Puntero que indica el commit actual (en qué punto del historial estás parado).</td></tr>
+    <tr><td>Remote</td><td>Copia del repositorio en un servidor (ej: GitHub). El nombre por defecto es <code>origin</code>.</td></tr>
+    <tr><td>Working Directory</td><td>Archivos tal como están en tu disco. Los cambios aquí no están guardados en Git todavía.</td></tr>
+    <tr><td>Staging Area</td><td>Zona intermedia donde se preparan los cambios antes de hacer un commit.</td></tr>
+    <tr><td>Merge</td><td>Combinar los cambios de una rama en otra.</td></tr>
+    <tr><td>Conflict</td><td>Ocurre cuando dos ramas modificaron la misma línea del mismo archivo.</td></tr>
+  </table>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     CONFIG
+══════════════════════════════════════════════ -->
+<section id="config">
+  <h2>Configuración inicial</h2>
+
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git config</span>
+      <span class="cmd-subtitle">Configurar nombre, email y preferencias globales</span>
+    </div>
+    <div class="cmd-body">
+      <p>La configuración se aplica a nivel <code>--global</code> (todos los repos del usuario) o local (solo el repo actual).</p>
+
+      <h4>Configuración mínima obligatoria:</h4>
+      <div class="code-wrap">
+        <pre>git config --global user.name "Tu Nombre"
+git config --global user.email "tu@email.com"</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+
+      <h4>Otras configuraciones útiles:</h4>
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Editor por defecto (Visual Studio Code):</span>
+git config --global core.editor "code --wait"
+
+<span class="c-muted"># Que la rama principal se llame 'main' en repos nuevos:</span>
+git config --global init.defaultBranch main
+
+<span class="c-muted"># Colores en la terminal:</span>
+git config --global color.ui auto
+
+<span class="c-muted"># Ver toda la configuración:</span>
+git config --list
+
+<span class="c-muted"># Ver un valor específico:</span>
+git config user.email</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+
+      <table>
+        <tr><th>Variante</th><th>Descripción</th></tr>
+        <tr><td>git config --global</td><td>Afecta a todos los repos del usuario actual.</td></tr>
+        <tr><td>git config --local</td><td>Solo afecta al repo actual (valor por defecto si no se especifica).</td></tr>
+        <tr><td>git config --system</td><td>Afecta a todos los usuarios de la máquina (requiere admin).</td></tr>
+        <tr><td>git config --list</td><td>Muestra toda la configuración activa.</td></tr>
+        <tr><td>git config --unset &lt;clave&gt;</td><td>Elimina una configuración.</td></tr>
+      </table>
+
+      <div class="box box-ok">
+        <div class="box-title">✓ Salida esperada (éxito)</div>
+        Ningún output. Si querés verificar: <code>git config user.name</code> devuelve tu nombre.
+      </div>
+
+      <h4>Errores comunes:</h4>
+      <div class="err-block">
+        <div class="err-msg">error: could not lock config file ... : Permission denied</div>
+        <div class="err-why"><strong>Causa:</strong> El archivo de configuración está siendo usado por otro proceso o no tenés permisos.</div>
+        <div class="err-fix"><strong>Solución:</strong> Cerrar otras terminales o ejecutar sin <code>--system</code>. En Linux/Mac verificar permisos con <code>ls -la ~/.gitconfig</code>.</div>
+      </div>
+      <div class="err-block">
+        <div class="err-msg">Author identity unknown *** Please tell me who you are.</div>
+        <div class="err-why"><strong>Causa:</strong> No configuraste nombre y email antes de hacer el primer commit.</div>
+        <div class="err-fix"><strong>Solución:</strong> Ejecutar <code>git config --global user.name "..."</code> y <code>git config --global user.email "..."</code>.</div>
+      </div>
+
+      <div class="box box-ex">
+        <div class="box-title">🎯 Ejercicio 0 — Configuración inicial</div>
+        <ol class="steps">
+          <li>Abrí Git Bash (o tu terminal).</li>
+          <li>Configurá tu nombre: <code>git config --global user.name "Tu Nombre Apellido"</code></li>
+          <li>Configurá tu email: <code>git config --global user.email "tu-email@ejemplo.com"</code></li>
+          <li>Verificá con: <code>git config --list</code></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     GIT INIT
+══════════════════════════════════════════════ -->
+<section id="init">
+  <h2>Inicio de repositorios</h2>
+
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git init</span>
+      <span class="cmd-subtitle">Crear un nuevo repositorio Git local</span>
+    </div>
+    <div class="cmd-body">
+      <p>Transforma una carpeta normal en un repositorio Git. Crea una carpeta oculta <code>.git/</code> donde Git almacena todo el historial.</p>
+
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Inicializar en la carpeta actual:</span>
+git init
+
+<span class="c-muted"># Crear e inicializar una nueva carpeta:</span>
+git init nombre-del-proyecto
+
+<span class="c-muted"># Especificar la rama inicial:</span>
+git init --initial-branch=main
+<span class="c-muted"># (equivalente abreviado):</span>
+git init -b main</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+
+      <div class="box box-ok">
+        <div class="box-title">✓ Salida esperada</div>
+        <pre style="margin:0;padding:.5rem;background:transparent;border:none">Initialized empty Git repository in C:/Users/tuusuario/mi-proyecto/.git/</pre>
+      </div>
+
+      <h4>Errores comunes:</h4>
+      <div class="err-block">
+        <div class="err-msg">Reinitialized existing Git repository in .../mi-proyecto/.git/</div>
+        <div class="err-why"><strong>No es un error grave</strong>, solo un aviso de que ya existía un repo.</div>
+        <div class="err-fix"><strong>Solución:</strong> Si fue intencional, ignorar. Si no, verificar que estás en la carpeta correcta con <code>pwd</code>.</div>
+      </div>
+      <div class="err-block">
+        <div class="err-msg">'git init' existe solo como subcomando de otro comando</div>
+        <div class="err-why"><strong>Causa:</strong> Git no está correctamente instalado o no está en el PATH.</div>
+        <div class="err-fix"><strong>Solución:</strong> Reinstalar Git y abrir una nueva terminal.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     GIT CLONE
+══════════════════════════════════════════════ -->
+<section id="clone">
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git clone</span>
+      <span class="cmd-subtitle">Copiar un repositorio remoto a tu máquina</span>
+    </div>
+    <div class="cmd-body">
+      <p>Descarga una copia completa de un repositorio (con todo su historial) desde un servidor remoto.</p>
+
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Clonar en una carpeta con el nombre del repo:</span>
+git clone https://github.com/usuario/repositorio.git
+
+<span class="c-muted"># Clonar en una carpeta con nombre personalizado:</span>
+git clone https://github.com/usuario/repositorio.git mi-carpeta
+
+<span class="c-muted"># Clonar una rama específica:</span>
+git clone -b nombre-rama https://github.com/usuario/repo.git
+
+<span class="c-muted"># Clonar con SSH (requiere clave SSH configurada):</span>
+git clone git@github.com:usuario/repositorio.git
+
+<span class="c-muted"># Clonar solo el último commit (más rápido para repos grandes):</span>
+git clone --depth=1 https://github.com/usuario/repo.git</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+
+      <div class="box box-ok">
+        <div class="box-title">✓ Salida esperada</div>
+        <pre style="margin:0;padding:.5rem;background:transparent;border:none">Cloning into 'repositorio'...
+remote: Enumerating objects: 45, done.
+remote: Counting objects: 100% (45/45), done.
+remote: Compressing objects: 100% (30/30), done.
+Receiving objects: 100% (45/45), 12.34 KiB | 1.23 MiB/s, done.</pre>
+      </div>
+
+      <h4>Errores comunes:</h4>
+      <div class="err-block">
+        <div class="err-msg">fatal: repository 'https://github.com/...' not found</div>
+        <div class="err-why"><strong>Causa:</strong> La URL es incorrecta, el repo es privado y no estás autenticado, o el repo fue borrado.</div>
+        <div class="err-fix"><strong>Solución:</strong> Verificar la URL. Si es privado, autenticarse primero: <code>gh auth login</code> (GitHub CLI) o configurar token de acceso personal.</div>
+      </div>
+      <div class="err-block">
+        <div class="err-msg">fatal: destination path 'nombre' already exists and is not an empty directory.</div>
+        <div class="err-why"><strong>Causa:</strong> Ya existe una carpeta con ese nombre en el directorio actual.</div>
+        <div class="err-fix"><strong>Solución:</strong> Borrar la carpeta existente o clonar con otro nombre: <code>git clone URL otro-nombre</code></div>
+      </div>
+      <div class="err-block">
+        <div class="err-msg">error: SSL certificate problem: unable to get local issuer certificate</div>
+        <div class="err-why"><strong>Causa:</strong> Problema con los certificados SSL (común en redes corporativas o universitarias con proxy).</div>
+        <div class="err-fix"><strong>Solución temporal:</strong> <code>git config --global http.sslVerify false</code> (solo para pruebas, no en producción).</div>
+      </div>
+      <div class="err-block">
+        <div class="err-msg">Permission denied (publickey)</div>
+        <div class="err-why"><strong>Causa:</strong> Intentaste clonar via SSH pero no tenés una clave SSH configurada o no la agregaste a GitHub.</div>
+        <div class="err-fix"><strong>Solución:</strong> Usá HTTPS en vez de SSH, o generá una clave: <code>ssh-keygen -t ed25519 -C "tu@email.com"</code> y agregala a GitHub en Settings → SSH keys.</div>
+      </div>
+
+      <div class="box box-ex">
+        <div class="box-title">🎯 Ejercicio 1 — Clonar el repo remoto</div>
+        <p style="margin-bottom:.5rem">Ya se creó un repositorio en GitHub. Vamos a clonarlo.</p>
+        <ol class="steps">
+          <li>Posicionarse en la carpeta donde querés trabajar: <code>cd ~/Desktop</code></li>
+          <li>Clonar el repo: <code>git clone https://github.com/[profe]/utn-prog4-git.git</code></li>
+          <li>Entrar a la carpeta: <code>cd utn-prog4-git</code></li>
+          <li>Ver qué hay adentro: <code>ls</code> (Linux/Mac) o <code>dir</code> (Windows)</li>
+          <li>Ver que Git está funcionando: <code>git log --oneline</code></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     GIT STATUS
+══════════════════════════════════════════════ -->
+<section id="status">
+  <h2>Inspección del repositorio</h2>
+
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git status</span>
+      <span class="cmd-subtitle">Ver el estado actual del repositorio</span>
+    </div>
+    <div class="cmd-body">
+      <p>Muestra qué archivos fueron modificados, cuáles están en el staging area y cuáles no están siendo rastreados por Git. Es el comando más usado del día a día.</p>
+
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Estado completo (más legible):</span>
+git status
+
+<span class="c-muted"># Estado compacto (una línea por archivo):</span>
+git status -s
+git status --short
+
+<span class="c-muted"># Incluye archivos ignorados:</span>
+git status --ignored</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+
+      <h4>Posibles salidas:</h4>
+      <div class="box box-ok">
+        <div class="box-title">✓ Repo limpio (sin cambios)</div>
+        <pre style="margin:0;padding:.5rem;background:transparent;border:none">On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean</pre>
+      </div>
+      <div class="box box-warn">
+        <div class="box-title">⚠ Con cambios sin agregar</div>
+        <pre style="margin:0;padding:.5rem;background:transparent;border:none">On branch main
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git restore &lt;file&gt;..." to discard changes)
+        <span class="c-red">modified:   index.html</span>
+
+Untracked files:
+  (use "git add &lt;file&gt;..." to include in what will be committed)
+        <span class="c-red">nuevo-archivo.txt</span>
+
+no changes added to commit</pre>
+      </div>
+      <div class="box box-ok">
+        <div class="box-title">✓ Con cambios en staging (listos para commit)</div>
+        <pre style="margin:0;padding:.5rem;background:transparent;border:none">On branch main
+Changes to be committed:
+  (use "git restore --staged &lt;file&gt;..." to unstage)
+        <span class="c-green">new file:   nuevo-archivo.txt</span>
+        <span class="c-green">modified:   index.html</span></pre>
+      </div>
+
+      <h4>Significado de los prefijos en <code>git status -s</code>:</h4>
+      <table>
+        <tr><th>Prefijo</th><th>Significado</th></tr>
+        <tr><td>M</td><td>Modificado (columna izquierda = en staging, columna derecha = en working dir)</td></tr>
+        <tr><td>A</td><td>Agregado al staging (nuevo archivo)</td></tr>
+        <tr><td>D</td><td>Eliminado</td></tr>
+        <tr><td>R</td><td>Renombrado</td></tr>
+        <tr><td>??</td><td>Archivo no rastreado (untracked)</td></tr>
+        <tr><td>!!</td><td>Ignorado (solo con --ignored)</td></tr>
+      </table>
+
+      <div class="box box-ex">
+        <div class="box-title">🎯 Ejercicio 2 — Explorar el estado del repo</div>
+        <ol class="steps">
+          <li>Asegurate de estar dentro del repo clonado: <code>cd utn-prog4-git</code></li>
+          <li>Corré <code>git status</code> y leé la salida.</li>
+          <li>Creá un archivo nuevo: en Windows <code>echo. &gt; mi-archivo.txt</code>, en Linux/Mac <code>touch mi-archivo.txt</code></li>
+          <li>Corré <code>git status</code> de nuevo. ¿Qué cambió?</li>
+          <li>Probá <code>git status -s</code> para ver la versión compacta.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     GIT LOG
+══════════════════════════════════════════════ -->
+<section id="log">
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git log</span>
+      <span class="cmd-subtitle">Ver el historial de commits</span>
+    </div>
+    <div class="cmd-body">
+      <p>Muestra el historial de commits del repositorio, del más reciente al más antiguo.</p>
+
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Historial completo:</span>
+git log
+
+<span class="c-muted"># Una línea por commit (más compacto):</span>
+git log --oneline
+
+<span class="c-muted"># Con gráfico de ramas:</span>
+git log --oneline --graph --all
+
+<span class="c-muted"># Últimos N commits:</span>
+git log -5
+
+<span class="c-muted"># Commits de un archivo específico:</span>
+git log -- archivo.txt
+
+<span class="c-muted"># Buscar commits por mensaje:</span>
+git log --grep="fix"
+
+<span class="c-muted"># Commits entre fechas:</span>
+git log --after="2024-01-01" --before="2024-12-31"
+
+<span class="c-muted"># Commits de un autor:</span>
+git log --author="Nombre"
+
+<span class="c-muted"># Formato personalizado:</span>
+git log --pretty=format:"%h | %an | %ar | %s"</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+
+      <div class="box box-ok">
+        <div class="box-title">✓ Salida esperada (git log --oneline)</div>
+        <pre style="margin:0;padding:.5rem;background:transparent;border:none"><span class="c-yellow">a3f2b1c</span> <span class="c-blue">(HEAD -> main, origin/main)</span> Agregar README con instrucciones
+<span class="c-yellow">7e9d2a1</span> Crear estructura de carpetas inicial
+<span class="c-yellow">3c8f401</span> Initial commit</pre>
+      </div>
+
+      <h4>¿Qué significan las partes del log?</h4>
+      <table>
+        <tr><th>Parte</th><th>Descripción</th></tr>
+        <tr><td>a3f2b1c</td><td>Hash corto del commit (identificador único).</td></tr>
+        <tr><td>HEAD → main</td><td>Donde estás parado actualmente.</td></tr>
+        <tr><td>origin/main</td><td>Último estado conocido del servidor remoto.</td></tr>
+        <tr><td>Mensaje</td><td>Descripción del cambio que se hizo en ese commit.</td></tr>
+      </table>
+
+      <h4>Navegar el log largo:</h4>
+      <div class="box box-warn">
+        <div class="box-title">⚠ La terminal se queda "colgada"</div>
+        <code>git log</code> usa un <em>pager</em> (el programa <code>less</code>). Para navegar: <kbd>↑</kbd><kbd>↓</kbd> o <kbd>Space</kbd> para avanzar. Para salir: presionar <kbd>Q</kbd>.
+      </div>
+
+      <div class="err-block">
+        <div class="err-msg">fatal: your current branch 'main' does not have any commits yet</div>
+        <div class="err-why"><strong>Causa:</strong> El repo fue inicializado con <code>git init</code> pero no tiene ningún commit todavía.</div>
+        <div class="err-fix"><strong>Solución:</strong> Crear al menos un commit primero: agregar un archivo y hacer <code>git add . &amp;&amp; git commit -m "Initial commit"</code>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     GIT DIFF
+══════════════════════════════════════════════ -->
+<section id="diff">
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git diff</span>
+      <span class="cmd-subtitle">Ver cambios entre versiones de archivos</span>
+    </div>
+    <div class="cmd-body">
+      <p>Muestra exactamente qué líneas cambiaron. Las líneas en <span class="c-red">rojo con -</span> fueron quitadas; las <span class="c-green">verdes con +</span> fueron agregadas.</p>
+
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Cambios en working dir (no en staging):</span>
+git diff
+
+<span class="c-muted"># Cambios que ya están en staging:</span>
+git diff --staged
+git diff --cached
+
+<span class="c-muted"># Diferencia entre dos commits:</span>
+git diff abc1234 def5678
+
+<span class="c-muted"># Diferencia entre dos ramas:</span>
+git diff main feature/login
+
+<span class="c-muted"># Solo los nombres de archivos que cambiaron:</span>
+git diff --name-only
+
+<span class="c-muted"># Diferencia de un archivo específico:</span>
+git diff index.html</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+
+      <div class="box box-ok">
+        <div class="box-title">✓ Salida esperada</div>
+        <pre style="margin:0;padding:.5rem;background:transparent;border:none">diff --git a/index.html b/index.html
+index 1a2b3c4..5d6e7f8 100644
+--- a/index.html
++++ b/index.html
+@@ -10,7 +10,8 @@
+   &lt;body&gt;
+<span class="c-red">-    &lt;h1&gt;Título viejo&lt;/h1&gt;</span>
+<span class="c-green">+    &lt;h1&gt;Título nuevo&lt;/h1&gt;</span>
+<span class="c-green">+    &lt;p&gt;Párrafo agregado&lt;/p&gt;</span>
+   &lt;/body&gt;</pre>
+      </div>
+
+      <div class="err-block">
+        <div class="err-msg">(no output)</div>
+        <div class="err-why"><strong>Causa frecuente:</strong> Si no hay output, puede que los cambios ya estén en staging. En ese caso <code>git diff</code> no muestra nada.</div>
+        <div class="err-fix"><strong>Solución:</strong> Usar <code>git diff --staged</code> para ver los cambios que ya pasaron por <code>git add</code>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     GIT SHOW
+══════════════════════════════════════════════ -->
+<section id="show">
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git show</span>
+      <span class="cmd-subtitle">Inspeccionar un commit específico</span>
+    </div>
+    <div class="cmd-body">
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Ver el último commit (HEAD):</span>
+git show
+
+<span class="c-muted"># Ver un commit específico:</span>
+git show a3f2b1c
+
+<span class="c-muted"># Ver solo el mensaje del commit:</span>
+git show --stat a3f2b1c
+
+<span class="c-muted"># Ver el contenido de un archivo en ese commit:</span>
+git show a3f2b1c:archivo.txt</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     GIT ADD
+══════════════════════════════════════════════ -->
+<section id="add">
+  <h2>Staging y Commits</h2>
+
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git add</span>
+      <span class="cmd-subtitle">Agregar cambios al staging area</span>
+    </div>
+    <div class="cmd-body">
+      <p>Mueve cambios del working directory al staging area. Solo los cambios en staging se incluirán en el próximo commit.</p>
+
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Agregar un archivo específico:</span>
+git add archivo.txt
+
+<span class="c-muted"># Agregar múltiples archivos:</span>
+git add archivo1.txt archivo2.txt
+
+<span class="c-muted"># Agregar todos los archivos del directorio actual:</span>
+git add .
+
+<span class="c-muted"># Agregar todos los archivos del repositorio:</span>
+git add -A
+
+<span class="c-muted"># Agregar archivos por extensión:</span>
+git add *.html
+
+<span class="c-muted"># Modo interactivo (elegir línea por línea):</span>
+git add -p</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+
+      <div class="box box-ok">
+        <div class="box-title">✓ Sin output = éxito</div>
+        <code>git add</code> no muestra nada si funcionó. Verificar con <code>git status</code>.
+      </div>
+
+      <h4>Errores comunes:</h4>
+      <div class="err-block">
+        <div class="err-msg">fatal: pathspec 'archivo.txt' did not match any files</div>
+        <div class="err-why"><strong>Causa:</strong> El archivo no existe con ese nombre o estás en la carpeta equivocada.</div>
+        <div class="err-fix"><strong>Solución:</strong> Verificar con <code>ls</code> que el archivo existe. Cuidado con mayúsculas y extensiones.</div>
+      </div>
+      <div class="err-block">
+        <div class="err-msg">warning: LF will be replaced by CRLF in archivo.txt</div>
+        <div class="err-why"><strong>Causa:</strong> El archivo usa saltos de línea Unix (LF) pero Git lo convertirá al estilo Windows (CRLF).</div>
+        <div class="err-fix"><strong>No es un error</strong>. Para evitar el warning: <code>git config --global core.autocrlf true</code> (Windows) o <code>false</code> (Linux/Mac).</div>
+      </div>
+
+      <div class="box box-ex">
+        <div class="box-title">🎯 Ejercicio 3 — Crear y agregar tu archivo</div>
+        <ol class="steps">
+          <li>Dentro del repo, crear la carpeta de alumnos si no existe: <code>mkdir alumnos</code></li>
+          <li>Crear tu archivo: <code>echo "Hola, soy [Tu Nombre]" &gt; alumnos/[tu-nombre].txt</code></li>
+          <li>Ver el estado: <code>git status</code> (vas a ver el archivo como "untracked")</li>
+          <li>Agregar al staging: <code>git add alumnos/[tu-nombre].txt</code></li>
+          <li>Ver el estado de nuevo: <code>git status</code> (ahora está en verde como "new file")</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     GIT COMMIT
+══════════════════════════════════════════════ -->
+<section id="commit">
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git commit</span>
+      <span class="cmd-subtitle">Guardar los cambios del staging como un commit</span>
+    </div>
+    <div class="cmd-body">
+      <p>Crea una instantánea permanente de los cambios en staging. Cada commit tiene un hash único, autor, fecha y mensaje.</p>
+
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Commit con mensaje:</span>
+git commit -m "Agregar archivo de bienvenida"
+
+<span class="c-muted"># Commit con mensaje multilínea:</span>
+git commit -m "Título del commit" -m "Descripción más detallada"
+
+<span class="c-muted"># Agregar todos los cambios modificados y hacer commit (sin git add):</span>
+git commit -am "Mensaje"
+
+<span class="c-muted"># Modificar el ÚLTIMO commit (antes de hacer push):</span>
+git commit --amend -m "Mensaje corregido"
+
+<span class="c-muted"># Commit vacío (útil para disparar CI/CD):</span>
+git commit --allow-empty -m "Trigger CI"</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+
+      <div class="box box-ok">
+        <div class="box-title">✓ Salida esperada</div>
+        <pre style="margin:0;padding:.5rem;background:transparent;border:none">[main a3f2b1c] Agregar mi archivo de alumno
+ 1 file changed, 1 insertion(+)
+ create mode 100644 alumnos/juan-perez.txt</pre>
+      </div>
+
+      <h4>Buenas prácticas para mensajes de commit:</h4>
+      <ul>
+        <li>Usar verbos en infinitivo o imperativo: "Agregar", "Corregir", "Eliminar".</li>
+        <li>Máximo 72 caracteres en la primera línea.</li>
+        <li>Describir <em>qué</em> y <em>por qué</em>, no cómo.</li>
+        <li>Ejemplos: <code>"Agregar validación de email en registro"</code>, <code>"Corregir bug en cálculo de total con descuento"</code></li>
+      </ul>
+
+      <h4>Errores comunes:</h4>
+      <div class="err-block">
+        <div class="err-msg">On branch main
+nothing to commit, working tree clean</div>
+        <div class="err-why"><strong>Causa:</strong> No hay cambios en el staging area.</div>
+        <div class="err-fix"><strong>Solución:</strong> Primero hacer <code>git add</code> con los archivos a incluir.</div>
+      </div>
+      <div class="err-block">
+        <div class="err-msg">Aborting commit due to empty commit message.</div>
+        <div class="err-why"><strong>Causa:</strong> Se abrió el editor para escribir el mensaje pero se cerró sin escribir nada.</div>
+        <div class="err-fix"><strong>Solución:</strong> Siempre usar <code>-m "mensaje"</code> para evitar que se abra el editor, o escribir el mensaje antes de cerrar el editor.</div>
+      </div>
+      <div class="err-block">
+        <div class="err-msg">error: gpg failed to sign the data</div>
+        <div class="err-why"><strong>Causa:</strong> Git está configurado para firmar commits con GPG pero la clave no está disponible.</div>
+        <div class="err-fix"><strong>Solución:</strong> Deshabilitar firma GPG: <code>git config --global commit.gpgsign false</code></div>
+      </div>
+
+      <div class="box box-ex">
+        <div class="box-title">🎯 Ejercicio 4 — Hacer tu primer commit</div>
+        <ol class="steps">
+          <li>Verificar que tu archivo está en staging: <code>git status</code></li>
+          <li>Hacer el commit: <code>git commit -m "Agregar archivo de alumno [Tu Nombre]"</code></li>
+          <li>Ver que el commit quedó registrado: <code>git log --oneline</code></li>
+          <li>Ver los detalles del último commit: <code>git show</code></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     GIT RESTORE
+══════════════════════════════════════════════ -->
+<section id="restore">
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git restore</span>
+      <span class="cmd-subtitle">Descartar cambios en archivos individuales</span>
+    </div>
+    <div class="cmd-body">
+      <p>Descarta cambios en archivos del working directory o saca archivos del staging (sin afectar el historial).</p>
+
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Descartar cambios en un archivo (volver al último commit):</span>
+git restore archivo.txt
+
+<span class="c-muted"># Sacar un archivo del staging (no elimina los cambios, solo los "destagea"):</span>
+git restore --staged archivo.txt
+
+<span class="c-muted"># Restaurar todos los archivos modificados:</span>
+git restore .
+
+<span class="c-muted"># Restaurar a una versión de un commit específico:</span>
+git restore --source=a3f2b1c archivo.txt</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+
+      <div class="box box-warn">
+        <div class="box-title">⚠ Advertencia importante</div>
+        <code>git restore archivo.txt</code> <strong>elimina permanentemente</strong> los cambios del working directory. No se puede deshacer. Usarlo con cuidado.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     GIT BRANCH
+══════════════════════════════════════════════ -->
+<section id="branch">
+  <h2>Ramas (Branches)</h2>
+
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git branch</span>
+      <span class="cmd-subtitle">Crear, listar y eliminar ramas</span>
+    </div>
+    <div class="cmd-body">
+      <p>Las ramas permiten trabajar en paralelo sin afectar el código principal. La rama principal se suele llamar <code>main</code> (antes <code>master</code>).</p>
+
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Ver todas las ramas locales:</span>
+git branch
+
+<span class="c-muted"># Ver ramas locales y remotas:</span>
+git branch -a
+
+<span class="c-muted"># Crear una rama nueva:</span>
+git branch feature/login
+
+<span class="c-muted"># Eliminar una rama (solo si ya fue mergeada):</span>
+git branch -d feature/login
+
+<span class="c-muted"># Forzar eliminación (aunque no fue mergeada):</span>
+git branch -D feature/login
+
+<span class="c-muted"># Renombrar la rama actual:</span>
+git branch -m nuevo-nombre
+
+<span class="c-muted"># Ver qué ramas ya fueron mergeadas a main:</span>
+git branch --merged main</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+
+      <div class="box box-ok">
+        <div class="box-title">✓ Salida de git branch</div>
+        <pre style="margin:0;padding:.5rem;background:transparent;border:none">  develop
+<span class="c-green">* main</span>
+  feature/login</pre>
+        El <code>*</code> indica la rama donde estás actualmente.
+      </div>
+
+      <div class="err-block">
+        <div class="err-msg">error: A branch named 'feature/login' already exists.</div>
+        <div class="err-why"><strong>Causa:</strong> Ya existe una rama con ese nombre.</div>
+        <div class="err-fix"><strong>Solución:</strong> Usar otro nombre o eliminar la rama existente primero.</div>
+      </div>
+      <div class="err-block">
+        <div class="err-msg">error: The branch 'feature/login' is not fully merged.</div>
+        <div class="err-why"><strong>Causa:</strong> La rama tiene commits que no fueron incorporados a otra rama.</div>
+        <div class="err-fix"><strong>Solución:</strong> Hacer merge primero, o usar <code>git branch -D</code> si estás seguro de querer eliminarla de todos modos.</div>
+      </div>
+
+      <div class="box box-ex">
+        <div class="box-title">🎯 Ejercicio 5 — Crear tu rama de trabajo</div>
+        <ol class="steps">
+          <li>Ver las ramas existentes: <code>git branch -a</code></li>
+          <li>Crear tu propia rama: <code>git branch feature/[tu-nombre]</code></li>
+          <li>Verificar que se creó: <code>git branch</code></li>
+          <li>Moverse a esa rama (siguiente sección: <code>git switch</code>).</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     GIT SWITCH / CHECKOUT
+══════════════════════════════════════════════ -->
+<section id="switch">
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git switch</span>
+      <span class="cmd-subtitle">Cambiar de rama (reemplaza git checkout para ramas)</span>
+    </div>
+    <div class="cmd-body">
+      <p><code>git switch</code> fue introducido en Git 2.23 para hacer más clara la función de cambiar de rama. <code>git checkout</code> sigue funcionando pero hace muchas cosas a la vez.</p>
+
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Ir a una rama existente:</span>
+git switch main
+git switch feature/login
+
+<span class="c-muted"># Crear y moverse a una nueva rama (shortcut):</span>
+git switch -c feature/nueva-funcionalidad
+
+<span class="c-muted"># Volver a la rama anterior:</span>
+git switch -
+
+<span class="c-muted"># Equivalentes con git checkout (más antiguo, aún válido):</span>
+git checkout main
+git checkout -b feature/nueva-funcionalidad</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+
+      <div class="box box-ok">
+        <div class="box-title">✓ Salida esperada</div>
+        <pre style="margin:0;padding:.5rem;background:transparent;border:none">Switched to branch 'feature/login'</pre>
+        o si se crea nueva:
+        <pre style="margin:0;padding:.5rem;background:transparent;border:none">Switched to a new branch 'feature/nueva-funcionalidad'</pre>
+      </div>
+
+      <h4>Errores comunes:</h4>
+      <div class="err-block">
+        <div class="err-msg">error: Your local changes to the following files would be overwritten by checkout:
+        archivo.txt
+Please commit your changes or stash them before you switch branches.</div>
+        <div class="err-why"><strong>Causa:</strong> Tenés cambios sin commitear en archivos que también existen en la otra rama.</div>
+        <div class="err-fix"><strong>Solución:</strong> Hacer commit: <code>git commit -am "WIP"</code>, o guardar temporalmente con <code>git stash</code>, cambiar de rama, y luego recuperar: <code>git stash pop</code>.</div>
+      </div>
+      <div class="err-block">
+        <div class="err-msg">fatal: 'feature/login' is not a branch.</div>
+        <div class="err-why"><strong>Causa:</strong> La rama no existe localmente.</div>
+        <div class="err-fix"><strong>Solución:</strong> Si la rama está en el remoto, usar: <code>git switch feature/login</code> (Git la busca automáticamente en remoto) o <code>git fetch &amp;&amp; git switch feature/login</code>.</div>
+      </div>
+
+      <div class="box box-ex">
+        <div class="box-title">🎯 Ejercicio 6 — Moverse a tu rama y trabajar en ella</div>
+        <ol class="steps">
+          <li>Moverse a tu rama: <code>git switch feature/[tu-nombre]</code></li>
+          <li>Verificar que estás ahí: <code>git branch</code> (el * debe apuntar a tu rama)</li>
+          <li>Modificar tu archivo: agregar una línea de texto</li>
+          <li>Hacer add y commit: <code>git add . &amp;&amp; git commit -m "Actualizar mi archivo en mi rama"</code></li>
+          <li>Ver el log: <code>git log --oneline</code></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     GIT MERGE
+══════════════════════════════════════════════ -->
+<section id="merge">
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git merge</span>
+      <span class="cmd-subtitle">Combinar una rama en la rama actual</span>
+    </div>
+    <div class="cmd-body">
+      <p>Incorpora los cambios de otra rama en la rama donde estás. Git crea un "merge commit" si las ramas divergieron.</p>
+
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Primero ir a la rama destino (donde querés traer los cambios):</span>
+git switch main
+
+<span class="c-muted"># Luego hacer merge de la otra rama:</span>
+git merge feature/login
+
+<span class="c-muted"># Merge sin crear merge commit (fast-forward only):</span>
+git merge --ff-only feature/login
+
+<span class="c-muted"># Merge siempre creando merge commit (aunque se pueda fast-forward):</span>
+git merge --no-ff feature/login -m "Merge feature/login into main"
+
+<span class="c-muted"># Abortar un merge en progreso (cuando hay conflictos):</span>
+git merge --abort</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+
+      <div class="box box-ok">
+        <div class="box-title">✓ Merge exitoso (fast-forward)</div>
+        <pre style="margin:0;padding:.5rem;background:transparent;border:none">Updating a3f2b1c..7e9d2a1
+Fast-forward
+ alumnos/juan-perez.txt | 2 ++
+ 1 file changed, 2 insertions(+)</pre>
+      </div>
+
+      <div class="box box-ok">
+        <div class="box-title">✓ Merge exitoso (con merge commit)</div>
+        <pre style="margin:0;padding:.5rem;background:transparent;border:none">Merge made by the 'ort' strategy.
+ feature.txt | 5 +++++
+ 1 file changed, 5 insertions(+)</pre>
+      </div>
+
+      <h4>Resolver conflictos de merge:</h4>
+      <div class="box box-err">
+        <div class="box-title">✗ Conflicto de merge</div>
+        <pre style="margin:0;padding:.5rem;background:transparent;border:none">Auto-merging archivo.txt
+CONFLICT (content): Merge conflict in archivo.txt
+Automatic merge failed; fix conflicts and then commit the result.</pre>
+      </div>
+
+      <p>Cuando hay un conflicto, Git marca el archivo así:</p>
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Contenido del archivo con conflicto:</span>
+<span class="c-blue">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
+Esta es mi versión (rama actual)
+<span class="c-yellow">=======</span>
+Esta es la versión de la otra rama
+<span class="c-red">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/login</span></pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+
+      <p><strong>Para resolver:</strong></p>
+      <ol>
+        <li>Abrir el archivo y editar manualmente, quedarse con el contenido correcto (borrar las marcas <code>&lt;&lt;&lt;</code>, <code>===</code>, <code>&gt;&gt;&gt;</code>).</li>
+        <li><code>git add archivo.txt</code></li>
+        <li><code>git commit -m "Resolver conflicto en archivo.txt"</code></li>
+      </ol>
+
+      <div class="box box-warn">
+        <div class="box-title">💡 Consejo</div>
+        Usar un editor como VS Code facilita mucho la resolución de conflictos: muestra botones para "Accept Current Change", "Accept Incoming Change" o "Accept Both Changes".
+      </div>
+
+      <div class="box box-ex">
+        <div class="box-title">🎯 Ejercicio 7 — Merge de tu rama a main</div>
+        <ol class="steps">
+          <li>Volver a la rama principal: <code>git switch main</code></li>
+          <li>Hacer merge de tu rama: <code>git merge feature/[tu-nombre]</code></li>
+          <li>Ver el historial con gráfico: <code>git log --oneline --graph</code></li>
+          <li><em>Si hay conflictos:</em> editar el archivo, <code>git add .</code> y <code>git commit</code></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     GIT REBASE
+══════════════════════════════════════════════ -->
+<section id="rebase">
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git rebase</span>
+      <span class="cmd-subtitle">Reorganizar commits sobre otra base</span>
+    </div>
+    <div class="cmd-body">
+      <p>Rebase mueve o "replanta" los commits de una rama sobre otra, creando un historial más lineal. A diferencia de merge, reescribe el historial.</p>
+
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Hacer rebase de la rama actual sobre main:</span>
+git rebase main
+
+<span class="c-muted"># Rebase interactivo (reorganizar, editar o unir commits):</span>
+git rebase -i HEAD~3    <span class="c-muted"># Últimos 3 commits</span>
+
+<span class="c-muted"># Continuar un rebase después de resolver conflictos:</span>
+git rebase --continue
+
+<span class="c-muted"># Abortar un rebase en progreso:</span>
+git rebase --abort
+
+<span class="c-muted"># Saltear un commit con conflicto:</span>
+git rebase --skip</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+
+      <div class="box box-warn">
+        <div class="box-title">⚠ Regla de oro del rebase</div>
+        <strong>Nunca hacer rebase en ramas que ya fueron pusheadas y que otras personas usan.</strong> Rebase reescribe el historial, lo que causa problemas graves a los demás.
+      </div>
+
+      <h4>Rebase vs Merge:</h4>
+      <table>
+        <tr><th>Característica</th><th>merge</th><th>rebase</th></tr>
+        <tr><td>Historial</td><td>Preserva todo (con merge commit)</td><td>Lineal (reescribe commits)</td></tr>
+        <tr><td>Seguridad en ramas públicas</td><td>Seguro siempre</td><td>Peligroso si ya fue pusheado</td></tr>
+        <tr><td>Uso recomendado</td><td>Integrar features en main</td><td>Actualizar feature branch con main</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     GIT REMOTE
+══════════════════════════════════════════════ -->
+<section id="remote">
+  <h2>Trabajo con Remotos</h2>
+
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git remote</span>
+      <span class="cmd-subtitle">Gestionar repositorios remotos</span>
+    </div>
+    <div class="cmd-body">
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Ver remotos configurados:</span>
+git remote -v
+
+<span class="c-muted"># Agregar un remoto:</span>
+git remote add origin https://github.com/usuario/repo.git
+
+<span class="c-muted"># Cambiar la URL de un remoto:</span>
+git remote set-url origin https://github.com/usuario/nuevo-repo.git
+
+<span class="c-muted"># Eliminar un remoto:</span>
+git remote remove origin
+
+<span class="c-muted"># Ver detalles de un remoto:</span>
+git remote show origin</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+
+      <div class="box box-ok">
+        <div class="box-title">✓ Salida de git remote -v</div>
+        <pre style="margin:0;padding:.5rem;background:transparent;border:none">origin  https://github.com/profe/utn-prog4-git.git (fetch)
+origin  https://github.com/profe/utn-prog4-git.git (push)</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     GIT FETCH
+══════════════════════════════════════════════ -->
+<section id="fetch">
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git fetch</span>
+      <span class="cmd-subtitle">Descargar cambios del remoto sin aplicarlos</span>
+    </div>
+    <div class="cmd-body">
+      <p>Descarga los cambios del servidor remoto pero <strong>no modifica</strong> tu working directory ni tus ramas locales. Es una operación segura para "ver qué hay de nuevo".</p>
+
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Traer todos los cambios de origin:</span>
+git fetch
+
+<span class="c-muted"># Traer de un remoto específico:</span>
+git fetch origin
+
+<span class="c-muted"># Traer una rama específica:</span>
+git fetch origin main
+
+<span class="c-muted"># Traer todos los remotos:</span>
+git fetch --all
+
+<span class="c-muted"># Ver qué cambió después del fetch:</span>
+git log HEAD..origin/main --oneline</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     GIT PULL
+══════════════════════════════════════════════ -->
+<section id="pull">
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git pull</span>
+      <span class="cmd-subtitle">Descargar y aplicar cambios del remoto</span>
+    </div>
+    <div class="cmd-body">
+      <p><code>git pull</code> = <code>git fetch</code> + <code>git merge</code> (o <code>git rebase</code>). Descarga y aplica los cambios del remoto en la rama local.</p>
+
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Pull de la rama actual desde origin:</span>
+git pull
+
+<span class="c-muted"># Pull de una rama específica:</span>
+git pull origin main
+
+<span class="c-muted"># Pull con rebase en lugar de merge:</span>
+git pull --rebase
+
+<span class="c-muted"># Pull forzando fast-forward (falla si hay divergencia):</span>
+git pull --ff-only</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+
+      <div class="box box-ok">
+        <div class="box-title">✓ Salida esperada</div>
+        <pre style="margin:0;padding:.5rem;background:transparent;border:none">remote: Enumerating objects: 5, done.
+Updating a3f2b1c..9b7c2d4
+Fast-forward
+ README.md | 3 +++
+ 1 file changed, 3 insertions(+)</pre>
+      </div>
+
+      <h4>Errores comunes:</h4>
+      <div class="err-block">
+        <div class="err-msg">error: Your local changes to the following files would be overwritten by merge:
+        archivo.txt</div>
+        <div class="err-why"><strong>Causa:</strong> Tenés cambios locales sin commitear que el pull intentaría sobreescribir.</div>
+        <div class="err-fix"><strong>Solución:</strong> Hacer commit (<code>git commit -am "WIP"</code>) o stash (<code>git stash</code>) antes del pull.</div>
+      </div>
+      <div class="err-block">
+        <div class="err-msg">CONFLICT (content): Merge conflict in archivo.txt
+Automatic merge failed; fix conflicts and then commit the result.</div>
+        <div class="err-why"><strong>Causa:</strong> Los cambios del remoto y los tuyos tocan la misma parte del mismo archivo.</div>
+        <div class="err-fix"><strong>Solución:</strong> Editar los archivos con conflicto, eliminar las marcas de conflicto, luego <code>git add .</code> y <code>git commit</code>.</div>
+      </div>
+      <div class="err-block">
+        <div class="err-msg">hint: You have divergent branches and need to specify how to reconcile them.</div>
+        <div class="err-why"><strong>Causa:</strong> Tu rama local y la remota tienen commits que el otro no tiene (divergieron).</div>
+        <div class="err-fix"><strong>Solución:</strong> Elegir estrategia: <code>git config --global pull.rebase false</code> (merge) o <code>git config --global pull.rebase true</code> (rebase).</div>
+      </div>
+
+      <div class="box box-ex">
+        <div class="box-title">🎯 Ejercicio 8 — Traer cambios del repositorio remoto</div>
+        <p style="margin-bottom:.5rem">Se habrán hecho cambios en el repo mientras trabajaban.</p>
+        <ol class="steps">
+          <li>Estar en <code>main</code>: <code>git switch main</code></li>
+          <li>Traer los cambios: <code>git pull</code></li>
+          <li>Ver si llegaron cambios nuevos: <code>git log --oneline -5</code></li>
+          <li>Si hubo conflicto, resolverlo editando el archivo y commiteando.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     GIT PUSH
+══════════════════════════════════════════════ -->
+<section id="push">
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git push</span>
+      <span class="cmd-subtitle">Subir commits locales al repositorio remoto</span>
+    </div>
+    <div class="cmd-body">
+      <p>Envía los commits locales al servidor remoto. Solo se puede hacer push si tu rama está al día con el remoto (o si el remoto no tiene nada que vos no tengas).</p>
+
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Push de la rama actual:</span>
+git push
+
+<span class="c-muted"># Push especificando remoto y rama:</span>
+git push origin main
+
+<span class="c-muted"># Push de una rama nueva (establecer tracking):</span>
+git push -u origin feature/mi-nombre
+<span class="c-muted"># (a partir de ahí, git push solo es suficiente)</span>
+
+<span class="c-muted"># Push de todas las ramas:</span>
+git push --all
+
+<span class="c-muted"># Subir tags:</span>
+git push --tags
+
+<span class="c-muted"># Eliminar una rama remota:</span>
+git push origin --delete feature/vieja-rama</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+
+      <div class="box box-ok">
+        <div class="box-title">✓ Salida esperada</div>
+        <pre style="margin:0;padding:.5rem;background:transparent;border:none">Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 345 bytes | 345.00 KiB/s, done.
+To https://github.com/profe/utn-prog4-git.git
+   a3f2b1c..9b7c2d4  main -> main</pre>
+      </div>
+
+      <h4>Errores comunes:</h4>
+      <div class="err-block">
+        <div class="err-msg">error: failed to push some refs to 'origin'
+hint: Updates were rejected because the remote contains work that you do not have locally.</div>
+        <div class="err-why"><strong>Causa:</strong> Alguien más hizo push antes que vos. Tu rama local está desactualizada.</div>
+        <div class="err-fix"><strong>Solución:</strong> Primero hacer <code>git pull</code> para traer los cambios, resolver conflictos si los hay, y luego <code>git push</code>.</div>
+      </div>
+      <div class="err-block">
+        <div class="err-msg">remote: Permission to usuario/repo.git denied to tu-usuario.</div>
+        <div class="err-why"><strong>Causa:</strong> No tenés permisos de escritura en el repositorio remoto.</div>
+        <div class="err-fix"><strong>Solución:</strong> El dueño del repo debe agregarte como colaborador en GitHub (Settings → Collaborators). Mientras tanto, podés hacer un fork y mandar un Pull Request.</div>
+      </div>
+      <div class="err-block">
+        <div class="err-msg">fatal: The current branch main has no upstream branch.</div>
+        <div class="err-why"><strong>Causa:</strong> La rama local no está vinculada a ninguna rama remota.</div>
+        <div class="err-fix"><strong>Solución:</strong> <code>git push -u origin main</code> (la <code>-u</code> establece el tracking).</div>
+      </div>
+
+      <div class="box box-ex">
+        <div class="box-title">🎯 Ejercicio 9 — Subir tu rama al remoto</div>
+        <ol class="steps">
+          <li>Ir a tu rama: <code>git switch feature/[tu-nombre]</code></li>
+          <li>Subir la rama por primera vez: <code>git push -u origin feature/[tu-nombre]</code></li>
+          <li>Ver en GitHub que tu rama aparece en el repositorio remoto.</li>
+          <li>Hacer un cambio más, commitear y hacer <code>git push</code> (sin parámetros esta vez).</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     GIT STASH
+══════════════════════════════════════════════ -->
+<section id="stash">
+  <h2>Deshacer cambios</h2>
+
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git stash</span>
+      <span class="cmd-subtitle">Guardar cambios temporalmente sin hacer commit</span>
+    </div>
+    <div class="cmd-body">
+      <p>Guarda los cambios actuales (working dir y staging) en una pila temporal para que puedas cambiar de rama sin commitear trabajo incompleto.</p>
+
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Guardar cambios actuales:</span>
+git stash
+
+<span class="c-muted"># Guardar con descripción:</span>
+git stash push -m "WIP: agregar validación de login"
+
+<span class="c-muted"># Ver lista de stashes guardados:</span>
+git stash list
+
+<span class="c-muted"># Recuperar el último stash (y eliminarlo de la pila):</span>
+git stash pop
+
+<span class="c-muted"># Recuperar un stash específico:</span>
+git stash pop stash@{2}
+
+<span class="c-muted"># Aplicar sin eliminar de la pila:</span>
+git stash apply stash@{0}
+
+<span class="c-muted"># Eliminar el último stash:</span>
+git stash drop
+
+<span class="c-muted"># Eliminar todos los stashes:</span>
+git stash clear
+
+<span class="c-muted"># Ver el contenido de un stash:</span>
+git stash show -p stash@{0}</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+
+      <div class="box box-ok">
+        <div class="box-title">✓ Salida esperada (git stash)</div>
+        <pre style="margin:0;padding:.5rem;background:transparent;border:none">Saved working directory and index state WIP on main: a3f2b1c Último commit</pre>
+      </div>
+
+      <div class="err-block">
+        <div class="err-msg">No local changes to save</div>
+        <div class="err-why"><strong>Causa:</strong> No hay cambios en el working directory o staging.</div>
+        <div class="err-fix">No hay nada que guardar. Verificar con <code>git status</code>.</div>
+      </div>
+      <div class="err-block">
+        <div class="err-msg">error: Your local changes to the following files would be overwritten by merge</div>
+        <div class="err-why"><strong>Causa:</strong> Hiciste pop del stash y hay conflicto con cambios actuales.</div>
+        <div class="err-fix"><strong>Solución:</strong> Primero commitear o descartar los cambios actuales, luego hacer el pop.</div>
+      </div>
+
+      <div class="box box-ex">
+        <div class="box-title">🎯 Ejercicio 10 — Guardar trabajo a medias</div>
+        <ol class="steps">
+          <li>Hacer un cambio en un archivo <em>sin commitear</em>.</li>
+          <li>Guardar con: <code>git stash push -m "Cambio en progreso"</code></li>
+          <li>Ver que el working dir quedó limpio: <code>git status</code></li>
+          <li>Ver la lista: <code>git stash list</code></li>
+          <li>Recuperar los cambios: <code>git stash pop</code></li>
+          <li>Verificar que los cambios volvieron: <code>git status</code></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     GIT RESET
+══════════════════════════════════════════════ -->
+<section id="reset">
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git reset</span>
+      <span class="cmd-subtitle">Mover HEAD y deshacer commits (modifica el historial)</span>
+    </div>
+    <div class="cmd-body">
+      <p>Mueve el puntero HEAD a un commit anterior. Tiene tres modos según qué pasa con los archivos.</p>
+
+      <div class="code-wrap">
+        <pre><span class="c-muted"># SOFT: deshace el commit, los cambios quedan en staging:</span>
+git reset --soft HEAD~1
+
+<span class="c-muted"># MIXED (defecto): deshace el commit y el staging, cambios en working dir:</span>
+git reset HEAD~1
+git reset --mixed HEAD~1
+
+<span class="c-muted"># HARD: deshace commit, staging Y working dir. ¡PELIGROSO, se pierden cambios!</span>
+git reset --hard HEAD~1
+
+<span class="c-muted"># Volver a un commit específico:</span>
+git reset --hard a3f2b1c
+
+<span class="c-muted"># Sacar un archivo del staging (sin afectar working dir):</span>
+git reset HEAD archivo.txt    <span class="c-muted"># equivale a git restore --staged</span></pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+
+      <h4>Diferencias entre los modos:</h4>
+      <table>
+        <tr><th>Modo</th><th>Commit</th><th>Staging</th><th>Working Dir</th></tr>
+        <tr><td>--soft</td><td>Deshace</td><td>Conserva cambios</td><td>Conserva cambios</td></tr>
+        <tr><td>--mixed</td><td>Deshace</td><td>Limpia</td><td>Conserva cambios</td></tr>
+        <tr><td>--hard</td><td>Deshace</td><td>Limpia</td><td><strong class="c-red">Elimina cambios</strong></td></tr>
+      </table>
+
+      <div class="box box-warn">
+        <div class="box-title">⚠ Usar con precaución</div>
+        <code>git reset</code> <strong>reescribe el historial</strong>. <strong>Nunca usarlo en commits que ya fueron pusheados</strong> a una rama compartida. Si necesitás deshacer un commit público, usar <code>git revert</code>.
+      </div>
+
+      <div class="err-block">
+        <div class="err-msg">fatal: ambiguous argument 'HEAD~1': unknown revision</div>
+        <div class="err-why"><strong>Causa:</strong> El repo tiene menos commits de los que intentás retroceder.</div>
+        <div class="err-fix"><strong>Solución:</strong> Ver cuántos commits hay con <code>git log --oneline</code> y ajustar el número.</div>
+      </div>
+
+      <div class="box box-ex">
+        <div class="box-title">🎯 Ejercicio 11 — Deshacer un commit local</div>
+        <ol class="steps">
+          <li>Hacer un commit "de prueba": <code>git commit --allow-empty -m "Commit de prueba"</code></li>
+          <li>Ver que aparece en el log: <code>git log --oneline -3</code></li>
+          <li>Deshacer ese commit: <code>git reset --soft HEAD~1</code></li>
+          <li>Ver que el commit desapareció pero los cambios siguen: <code>git log --oneline -3</code> y <code>git status</code></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     GIT REVERT
+══════════════════════════════════════════════ -->
+<section id="revert">
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git revert</span>
+      <span class="cmd-subtitle">Deshacer un commit creando uno nuevo (seguro para ramas públicas)</span>
+    </div>
+    <div class="cmd-body">
+      <p>Crea un commit nuevo que deshace los cambios de un commit anterior. <strong>No reescribe el historial</strong>, por eso es seguro usarlo en ramas compartidas.</p>
+
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Revertir el último commit:</span>
+git revert HEAD
+
+<span class="c-muted"># Revertir un commit específico:</span>
+git revert a3f2b1c
+
+<span class="c-muted"># Revertir sin abrir el editor (mensaje automático):</span>
+git revert HEAD --no-edit
+
+<span class="c-muted"># Revertir múltiples commits:</span>
+git revert HEAD~3..HEAD
+
+<span class="c-muted"># Preparar el revert sin commitear todavía:</span>
+git revert -n HEAD</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+
+      <div class="box box-ok">
+        <div class="box-title">✓ Salida esperada</div>
+        <pre style="margin:0;padding:.5rem;background:transparent;border:none">[main 7f2a1b3] Revert "Agregar funcionalidad X"
+ 1 file changed, 5 deletions(-)</pre>
+      </div>
+
+      <h4>reset vs revert:</h4>
+      <table>
+        <tr><th></th><th>git reset</th><th>git revert</th></tr>
+        <tr><td>Historial</td><td>Lo reescribe</td><td>Lo preserva</td></tr>
+        <tr><td>Commits</td><td>Los elimina</td><td>Crea un nuevo commit</td></tr>
+        <tr><td>Ramas públicas</td><td><span class="c-red">Peligroso</span></td><td><span class="c-green">Seguro</span></td></tr>
+        <tr><td>Cuándo usar</td><td>Commits locales no pusheados</td><td>Commits ya en el remoto</td></tr>
+      </table>
+
+      <div class="err-block">
+        <div class="err-msg">error: could not revert a3f2b1c... Mensaje del commit
+hint: after resolving the conflicts, mark the corrected paths with 'git add'</div>
+        <div class="err-why"><strong>Causa:</strong> El revert genera conflictos porque otros commits modificaron los mismos archivos después.</div>
+        <div class="err-fix"><strong>Solución:</strong> Resolver los conflictos manualmente, hacer <code>git add .</code> y luego <code>git revert --continue</code>.</div>
+      </div>
+
+      <div class="box box-ex">
+        <div class="box-title">🎯 Ejercicio 12 — Revertir un commit ya pusheado</div>
+        <ol class="steps">
+          <li>Hacer un cambio malo, commitearlo y pushearlo: <code>git commit -am "Cambio incorrecto" &amp;&amp; git push</code></li>
+          <li>Ver el hash del commit a revertir: <code>git log --oneline -3</code></li>
+          <li>Revertir: <code>git revert HEAD --no-edit</code></li>
+          <li>Pushear el revert: <code>git push</code></li>
+          <li>Ver el historial: <code>git log --oneline -5</code> (el commit original sigue, hay uno nuevo que lo deshace)</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     GIT TAG
+══════════════════════════════════════════════ -->
+<section id="tag">
+  <h2>Comandos Avanzados</h2>
+
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git tag</span>
+      <span class="cmd-subtitle">Marcar commits importantes (versiones, releases)</span>
+    </div>
+    <div class="cmd-body">
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Ver todos los tags:</span>
+git tag
+
+<span class="c-muted"># Crear tag ligero:</span>
+git tag v1.0.0
+
+<span class="c-muted"># Crear tag anotado (con mensaje, recomendado para releases):</span>
+git tag -a v1.0.0 -m "Primera versión estable"
+
+<span class="c-muted"># Crear tag en un commit anterior:</span>
+git tag -a v0.9.0 a3f2b1c -m "Beta"
+
+<span class="c-muted"># Subir tags al remoto:</span>
+git push --tags
+
+<span class="c-muted"># Subir un tag específico:</span>
+git push origin v1.0.0
+
+<span class="c-muted"># Eliminar tag local:</span>
+git tag -d v1.0.0
+
+<span class="c-muted"># Eliminar tag remoto:</span>
+git push origin --delete v1.0.0</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     GIT CHERRY-PICK
+══════════════════════════════════════════════ -->
+<section id="cherry">
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git cherry-pick</span>
+      <span class="cmd-subtitle">Aplicar un commit específico de otra rama</span>
+    </div>
+    <div class="cmd-body">
+      <p>Copia un commit de otra rama y lo aplica en la rama actual. Útil cuando querés traer un fix específico sin mergear toda la rama.</p>
+
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Aplicar un commit:</span>
+git cherry-pick a3f2b1c
+
+<span class="c-muted"># Aplicar múltiples commits:</span>
+git cherry-pick a3f2b1c 7e9d2a1
+
+<span class="c-muted"># Aplicar sin crear commit automáticamente:</span>
+git cherry-pick -n a3f2b1c
+
+<span class="c-muted"># Continuar después de resolver conflictos:</span>
+git cherry-pick --continue
+
+<span class="c-muted"># Abortar:</span>
+git cherry-pick --abort</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     GIT REFLOG
+══════════════════════════════════════════════ -->
+<section id="reflog">
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">git reflog</span>
+      <span class="cmd-subtitle">Historial de movimientos de HEAD (la "red de seguridad")</span>
+    </div>
+    <div class="cmd-body">
+      <p>Registra todos los movimientos de HEAD, incluso los de <code>git reset --hard</code>. Sirve para recuperar commits "perdidos".</p>
+
+      <div class="code-wrap">
+        <pre><span class="c-muted"># Ver el historial completo de movimientos:</span>
+git reflog
+
+<span class="c-muted"># Recuperar un commit "borrado" con reset --hard:</span>
+git reflog
+<span class="c-muted"># Encontrás el hash del commit que querés recuperar, por ejemplo: a3f2b1c</span>
+git reset --hard a3f2b1c</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+
+      <div class="box box-ok">
+        <div class="box-title">✓ Salida esperada</div>
+        <pre style="margin:0;padding:.5rem;background:transparent;border:none">a3f2b1c (HEAD -> main) HEAD@{0}: reset: moving to HEAD~1
+9b7c2d4 HEAD@{1}: commit: Cambio que "borramos"
+a3f2b1c HEAD@{2}: commit: Commit anterior</pre>
+      </div>
+
+      <div class="box box-warn">
+        <div class="box-title">💡 Dato clave</div>
+        El reflog solo existe <strong>localmente</strong> y por defecto se limpia después de 90 días. Es tu red de seguridad ante <code>git reset --hard</code> accidentales.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     .GITIGNORE
+══════════════════════════════════════════════ -->
+<section id="gitignore">
+  <div class="cmd-card">
+    <div class="cmd-head">
+      <span class="cmd-tag">.gitignore</span>
+      <span class="cmd-subtitle">Indicar a Git qué archivos ignorar</span>
+    </div>
+    <div class="cmd-body">
+      <p>Un archivo de texto llamado <code>.gitignore</code> en la raíz del repo. Cada línea es un patrón de archivos o carpetas que Git ignorará por completo.</p>
+
+      <div class="code-wrap">
+        <pre><span class="c-muted"># .gitignore de ejemplo para un proyecto Node.js / web:</span>
+
+<span class="c-muted"># Dependencias</span>
+node_modules/
+vendor/
+
+<span class="c-muted"># Archivos de entorno y secretos</span>
+.env
+.env.local
+*.secret
+
+<span class="c-muted"># Archivos compilados / build</span>
+dist/
+build/
+*.min.js
+
+<span class="c-muted"># Archivos del sistema operativo</span>
+.DS_Store          <span class="c-muted"># macOS</span>
+Thumbs.db          <span class="c-muted"># Windows</span>
+desktop.ini
+
+<span class="c-muted"># IDEs y editores</span>
+.vscode/
+.idea/
+*.swp
+*.swo
+
+<span class="c-muted"># Logs</span>
+*.log
+logs/
+
+<span class="c-muted"># Ignorar todos los .txt excepto uno:</span>
+*.txt
+!important.txt</pre>
+        <button class="copy-btn" onclick="copyCode(this)">copiar</button>
+      </div>
+
+      <h4>Sintaxis del .gitignore:</h4>
+      <table>
+        <tr><th>Patrón</th><th>Descripción</th></tr>
+        <tr><td>*.log</td><td>Todos los archivos con extensión .log</td></tr>
+        <tr><td>node_modules/</td><td>La carpeta node_modules y todo su contenido</td></tr>
+        <tr><td>/config.json</td><td>Solo el config.json en la raíz del repo</td></tr>
+        <tr><td>docs/*.md</td><td>Archivos .md dentro de docs/ (no en subdirectorios)</td></tr>
+        <tr><td>!archivo.txt</td><td>Excepción: NO ignorar este archivo</td></tr>
+        <tr><td># comentario</td><td>Línea de comentario, ignorada por Git</td></tr>
+      </table>
+
+      <div class="err-block">
+        <div class="err-msg">El archivo aparece en git status aunque lo agregué al .gitignore</div>
+        <div class="err-why"><strong>Causa:</strong> El archivo ya estaba siendo rastreado por Git antes de agregarlo al .gitignore.</div>
+        <div class="err-fix"><strong>Solución:</strong> Dejar de rastrear el archivo sin borrarlo del disco: <code>git rm --cached archivo.txt</code>, luego commitear el cambio.</div>
+      </div>
+
+      <div class="box box-warn">
+        <div class="box-title">💡 Generador automático</div>
+        El sitio <code>gitignore.io</code> genera .gitignore automáticamente según tu tecnología (Node, Python, Java, VS Code, etc.).
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     FLUJO COLABORATIVO
+══════════════════════════════════════════════ -->
+<section id="flujo">
+  <h2>Flujo de trabajo colaborativo</h2>
+
+  <p>Este es el flujo típico para trabajar en equipo con Git y GitHub:</p>
+
+  <div class="flow" style="flex-direction:column;align-items:flex-start;gap:.3rem">
+    <div class="flow-box" style="width:100%"><strong>1.</strong> <code>git clone URL</code> — Clonar el repo una sola vez</div>
+    <div class="flow-arr">↓</div>
+    <div class="flow-box" style="width:100%"><strong>2.</strong> <code>git switch -c feature/mi-tarea</code> — Crear rama para tu tarea</div>
+    <div class="flow-arr">↓</div>
+    <div class="flow-box" style="width:100%"><strong>3.</strong> Trabajar: editar archivos, probar...</div>
+    <div class="flow-arr">↓</div>
+    <div class="flow-box" style="width:100%"><strong>4.</strong> <code>git add .</code> → <code>git commit -m "..."</code> — Commitear cambios</div>
+    <div class="flow-arr">↓</div>
+    <div class="flow-box" style="width:100%"><strong>5.</strong> <code>git pull origin main</code> — Traer últimos cambios de main</div>
+    <div class="flow-arr">↓</div>
+    <div class="flow-box" style="width:100%"><strong>6.</strong> Resolver conflictos si los hay</div>
+    <div class="flow-arr">↓</div>
+    <div class="flow-box" style="width:100%"><strong>7.</strong> <code>git push -u origin feature/mi-tarea</code> — Subir tu rama</div>
+    <div class="flow-arr">↓</div>
+    <div class="flow-box" style="width:100%"><strong>8.</strong> Abrir Pull Request en GitHub para revisión</div>
+    <div class="flow-arr">↓</div>
+    <div class="flow-box" style="width:100%"><strong>9.</strong> Revisión + merge del Pull Request por el líder</div>
+    <div class="flow-arr">↓</div>
+    <div class="flow-box" style="width:100%"><strong>10.</strong> <code>git switch main</code> → <code>git pull</code> → repetir desde el paso 2</div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     REFERENCIA RÁPIDA
+══════════════════════════════════════════════ -->
+<section id="quickref">
+  <h2>Referencia rápida</h2>
+
+  <h3>Configuración</h3>
+  <table class="qref-table">
+    <tr><th>Comando</th><th>Descripción</th></tr>
+    <tr><td>git config --global user.name "Nombre"</td><td>Configurar nombre de usuario</td></tr>
+    <tr><td>git config --global user.email "email"</td><td>Configurar email</td></tr>
+    <tr><td>git config --list</td><td>Ver toda la configuración</td></tr>
+  </table>
+
+  <h3>Inicio</h3>
+  <table class="qref-table">
+    <tr><th>Comando</th><th>Descripción</th></tr>
+    <tr><td>git init</td><td>Crear nuevo repositorio</td></tr>
+    <tr><td>git clone URL</td><td>Clonar repositorio remoto</td></tr>
+  </table>
+
+  <h3>Inspección</h3>
+  <table class="qref-table">
+    <tr><th>Comando</th><th>Descripción</th></tr>
+    <tr><td>git status</td><td>Estado del working dir y staging</td></tr>
+    <tr><td>git log --oneline</td><td>Historial compacto</td></tr>
+    <tr><td>git log --oneline --graph --all</td><td>Historial con gráfico de ramas</td></tr>
+    <tr><td>git diff</td><td>Cambios no en staging</td></tr>
+    <tr><td>git diff --staged</td><td>Cambios en staging</td></tr>
+    <tr><td>git show [hash]</td><td>Detalles de un commit</td></tr>
+  </table>
+
+  <h3>Staging y Commits</h3>
+  <table class="qref-table">
+    <tr><th>Comando</th><th>Descripción</th></tr>
+    <tr><td>git add archivo.txt</td><td>Agregar archivo al staging</td></tr>
+    <tr><td>git add .</td><td>Agregar todos los cambios</td></tr>
+    <tr><td>git commit -m "msg"</td><td>Crear commit</td></tr>
+    <tr><td>git commit -am "msg"</td><td>Add + commit (solo archivos ya rastreados)</td></tr>
+    <tr><td>git commit --amend -m "msg"</td><td>Modificar el último commit (no pusheado)</td></tr>
+    <tr><td>git restore archivo.txt</td><td>Descartar cambios en working dir</td></tr>
+    <tr><td>git restore --staged archivo.txt</td><td>Sacar del staging</td></tr>
+  </table>
+
+  <h3>Ramas</h3>
+  <table class="qref-table">
+    <tr><th>Comando</th><th>Descripción</th></tr>
+    <tr><td>git branch</td><td>Listar ramas locales</td></tr>
+    <tr><td>git branch -a</td><td>Listar ramas locales y remotas</td></tr>
+    <tr><td>git branch nombre</td><td>Crear rama</td></tr>
+    <tr><td>git branch -d nombre</td><td>Eliminar rama (mergeada)</td></tr>
+    <tr><td>git switch nombre</td><td>Cambiar a rama</td></tr>
+    <tr><td>git switch -c nombre</td><td>Crear y cambiar a nueva rama</td></tr>
+    <tr><td>git merge nombre</td><td>Mergear rama en la actual</td></tr>
+    <tr><td>git merge --abort</td><td>Abortar merge en progreso</td></tr>
+    <tr><td>git rebase main</td><td>Rebase sobre main</td></tr>
+  </table>
+
+  <h3>Remotos</h3>
+  <table class="qref-table">
+    <tr><th>Comando</th><th>Descripción</th></tr>
+    <tr><td>git remote -v</td><td>Ver remotos</td></tr>
+    <tr><td>git remote add origin URL</td><td>Agregar remoto</td></tr>
+    <tr><td>git fetch</td><td>Descargar cambios (sin aplicar)</td></tr>
+    <tr><td>git pull</td><td>Descargar y aplicar cambios</td></tr>
+    <tr><td>git push</td><td>Subir commits al remoto</td></tr>
+    <tr><td>git push -u origin nombre</td><td>Subir rama nueva y establecer tracking</td></tr>
+    <tr><td>git push origin --delete rama</td><td>Eliminar rama remota</td></tr>
+  </table>
+
+  <h3>Deshacer</h3>
+  <table class="qref-table">
+    <tr><th>Comando</th><th>Descripción</th></tr>
+    <tr><td>git stash</td><td>Guardar cambios temporalmente</td></tr>
+    <tr><td>git stash pop</td><td>Recuperar último stash</td></tr>
+    <tr><td>git stash list</td><td>Ver stashes guardados</td></tr>
+    <tr><td>git reset --soft HEAD~1</td><td>Deshacer último commit (cambios en staging)</td></tr>
+    <tr><td>git reset --hard HEAD~1</td><td>Deshacer último commit (PIERDE cambios)</td></tr>
+    <tr><td>git revert HEAD</td><td>Crear commit que deshace el último</td></tr>
+    <tr><td>git reflog</td><td>Ver historial de movimientos (recuperar commits)</td></tr>
+  </table>
+
+  <h3>Avanzado</h3>
+  <table class="qref-table">
+    <tr><th>Comando</th><th>Descripción</th></tr>
+    <tr><td>git tag -a v1.0 -m "msg"</td><td>Crear tag anotado</td></tr>
+    <tr><td>git push --tags</td><td>Subir todos los tags</td></tr>
+    <tr><td>git cherry-pick hash</td><td>Aplicar un commit específico</td></tr>
+    <tr><td>git rm --cached archivo.txt</td><td>Dejar de rastrear un archivo (sin borrarlo)</td></tr>
+    <tr><td>git blame archivo.txt</td><td>Ver quién escribió cada línea</td></tr>
+    <tr><td>git bisect start</td><td>Búsqueda binaria de un bug en el historial</td></tr>
+  </table>
+
+  <div style="margin-top:2rem;padding:1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;text-align:center;color:var(--muted);font-size:.85rem">
+    <strong style="color:var(--text)">UTN — Programación 4</strong><br>
+    Guía de Git · Uso libre para fines educativos
+  </div>
+</section>
+
+</main>
+
+<script>
+function openTab(e, id) {
+  const parent = e.target.closest('.cmd-body') || e.target.parentElement.parentElement;
+  parent.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('on'));
+  parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('on'));
+
+  // For install section tabs, search globally
+  document.querySelectorAll('.tab-pane').forEach(p => {
+    if (p.id === id) p.classList.add('on');
+  });
+  e.target.classList.add('on');
+}
+
+function copyCode(btn) {
+  const pre = btn.previousElementSibling;
+  const text = pre.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ copiado';
+    btn.classList.add('ok');
+    setTimeout(() => {
+      btn.textContent = 'copiar';
+      btn.classList.remove('ok');
+    }, 2000);
+  });
+}
+
+// Scroll spy
+const sections = document.querySelectorAll('section[id], div.cmd-card');
+const links = document.querySelectorAll('.sidebar a');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      links.forEach(l => {
+        l.classList.remove('active');
+        if (l.getAttribute('href') === '#' + id) l.classList.add('active');
+      });
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+
+document.querySelectorAll('section[id]').forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
