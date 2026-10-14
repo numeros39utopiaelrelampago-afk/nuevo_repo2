@@ -4,7 +4,7 @@ include __DIR__ . '/../../includes/head.php';
 include __DIR__ . '/../../includes/header.php';
 ?>
 
-<h2>Cartas Disponibles</h2>
+<h2>Productos disponibles</h2>
 
 <!-- FORMULARIO DE FILTROS -->
 <form method="GET" action="listado.php">
@@ -68,7 +68,7 @@ include __DIR__ . '/../../includes/header.php';
                </h3>
                 
                 <!-- NUEVO: Etiqueta de rareza -->
-                <p><strong>Rareza:</strong> <span style="text-transform: uppercase"><?php echo htmlspecialchars($prod['rareza']); ?></span></p>
+                <p><strong>Rareza:</strong> <span style="text-transform: uppercase; color: #b45309; font-weight: bold; background: #fef3c7;"><?php echo htmlspecialchars($prod['rareza']); ?></span></p>
                 <p><strong>Precio:</strong> $<?php echo number_format($prod['precio'], 2); ?></p>
                 <p><small>Stock: <?php echo $prod['stock']; ?></small></p>
 
