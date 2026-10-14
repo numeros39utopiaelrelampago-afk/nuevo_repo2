@@ -5,16 +5,16 @@ require_once __DIR__ . '/../config/conexion.php';
 function obtenerCategorias() {
     $conexion = obtenerConexion();
     $sql = "SELECT DISTINCT categoria FROM productos ORDER BY categoria ASC";
-    $sentencia = $conexion->query($sql);
-    return $sentencia->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = $conexion->query($sql);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 // NUEVA: Obtiene todas las rarezas disponibles para armar el <select>
 function obtenerRarezas() {
     $conexion = obtenerConexion();
     $sql = "SELECT DISTINCT rareza FROM productos WHERE rareza IS NOT NULL AND rareza != '' ORDER BY rareza ASC";
-    $sentencia = $conexion->query($sql);
-    return $sentencia->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = $conexion->query($sql);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 // Búsqueda con filtros de Texto, Categoría y Rareza (manteniendo stock > 0)
@@ -44,9 +44,9 @@ function buscarProductosConFiltro($termino = '', $categoria = '', $rareza = '') 
 
     $sql .= " ORDER BY nombre ASC";
 
-    $sentencia = $conexion->prepare($sql);
-    $sentencia->execute($parametros);
-    return $sentencia->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute($parametros);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 function obtenerProductoPorId($id) {
@@ -55,7 +55,7 @@ function obtenerProductoPorId($id) {
             FROM productos 
             WHERE id = :id AND stock > 0 
             LIMIT 1";
-    $sentencia = $conexion->prepare($sql);
-    $sentencia->execute([':id' => $id]);
-    return $sentencia->fetch(PDO::FETCH_ASSOC);
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute([':id' => $id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
 }
