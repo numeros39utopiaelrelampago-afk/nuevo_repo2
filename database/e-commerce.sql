@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-10-2026 a las 14:44:40
+-- Tiempo de generación: 15-10-2026 a las 20:44:31
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.0.30
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -27,6 +27,7 @@ SET time_zone = "+00:00";
 -- Estructura de tabla para la tabla `item`
 --
 
+DROP TABLE IF EXISTS `item`;
 CREATE TABLE `item` (
   `id_item` int(11) NOT NULL,
   `id_prod` int(11) NOT NULL,
@@ -41,6 +42,7 @@ CREATE TABLE `item` (
 -- Estructura de tabla para la tabla `productos`
 --
 
+DROP TABLE IF EXISTS `productos`;
 CREATE TABLE `productos` (
   `id` int(11) NOT NULL,
   `nombre` varchar(255) NOT NULL,
@@ -155,7 +157,8 @@ INSERT INTO `productos` (`id`, `nombre`, `precio`, `stock`, `rareza`, `categoria
 (98, 'metal reflect slime - ultimate rare 1ra edicion MP (PTDN-SP094)', 15000.00, 1, 'ultimate', 'cartas sueltas'),
 (99, 'night beam - ultimate rare 1st edition (GAOV-EN055)', 8000.00, 1, 'ultimate', 'cartas sueltas'),
 (100, 'number 9: dyson sphere - ultimate rare unlimited (ABYR-EN044)', 10000.00, 1, 'ultimate', 'cartas sueltas'),
-(101, 'lote cartas secret legendary collection', 25000.00, 1, 'otra', 'lotes');
+(101, 'lote cartas secret legendary collection', 20000.00, 1, 'otra', 'lotes'),
+(102, 'lote monarcas', 30000.00, 1, 'otra', 'lotes');
 
 -- --------------------------------------------------------
 
@@ -163,6 +166,7 @@ INSERT INTO `productos` (`id`, `nombre`, `precio`, `stock`, `rareza`, `categoria
 -- Estructura de tabla para la tabla `usuarios`
 --
 
+DROP TABLE IF EXISTS `usuarios`;
 CREATE TABLE `usuarios` (
   `id` int(11) NOT NULL,
   `nombre` varchar(255) NOT NULL,
@@ -177,8 +181,9 @@ CREATE TABLE `usuarios` (
 
 INSERT INTO `usuarios` (`id`, `nombre`, `pass`, `email`, `tipo`) VALUES
 (1, 'Matias Q', '$2y$10$mOOPMNXlM7kGLzybj3FRf.83HTzvzjX7cidZQLhenR9EPb/4yY4Gi', 'me1_66@hotmail.com', 'admin'),
+(2, 'juan', '$2y$10$YiYKDmnKEkvECgUeH4mCseuzDaxguwqtMkCiBLWqulrlVfEQX5iDC', 'juan@gmail.com', 'cliente'),
 (3, 'Saul Menem', '$2y$10$Tt8QRfs3.xBpjXDuuSFQG.KY8FmorUTy3v8IoC1yQ2PQaC/oN57ua', 'saulmenem@gmail.com', 'cliente'),
-(4, 'pedro', '$2y$10$lWeME3Ji/a7KF.cJ6f2t.u.ROlaWR8AnT6HVnC3YZXHqIyTy60UNe', 'pedro@gmail.com', 'cliente');
+(4, 'pedro', '$2y$10$m4YgKgW9dKjaFUuttCLsmeebIJ0MokQwZivY0urs1RBbWUzDzGPIu', 'pedro@gmail.com', 'cliente');
 
 -- --------------------------------------------------------
 
@@ -186,6 +191,7 @@ INSERT INTO `usuarios` (`id`, `nombre`, `pass`, `email`, `tipo`) VALUES
 -- Estructura de tabla para la tabla `ventas`
 --
 
+DROP TABLE IF EXISTS `ventas`;
 CREATE TABLE `ventas` (
   `id_ventas` int(11) NOT NULL,
   `fecha` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -235,7 +241,7 @@ ALTER TABLE `item`
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`

@@ -7,3 +7,10 @@ Thumbs.db
 .DS_Store
 .vscode/
 .idea/
+
+# Fotos subidas
+/assets/img/productos/*
+!/assets/img/productos/.gitkeep
+
+# Mantener el backup de la BD
+!database/miweb.sql
