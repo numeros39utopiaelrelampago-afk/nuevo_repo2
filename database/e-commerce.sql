@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-10-2026 a las 21:34:49
+-- Tiempo de generación: 15-10-2026 a las 14:44:40
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Versión de PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -105,14 +105,14 @@ INSERT INTO `productos` (`id`, `nombre`, `precio`, `stock`, `rareza`, `categoria
 (48, 'gaia the dragon champion - secret rare 1ra edicion LP (LDD-S125)', 50000.00, 1, 'secret', 'cartas sueltas'),
 (49, 'time wizard - ultra rare (MRD-065)', 40000.00, 1, 'ultra', 'cartas sueltas'),
 (50, 'blue-eyes white dragon - ultra rare NM (reimpresion) (LOB-001)', 80000.00, 1, 'ultra', 'cartas sueltas'),
-(51, 'playmat the shining darkness sneak peek', 50000.00, 1, NULL, 'playmats'),
-(52, 'mega tin 2020 (vacia)', 5000.00, 1, NULL, 'tins'),
-(53, 'mega tin 2021 (vacia)', 5000.00, 1, NULL, 'tins'),
-(54, 'mega tin 2022 (vacia)', 5000.00, 1, NULL, 'tins'),
-(55, 'I:P masquerena 9-pocket duelist portfolio (usado)', 30000.00, 1, NULL, 'binders'),
-(56, 'carpeta xion 24 hojas de 9 bolsillos acolchada (usado)', 15000.00, 1, NULL, 'binders'),
-(57, 'premium binder top deck 360 cartas acolchada con cierre (usado)', 120000.00, 2, NULL, 'binders'),
-(58, 'deckbox imantada de alta calidad para 120 cartas (usado)', 30000.00, 1, NULL, 'deckbox'),
+(51, 'playmat the shining darkness sneak peek', 50000.00, 1, 'otra', 'playmats'),
+(52, 'mega tin 2020 (vacia)', 5000.00, 1, 'otra', 'tins'),
+(53, 'mega tin 2021 (vacia)', 5000.00, 1, 'otra', 'tins'),
+(54, 'mega tin 2022 (vacia)', 5000.00, 1, 'otra', 'tins'),
+(55, 'I:P masquerena 9-pocket duelist portfolio (usado)', 30000.00, 1, 'otra', 'binders'),
+(56, 'carpeta xion 24 hojas de 9 bolsillos acolchada (usado)', 15000.00, 1, 'otra', 'binders'),
+(57, 'premium binder top deck 360 cartas acolchada con cierre (usado)', 120000.00, 2, 'otra', 'binders'),
+(58, 'deckbox imantada de alta calidad para 120 cartas (usado)', 30000.00, 1, 'otra', 'deckbox'),
 (59, 'toon kingdom - quarter century secret rare (MP24-EN006)', 9000.00, 1, 'qcr', 'cartas sueltas'),
 (60, 'relinquished - ultra rare 1st edition LP (SDP-001)', 10000.00, 1, 'ultra', 'cartas sueltas'),
 (61, 'aqua madoor - secret rare unlimited (LCYW-EN221)', 8000.00, 1, 'secret', 'cartas sueltas'),
@@ -154,7 +154,8 @@ INSERT INTO `productos` (`id`, `nombre`, `precio`, `stock`, `rareza`, `categoria
 (97, 'macro cosmos - shatterfoil NM (DT06-EN096)', 8000.00, 1, 'shatterfoil', 'cartas sueltas'),
 (98, 'metal reflect slime - ultimate rare 1ra edicion MP (PTDN-SP094)', 15000.00, 1, 'ultimate', 'cartas sueltas'),
 (99, 'night beam - ultimate rare 1st edition (GAOV-EN055)', 8000.00, 1, 'ultimate', 'cartas sueltas'),
-(100, 'number 9: dyson sphere - ultimate rare unlimited (ABYR-EN044)', 10000.00, 1, 'ultimate', 'cartas sueltas');
+(100, 'number 9: dyson sphere - ultimate rare unlimited (ABYR-EN044)', 10000.00, 1, 'ultimate', 'cartas sueltas'),
+(101, 'lote cartas secret legendary collection', 25000.00, 1, 'otra', 'lotes');
 
 -- --------------------------------------------------------
 
@@ -176,7 +177,8 @@ CREATE TABLE `usuarios` (
 
 INSERT INTO `usuarios` (`id`, `nombre`, `pass`, `email`, `tipo`) VALUES
 (1, 'Matias Q', '$2y$10$mOOPMNXlM7kGLzybj3FRf.83HTzvzjX7cidZQLhenR9EPb/4yY4Gi', 'me1_66@hotmail.com', 'admin'),
-(3, 'Saul Menem', '$2y$10$Tt8QRfs3.xBpjXDuuSFQG.KY8FmorUTy3v8IoC1yQ2PQaC/oN57ua', 'saulmenem@gmail.com', 'cliente');
+(3, 'Saul Menem', '$2y$10$Tt8QRfs3.xBpjXDuuSFQG.KY8FmorUTy3v8IoC1yQ2PQaC/oN57ua', 'saulmenem@gmail.com', 'cliente'),
+(4, 'pedro', '$2y$10$lWeME3Ji/a7KF.cJ6f2t.u.ROlaWR8AnT6HVnC3YZXHqIyTy60UNe', 'pedro@gmail.com', 'cliente');
 
 -- --------------------------------------------------------
 
@@ -233,13 +235,13 @@ ALTER TABLE `item`
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `ventas`
