@@ -9,8 +9,6 @@ if (!file_exists($rutaImagen)) {
 }
 ?>
 
-<p><a href="listado.php" style="text-decoration: none; color: #2563eb;">← Volver al Catálogo</a></p>
-
 <section style="display: flex; gap: 40px; margin-top: 20px; background: white; padding: 25px; border-radius: 8px; border: 1px solid #e2e8f0; max-width: 800px;">
     
     <!-- Imagen grande de la carta -->

@@ -35,44 +35,50 @@ hr {
    CABECERA Y NAVEGACIÓN
    ========================================== */
 header {
-    background-color: #1e293b;
+    background-color: #0362fa;
     color: white;
-    padding: 15px 30px;
+    height: 100px;              /* Altura definida y espaciosa para que luzca el logo */
+    padding: 10px 40px;          /* Espacio a los costados */
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: center;         /* Centra verticalmente el logo y los textos */
+    box-sizing: border-box;
 }
 
-header h1 {
-    color: white;
-    font-size: 22px;
-    margin: 0;
+header nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;                   /* Separación pareja entre enlaces */
 }
 
 header nav a {
-    color: #cbd5e1;
+    color: #f1f5f9;
     text-decoration: none;
-    margin-left: 15px;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 16px;             /* Tipografía más legible y adaptada */
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 header nav a:hover {
-    color: white;
+    background-color: #334155;
+    color: #ffffff;
 }
 
 header nav span {
-    margin-left: 15px;
-    color: #f1f5f9;
+    font-size: 15px;
+    color: #cbd5e1;
 }
 
 #cantidad-carrito {
     background-color: #ef4444;
     color: white;
-    border-radius: 10px;
-    padding: 2px 7px;
+    border-radius: 12px;
+    padding: 2px 8px;
     font-size: 12px;
     font-weight: bold;
+    margin-left: 4px;
 }
 
 /* ==========================================
@@ -236,4 +242,25 @@ button[onclick*="vaciarCarrito"] {
 
 button[onclick*="vaciarCarrito"]:hover {
     background-color: #475569;
+}
+
+/* Estilos para el logo de la cabecera */
+.logo-link {
+    height: 100%;                /* Ocupa el 100% del alto disponible del header */
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.logo-tienda {
+    height: 100%;                /* Llena la altura vertical completa del header */
+    width: auto;                 /* Mantiene la proporción para no deformar la imagen */
+    max-height: 80px;            /* Límite seguro dentro del padding de 100px */
+    object-fit: contain;
+    border-radius: 6px;          /* Opcional: suaviza las esquinas */
+    display: block;
+}
+
+.logo-link:hover .logo-tienda {
+    transform: scale(1.03); /* Efecto sutil al pasar el mouse */
 }
