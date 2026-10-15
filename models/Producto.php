@@ -59,3 +59,51 @@ function obtenerProductoPorId($id) {
     $stmt->execute([':id' => $id]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
+
+// Listado (L): Obtiene TODOS los productos sin filtrar por stock para el panel admin[cite: 2]
+function obtenerTodosLosProductosAdmin() {
+    $conexion = obtenerConexion();
+    $sql = "SELECT id, nombre, precio, stock, rareza, categoria FROM productos ORDER BY id DESC";
+    $stmt = $conexion->query($sql);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+// Alta (A): Inserta una nueva carta
+function crearProducto($nombre, $precio, $stock, $rareza, $categoria) {
+    $conexion = obtenerConexion();
+    $sql = "INSERT INTO productos (nombre, precio, stock, rareza, categoria) 
+            VALUES (:nombre, :precio, :stock, :rareza, :categoria)";
+    $stmt = $conexion->prepare($sql);
+    return $stmt->execute([
+        ':nombre'    => $nombre,
+        ':precio'    => $precio,
+        ':stock'     => $stock,
+        ':rareza'    => $rareza,
+        ':categoria' => $categoria
+    ]);
+}
+
+// Modificación (M): Actualiza los datos de una carta por su ID
+function actualizarProducto($id, $nombre, $precio, $stock, $rareza, $categoria) {
+    $conexion = obtenerConexion();
+    $sql = "UPDATE productos 
+            SET nombre = :nombre, precio = :precio, stock = :stock, rareza = :rareza, categoria = :categoria 
+            WHERE id = :id";
+    $stmt = $conexion->prepare($sql);
+    return $stmt->execute([
+        ':nombre'    => $nombre,
+        ':precio'    => $precio,
+        ':stock'     => $stock,
+        ':rareza'    => $rareza,
+        ':categoria' => $categoria,
+        ':id'        => $id
+    ]);
+}
+
+// Baja (B): Elimina una carta[cite: 2]
+function eliminarProducto($id) {
+    $conexion = obtenerConexion();
+    $sql = "DELETE FROM productos WHERE id = :id";
+    $stmt = $conexion->prepare($sql);
+    return $stmt->execute([':id' => $id]);
+}

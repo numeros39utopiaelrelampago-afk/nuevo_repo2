@@ -54,6 +54,19 @@ switch ($accion) {
     case 'admin_cliente_eliminar':
         borrarClienteAdmin();
         break;
+        // ABML Productos 
+    case 'admin_productos':
+        listarProductosAdmin();
+        break;
+    case 'admin_prod_crear':
+        crearProductoAdmin();
+        break;
+    case 'admin_prod_editar':
+        editarProductoAdmin();
+        break;
+    case 'admin_prod_eliminar':
+        borrarProductoAdmin();
+        break;
 
     default:
         mostrarCatalogo();
