@@ -13,22 +13,12 @@ if (!file_exists($rutaImagen)) {
     
     <!-- Imagen grande de la carta -->
 <div style="flex: 1; text-align: center;">
-    
     <!-- Al hacer clic en la foto, se abre en pestaña nueva -->
     <a href="<?php echo $rutaImagen; ?>" target="_blank" title="Hacé clic para ver la imagen completa">
         <img src="<?php echo $rutaImagen; ?>" 
              alt="<?php echo htmlspecialchars($producto['nombre']); ?>" 
              style="max-width: 100%; max-height: 400px; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: zoom-in;">
     </a>
-
-    <!-- Botón secundario visible abajo de la foto -->
-    <div style="margin-top: 15px;">
-        <a href="<?php echo $rutaImagen; ?>" target="_blank" 
-           style="display: inline-block; padding: 8px 16px; background-color: #475569; color: white; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: bold;">
-            🔍 Ver carta en detalle
-        </a>
-    </div>
-
 </div>
 
     <!-- Información detallada y compra -->
@@ -48,7 +38,7 @@ if (!file_exists($rutaImagen)) {
         </p>
 
         <p style="margin: 8px 0; font-size: 15px;">
-            <strong>Disponibilidad:</strong> 
+            <strong>Stock:</strong> 
             <span style="color: #16a34a; font-weight: bold;"><?php echo $producto['stock']; ?> unidades</span>
         </p>
 

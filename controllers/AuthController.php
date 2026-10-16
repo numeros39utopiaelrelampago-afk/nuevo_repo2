@@ -32,8 +32,8 @@ function procesarLogin() {
             if ($usuario['tipo'] === 'admin') {
                 header("Location: index.php?accion=admin_ventas");
             } else {
-                // El cliente vuelve a su carrito o al catálogo
-                header("Location: index.php?accion=carrito");
+                // Redirigir al catálogo/inicio principal
+                header("Location: listado.php");
             }
             exit;
         } else {

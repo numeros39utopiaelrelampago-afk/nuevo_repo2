@@ -7,7 +7,9 @@
 </head>
 <body>
     <header>
-        <h1>Store of Ragnarok</h1>
+        <a href="listado.php" class="logo-link" title="Volver al inicio">
+        <img src="assets/img/logo.jpg" alt="Logo Tienda" class="logo-tienda">
+    </a>
         <nav>
     <a href="listado.php">Volver al catálogo</a>
         </nav>
