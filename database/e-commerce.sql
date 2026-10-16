@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-10-2026 a las 20:44:31
+-- Tiempo de generación: 16-10-2026 a las 19:30:48
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -35,6 +35,16 @@ CREATE TABLE `item` (
   `cantidad` int(11) NOT NULL,
   `precio` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `item`
+--
+
+INSERT INTO `item` (`id_item`, `id_prod`, `id_venta`, `cantidad`, `precio`) VALUES
+(1, 62, 1, 1, 30000.00),
+(2, 35, 1, 1, 75000.00),
+(3, 39, 2, 1, 9000.00),
+(4, 33, 2, 1, 400000.00);
 
 -- --------------------------------------------------------
 
@@ -170,8 +180,14 @@ DROP TABLE IF EXISTS `usuarios`;
 CREATE TABLE `usuarios` (
   `id` int(11) NOT NULL,
   `nombre` varchar(255) NOT NULL,
+  `apellido` varchar(100) DEFAULT NULL,
   `pass` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
+  `telefono` varchar(50) DEFAULT NULL,
+  `direccion` varchar(255) DEFAULT NULL,
+  `provincia` varchar(100) DEFAULT NULL,
+  `ciudad` varchar(100) DEFAULT NULL,
+  `codigo_postal` varchar(20) DEFAULT NULL,
   `tipo` enum('admin','cliente') NOT NULL DEFAULT 'cliente'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -179,11 +195,12 @@ CREATE TABLE `usuarios` (
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `nombre`, `pass`, `email`, `tipo`) VALUES
-(1, 'Matias Q', '$2y$10$mOOPMNXlM7kGLzybj3FRf.83HTzvzjX7cidZQLhenR9EPb/4yY4Gi', 'me1_66@hotmail.com', 'admin'),
-(2, 'juan', '$2y$10$YiYKDmnKEkvECgUeH4mCseuzDaxguwqtMkCiBLWqulrlVfEQX5iDC', 'juan@gmail.com', 'cliente'),
-(3, 'Saul Menem', '$2y$10$Tt8QRfs3.xBpjXDuuSFQG.KY8FmorUTy3v8IoC1yQ2PQaC/oN57ua', 'saulmenem@gmail.com', 'cliente'),
-(4, 'pedro', '$2y$10$m4YgKgW9dKjaFUuttCLsmeebIJ0MokQwZivY0urs1RBbWUzDzGPIu', 'pedro@gmail.com', 'cliente');
+INSERT INTO `usuarios` (`id`, `nombre`, `apellido`, `pass`, `email`, `telefono`, `direccion`, `provincia`, `ciudad`, `codigo_postal`, `tipo`) VALUES
+(1, 'Matias Q', NULL, '$2y$10$mOOPMNXlM7kGLzybj3FRf.83HTzvzjX7cidZQLhenR9EPb/4yY4Gi', 'me1_66@hotmail.com', NULL, NULL, NULL, NULL, NULL, 'admin'),
+(2, 'juan cito', NULL, '$2y$10$YiYKDmnKEkvECgUeH4mCseuzDaxguwqtMkCiBLWqulrlVfEQX5iDC', 'juan@gmail.com', NULL, NULL, NULL, NULL, NULL, 'cliente'),
+(3, 'saul menem', NULL, '$2y$10$Tt8QRfs3.xBpjXDuuSFQG.KY8FmorUTy3v8IoC1yQ2PQaC/oN57ua', 'saulmenem@gmail.com', NULL, NULL, NULL, NULL, NULL, 'cliente'),
+(4, 'pedro perez', NULL, '$2y$10$m4YgKgW9dKjaFUuttCLsmeebIJ0MokQwZivY0urs1RBbWUzDzGPIu', 'pedro@gmail.com', NULL, NULL, NULL, NULL, NULL, 'cliente'),
+(5, 'matias1', NULL, '$2y$10$XzHeYgZCM2MDGGWtuabY1.XQU7tjjkPBE3DkRDwnbBcWOP1CzamKy', 'mdq@gmail.com', NULL, NULL, NULL, NULL, NULL, 'cliente');
 
 -- --------------------------------------------------------
 
@@ -198,6 +215,14 @@ CREATE TABLE `ventas` (
   `id_user` int(11) NOT NULL,
   `total` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `ventas`
+--
+
+INSERT INTO `ventas` (`id_ventas`, `fecha`, `id_user`, `total`) VALUES
+(1, '2026-10-16 13:19:23', 2, 105000.00),
+(2, '2026-10-16 13:22:54', 2, 409000.00);
 
 --
 -- Índices para tablas volcadas
@@ -235,7 +260,7 @@ ALTER TABLE `ventas`
 -- AUTO_INCREMENT de la tabla `item`
 --
 ALTER TABLE `item`
-  MODIFY `id_item` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_item` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
@@ -247,13 +272,13 @@ ALTER TABLE `productos`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  MODIFY `id_ventas` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_ventas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
