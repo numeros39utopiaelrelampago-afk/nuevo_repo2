@@ -96,4 +96,30 @@ function obtenerDetalleItemsVenta($idVenta) {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+// Obtiene el historial de compras exclusivo de un cliente específico
+function obtenerVentasPorCliente($idUser) {
+    $conexion = obtenerConexion();
+    $sql = "SELECT id_ventas, fecha, total 
+            FROM ventas 
+            WHERE id_user = :id_user 
+            ORDER BY id_ventas DESC";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->execute([':id_user' => $idUser]);
+    return $sentencia->fetchAll(PDO::FETCH_ASSOC);
+}
+
+// Obtiene los datos de una venta comprobando que pertenezca al usuario logueado
+function obtenerVentaClientePorId($idVenta, $idUser) {
+    $conexion = obtenerConexion();
+    $sql = "SELECT id_ventas, fecha, total 
+            FROM ventas 
+            WHERE id_ventas = :id_ventas AND id_user = :id_user 
+            LIMIT 1";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->execute([
+        ':id_ventas' => $idVenta,
+        ':id_user'   => $idUser
+    ]);
+    return $sentencia->fetch(PDO::FETCH_ASSOC);
+}
 ?>

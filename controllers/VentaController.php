@@ -36,3 +36,39 @@ function finalizarCompra() {
     header("Location: index.php?accion=catalogo");
     exit;
 }
+
+// Muestra el listado de compras realizadas por el cliente logueado
+function mostrarMisPedidos() {
+    if (!isset($_SESSION['id_user'])) {
+        header("Location: index.php?accion=login&error=Inicia sesión para ver tus pedidos");
+        exit;
+    }
+
+    $idUser = $_SESSION['id_user'];
+    $pedidos = obtenerVentasPorCliente($idUser);
+
+    require_once __DIR__ . '/../views/tienda/mis_pedidos.php';
+}
+
+// Muestra el detalle / comprobante de una compra específica
+function verDetallePedidoCliente() {
+    if (!isset($_SESSION['id_user'])) {
+        header("Location: index.php?accion=login");
+        exit;
+    }
+
+    $idUser = $_SESSION['id_user'];
+    $idVenta = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+    // Buscamos la venta validando que pertenezca al usuario en sesión por seguridad
+    $pedido = obtenerVentaClientePorId($idVenta, $idUser);
+
+    if (!$pedido) {
+        header("Location: index.php?accion=mis_pedidos");
+        exit;
+    }
+
+    $items = obtenerDetalleItemsVenta($idVenta);
+
+    require_once __DIR__ . '/../views/tienda/pedido_detalle.php';
+}

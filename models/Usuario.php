@@ -71,3 +71,40 @@ function eliminarCliente($id) {
     $stmt = $conexion->prepare($sql);
     return $stmt->execute([':id' => $id]);
 }
+
+// Obtiene el perfil completo de un usuario por su ID
+function obtenerPerfilUsuario($id) {
+    $conexion = obtenerConexion();
+    $sql = "SELECT id, nombre, apellido, email, telefono, direccion, provincia, ciudad, codigo_postal 
+            FROM usuarios WHERE id = :id LIMIT 1";
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->execute([':id' => $id]);
+    return $sentencia->fetch(PDO::FETCH_ASSOC);
+}
+
+// Actualiza tanto datos personales como de facturación
+function actualizarPerfilCompleto($id, $nombre, $apellido, $email, $telefono, $direccion, $provincia, $ciudad, $cp) {
+    $conexion = obtenerConexion();
+    $sql = "UPDATE usuarios SET 
+                nombre = :nombre,
+                apellido = :apellido,
+                email = :email,
+                telefono = :telefono,
+                direccion = :direccion,
+                provincia = :provincia,
+                ciudad = :ciudad,
+                codigo_postal = :cp
+            WHERE id = :id";
+    $sentencia = $conexion->prepare($sql);
+    return $sentencia->execute([
+        ':nombre'    => $nombre,
+        ':apellido'  => $apellido,
+        ':email'     => $email,
+        ':telefono'  => $telefono,
+        ':direccion' => $direccion,
+        ':provincia' => $provincia,
+        ':ciudad'    => $ciudad,
+        ':cp'        => $cp,
+        ':id'        => $id
+    ]);
+}

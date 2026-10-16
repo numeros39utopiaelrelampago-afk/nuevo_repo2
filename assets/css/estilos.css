@@ -9,15 +9,21 @@
 }
 
 body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Viewport Height: 100% de la ventana */
+    margin: 0;
     background-color: #f8f9fa;
     color: #333;
-    padding-bottom: 50px;
 }
 
 main {
+    flex: 1; /* Ocupa automáticamente todo el espacio vertical disponible */
     max-width: 1000px;
+    width: 100%;
     margin: 20px auto;
     padding: 0 15px;
+    box-sizing: border-box;
 }
 
 h1, h2, h3 {
@@ -71,6 +77,23 @@ header nav span {
     color: #cbd5e1;
 }
 
+/* Estilos para el logo de la cabecera */
+.logo-link {
+    height: 100%;                /* Ocupa el 100% del alto disponible del header */
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.logo-tienda {
+    height: 100%;                /* Llena la altura vertical completa del header */
+    width: auto;                 /* Mantiene la proporción para no deformar la imagen */
+    max-height: 80px;            /* Límite seguro dentro del padding de 100px */
+    object-fit: contain;
+    border-radius: 6px;          /* Opcional: suaviza las esquinas */
+    display: block;
+}
+
 #cantidad-carrito {
     background-color: #ef4444;
     color: white;
@@ -79,6 +102,25 @@ header nav span {
     font-size: 12px;
     font-weight: bold;
     margin-left: 4px;
+}
+
+/* 3. Estilos limpios para el footer */
+footer {
+    width: 100%;
+    padding: 15px 0;
+    background-color: #ffffff; /* O el color de fondo que prefieras */
+    border-top: 1px solid #e2e8f0;
+    text-align: center;
+}
+
+footer hr {
+    display: none; /* Si ya tiene borde superior el footer, el <hr> no es necesario */
+}
+
+footer p {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
 }
 
 /* ==========================================
@@ -244,23 +286,48 @@ button[onclick*="vaciarCarrito"]:hover {
     background-color: #475569;
 }
 
-/* Estilos para el logo de la cabecera */
-.logo-link {
-    height: 100%;                /* Ocupa el 100% del alto disponible del header */
-    display: flex;
-    align-items: center;
+/* Menú desplegable del usuario */
+.usuario-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.usuario-btn {
+    color: #ffffff;
+    cursor: pointer;
+    padding: 8px 12px;
+    font-weight: 500;
+}
+
+.dropdown-contenido {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: #ffffff;
+    min-width: 190px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.15);
+    border-radius: 6px;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.dropdown-contenido a {
+    color: #1e293b !important;
+    padding: 12px 16px;
     text-decoration: none;
-}
-
-.logo-tienda {
-    height: 100%;                /* Llena la altura vertical completa del header */
-    width: auto;                 /* Mantiene la proporción para no deformar la imagen */
-    max-height: 80px;            /* Límite seguro dentro del padding de 100px */
-    object-fit: contain;
-    border-radius: 6px;          /* Opcional: suaviza las esquinas */
     display: block;
+    font-size: 14px;
+    margin: 0 !important;
+    text-align: left;
 }
 
-.logo-link:hover .logo-tienda {
-    transform: scale(1.03); /* Efecto sutil al pasar el mouse */
+.dropdown-contenido a:hover {
+    background-color: #f1f5f9 !important;
+    color: #2563eb !important;
+}
+
+/* Al pasar el mouse, mostramos el menú */
+.usuario-dropdown:hover .dropdown-contenido {
+    display: block;
 }

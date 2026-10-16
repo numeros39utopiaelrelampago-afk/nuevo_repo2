@@ -17,7 +17,7 @@
     <fieldset style="max-width: 500px; margin-bottom: 25px;">
         <legend><strong>Alta de Nuevo Cliente</strong></legend>
         <form method="POST" action="index.php?accion=admin_cliente_crear">
-            <p>Nombre: <input type="text" name="nombre" required></p>
+            <p>Usuario: <input type="text" name="nombre" required></p>
             <p>Email: <input type="text" name="email" required></p>
             <p>Contraseña: <input type="password" name="pass" required></p>
             <button type="submit">Dar de Alta</button>
@@ -30,7 +30,7 @@
         <thead>
             <tr style="background: #eee;">
                 <th>ID</th>
-                <th>Nombre</th>
+                <th>Usuario</th>
                 <th>Email</th>
                 <th>Acciones</th>
             </tr>

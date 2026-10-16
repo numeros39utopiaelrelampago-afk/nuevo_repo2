@@ -19,6 +19,9 @@ switch ($accion) {
     case 'login':
         mostrarLogin();
         break;
+    case 'registrar':           
+        procesarRegistro();
+        break;
     case 'autenticar':
         procesarLogin();
         break;
@@ -33,6 +36,18 @@ switch ($accion) {
         break;
     case 'detalle':
         mostrarDetalleProducto();
+        break;
+        case 'mis_pedidos':
+        mostrarMisPedidos();
+        break;
+    case 'detalle_pedido':
+        verDetallePedidoCliente();
+        break;
+    case 'mi_perfil':
+        mostrarMiPerfil();
+        break;
+    case 'guardar_perfil':
+        procesarGuardarPerfil();
         break;
 
         // Rutas del Administrador
