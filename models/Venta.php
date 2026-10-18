@@ -103,9 +103,9 @@ function obtenerVentasPorCliente($idUser) {
             FROM ventas 
             WHERE id_user = :id_user 
             ORDER BY id_ventas DESC";
-    $sentencia = $conexion->prepare($sql);
-    $sentencia->execute([':id_user' => $idUser]);
-    return $sentencia->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute([':id_user' => $idUser]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 // Obtiene los datos de una venta comprobando que pertenezca al usuario logueado
@@ -115,11 +115,11 @@ function obtenerVentaClientePorId($idVenta, $idUser) {
             FROM ventas 
             WHERE id_ventas = :id_ventas AND id_user = :id_user 
             LIMIT 1";
-    $sentencia = $conexion->prepare($sql);
-    $sentencia->execute([
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute([
         ':id_ventas' => $idVenta,
         ':id_user'   => $idUser
     ]);
-    return $sentencia->fetch(PDO::FETCH_ASSOC);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 ?>

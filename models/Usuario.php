@@ -77,9 +77,9 @@ function obtenerPerfilUsuario($id) {
     $conexion = obtenerConexion();
     $sql = "SELECT id, nombre, apellido, email, telefono, direccion, provincia, ciudad, codigo_postal 
             FROM usuarios WHERE id = :id LIMIT 1";
-    $sentencia = $conexion->prepare($sql);
-    $sentencia->execute([':id' => $id]);
-    return $sentencia->fetch(PDO::FETCH_ASSOC);
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute([':id' => $id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
 // Actualiza tanto datos personales como de facturación
@@ -95,8 +95,8 @@ function actualizarPerfilCompleto($id, $nombre, $apellido, $email, $telefono, $d
                 ciudad = :ciudad,
                 codigo_postal = :cp
             WHERE id = :id";
-    $sentencia = $conexion->prepare($sql);
-    return $sentencia->execute([
+    $stmt = $conexion->prepare($sql);
+    return $stmt->execute([
         ':nombre'    => $nombre,
         ':apellido'  => $apellido,
         ':email'     => $email,

@@ -9,7 +9,7 @@ include __DIR__ . '/../../includes/header.php';
 <!-- FORMULARIO DE FILTROS -->
 <form method="GET" action="listado.php">
 
-    <label for="buscar">Buscar carta:</label>
+    <label for="buscar">Buscar:</label>
     <input type="text" id="buscar" name="buscar" value="<?php echo htmlspecialchars($termino); ?>" placeholder="Ej: forbidden droplet...">
 
     <label for="categoria">Categoría:</label>

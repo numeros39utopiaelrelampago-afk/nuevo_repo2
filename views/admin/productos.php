@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Inventario de Cartas</title>
+    <title>Inventario</title>
     <link rel="stylesheet" href="assets/css/estilos.css">
 </head>
 <body>
@@ -46,8 +46,8 @@
             </form>
         </fieldset>
 
-        <!-- LISTADO DE CARTAS -->
-        <h3>Listado General de Stock</h3>
+        <!-- LISTADO -->
+        <h3>Listado de Stock</h3>
         <table border="1" cellpadding="8" cellspacing="0">
             <thead>
                 <tr>
