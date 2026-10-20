@@ -8,6 +8,7 @@
 </footer>
 
 <!-- Carga global del script JS nativo con localStorage -->
+<script src="assets/js/bootstrap.bundle.min.js"></script>
 <script src="assets/js/carrito.js"></script>
 </body>
 </html>

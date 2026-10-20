@@ -7,8 +7,8 @@
         <h2>Detalle de tu Carrito</h2>
 
         <!-- TABLA DONDE JS RENDERIZA LOS PRODUCTOS -->
-        <table id="tabla-carrito" border="1" cellpadding="8" cellspacing="0" style="width: 100%; max-width: 750px; border-collapse: collapse;">
-            <thead>
+        <table class="table table-striped table-hover border">
+    <thead class="table-dark">
                 <tr style="background-color: #f2f2f2;">
                     <th>Producto</th>
                     <th>Precio Unitario</th>

@@ -1,14 +1,11 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Inventario</title>
-    <link rel="stylesheet" href="assets/css/estilos.css">
-</head>
-<body>
+<?php 
+$tituloPagina = "inventario";
+include __DIR__ . '/../../includes/head.php';
+?>
+
     <?php require_once __DIR__ . '/../layouts/admin_nav.php'; ?>
 
-    <main>
+    <main class="flex-grow-1">
         <h2>Inventario de productos TCG</h2>
 
         <?php if (!empty($mensaje)): ?>
@@ -48,8 +45,8 @@
 
         <!-- LISTADO -->
         <h3>Listado de Stock</h3>
-        <table border="1" cellpadding="8" cellspacing="0">
-            <thead>
+        <table class="table table-striped table-hover border">
+    <thead class="table-dark">
                 <tr>
                     <th>ID</th>
                     <th>Nombre</th>
@@ -75,14 +72,17 @@
                         <td style="text-transform: uppercase;"><?php echo htmlspecialchars($p['rareza']); ?></td>
                         <td><?php echo htmlspecialchars($p['categoria']); ?></td>
                         <td>
-                            <a href="index.php?accion=admin_prod_editar&id=<?php echo $p['id']; ?>">Modificar</a> | 
-                            <a href="index.php?accion=admin_prod_eliminar&id=<?php echo $p['id']; ?>" 
-                               onclick="return confirm('¿Seguro que querés eliminar esta carta?');">Baja</a>
+                            <a href="index.php?accion=admin_prod_editar&id=<?php echo $p['id']; ?>" class="btn btn-primary">Modificar</a>  
+                            <a href="index.php?accion=admin_prod_eliminar&id=<?php echo $p['id']; ?>" class="btn btn-danger text-white" 
+                            style="background-color: #dc3545;"
+                            onclick="return confirm('¿Eliminar producto?');">Baja</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
     </main>
-</body>
-</html>
+
+    <?php 
+include __DIR__ . '/../../includes/footer.php'; 
+?>

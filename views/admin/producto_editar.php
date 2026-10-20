@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Modificar Carta</title>
-    <link rel="stylesheet" href="assets/css/estilos.css">
-</head>
-<body>
+<?php 
+$tituloPagina = "Modificar producto";
+include __DIR__ . '/../../includes/head.php';
+?>
+
     <?php require_once __DIR__ . '/../layouts/admin_nav.php'; ?>
 
     <main>
@@ -32,9 +29,11 @@
                 <label>Categoría:</label><br>
                 <input type="text" name="categoria" value="<?php echo htmlspecialchars($producto['categoria']); ?>" required style="width: 100%;">
             </p>
-            <button type="submit">Guardar Cambios</button>
-            <a href="index.php?accion=admin_productos">Cancelar</a>
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            <a href="index.php?accion=admin_productos" class="btn btn-primary">Cancelar</a>
         </form>
     </main>
-</body>
-</html>
+
+    <?php 
+include __DIR__ . '/../../includes/footer.php'; 
+?>

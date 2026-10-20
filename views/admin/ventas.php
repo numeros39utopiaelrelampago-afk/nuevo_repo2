@@ -1,16 +1,15 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Historial de Ventas</title>
-</head>
-<body>
-    <?php require_once __DIR__ . '/../layouts/admin_nav.php'; ?>
+<?php 
+$tituloPagina = "Ventas";
+include __DIR__ . '/../../includes/head.php';
+?>
 
+<?php require_once __DIR__ . '/../layouts/admin_nav.php'; ?>
+
+<main class="flex-grow-1">
     <h2>Ventas Realizadas</h2>
-    <table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse;">
-        <thead>
-            <tr style="background-color: #eee;">
+    <table class="table table-striped table-hover border align-middle">
+        <thead class="table-dark">
+            <tr>
                 <th>N° Venta</th>
                 <th>Fecha</th>
                 <th>Cliente</th>
@@ -20,17 +19,17 @@
         </thead>
         <tbody>
             <?php if (empty($ventas)): ?>
-                <tr><td colspan="5" style="text-align: center;">No hay ventas registradas aún.</td></tr>
+                <tr><td colspan="5" class="text-center py-3">No hay ventas registradas aún.</td></tr>
             <?php else: ?>
                 <?php foreach ($ventas as $v): ?>
                     <tr>
-                        <td>#<?php echo $v['id_ventas']; ?></td>
+                        <td><strong>#<?php echo $v['id_ventas']; ?></strong></td>
                         <td><?php echo $v['fecha']; ?></td>
                         <td><?php echo htmlspecialchars($v['cliente']); ?> (<?php echo htmlspecialchars($v['email']); ?>)</td>
                         <td>$<?php echo number_format($v['total'], 2); ?></td>
                         <td>
-                            <a href="index.php?accion=admin_factura&id=<?php echo $v['id_ventas']; ?>">
-                                Ver Factura
+                            <a href="index.php?accion=admin_factura&id=<?php echo $v['id_ventas']; ?>" class="btn btn-sm btn-primary">
+                                Ver Factura 📄
                             </a>
                         </td>
                     </tr>
@@ -38,5 +37,8 @@
             <?php endif; ?>
         </tbody>
     </table>
-</body>
-</html>
+</main>
+
+<?php 
+include __DIR__ . '/../../includes/footer.php'; 
+?>

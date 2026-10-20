@@ -15,8 +15,8 @@ include __DIR__ . '/../../includes/header.php';
         </a>
     </div>
 <?php else: ?>
-    <table border="1" cellpadding="10" cellspacing="0" style="max-width: 750px;">
-        <thead>
+    <table class="table table-striped table-hover border">
+    <thead class="table-dark">
             <tr>
                 <th>N° Pedido</th>
                 <th>Fecha de Compra</th>
