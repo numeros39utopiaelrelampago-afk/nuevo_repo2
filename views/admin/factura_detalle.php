@@ -6,7 +6,6 @@ include __DIR__ . '/../../includes/head.php';
     <?php require_once __DIR__ . '/../layouts/admin_nav.php'; ?>
 
 <main class="flex-grow-1">
-    <p><a href="index.php?accion=admin_ventas">← Volver al listado de ventas</a></p>
 
     <div style="border: 2px solid #333; padding: 20px; max-width: 650px;">
         <h2>FACTURA DE VENTA #<?php echo $factura['id_ventas']; ?></h2>
