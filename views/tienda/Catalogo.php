@@ -25,12 +25,6 @@ include __DIR__ . '/../../includes/header.php';
       <img src="/../assets/img/banner2.jpg" class="d-block w-100 banner-img" alt="Accesorios">
     </div>
 
-    <!-- Slide 3 -->
-    <div class="carousel-item" data-bs-interval="4000">
-      <img src="img/banner3.jpg" class="d-block w-100 banner-img" alt="Lotes y promociones">
-    </div>
-  </div>
-
   <!-- Flechas de navegación -->
   <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
     <span class="carousel-control-prev-icon" aria-hidden="true"></span>

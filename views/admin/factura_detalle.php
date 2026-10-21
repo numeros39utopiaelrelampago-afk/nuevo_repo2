@@ -3,7 +3,7 @@ $tituloPagina = "Detalle factura";
 include __DIR__ . '/../../includes/head.php';
 ?>
 
-    <?php require_once __DIR__ . '/../layouts/admin_nav.php'; ?>
+<?php require_once __DIR__ . '/../layouts/admin_nav.php'; ?>
 
 <main class="flex-grow-1">
 
