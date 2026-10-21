@@ -6,23 +6,22 @@ include __DIR__ . '/../../includes/header.php';
 
 <!-- Slider / Banner Carousel -->
 <div id="bannerCarousel" class="carousel slide my-4" data-bs-ride="carousel">
-  <!-- Indicadores inferiores -->
-  <div class="carousel-indicators">
-    <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-    <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-    <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
-  </div>
 
   <!-- Contenido de las diapositivas -->
-  <div class="carousel-inner rounded-3 shadow-sm">
+  <div class="carousel-inner rounded-2
+   shadow-sm">
     <!-- Slide 1 -->
     <div class="carousel-item active" data-bs-interval="4000">
-      <img src="/../assets/img/banner1.jpg" class="d-block w-100 banner-img" alt="Cartas sueltas">
+        <a href="listado.php?categoria[]=cartas+sueltas&categoria[]=cartas+OCG&categoria[]=lotes">
+            <img src="/../assets/img/banner1.jpg" class="d-block w-100 banner-img" alt="Cartas sueltas">
+        </a> 
     </div>
 
     <!-- Slide 2 -->
     <div class="carousel-item" data-bs-interval="4000">
-      <img src="/../assets/img/banner2.jpg" class="d-block w-100 banner-img" alt="Accesorios">
+        <a href="listado.php?categoria[]=binders&categoria[]=deckbox&categoria[]=playmats&categoria[]=tins">
+            <img src="/../assets/img/banner2.jpg" class="d-block w-100 banner-img" alt="Accesorios">
+        </a>
     </div>
 
   <!-- Flechas de navegación -->
@@ -58,7 +57,7 @@ include __DIR__ . '/../../includes/header.php';
                 </option>
             <?php endforeach; ?>
         </select>
-        <small class="text-muted d-block" style="font-size: 11px;">Ctrl + clic para varias</small>
+        <small class="text-muted d-block" style="font-size: 11px;">Ctrl + clic (selección múltiple)</small>
     </div>
 
     <!-- Select múltiple de Rarezas -->
@@ -72,7 +71,7 @@ include __DIR__ . '/../../includes/header.php';
                 </option>
             <?php endforeach; ?>
         </select>
-        <small class="text-muted d-block" style="font-size: 11px;">Ctrl + clic para varias</small>
+        <small class="text-muted d-block" style="font-size: 11px;">Ctrl + clic (selección múltiple)</small>
     </div>
 
     <!-- Botones -->
