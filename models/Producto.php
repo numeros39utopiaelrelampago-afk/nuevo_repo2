@@ -18,35 +18,52 @@ function obtenerRarezas() {
 }
 
 // Búsqueda con filtros de Texto, Categoría y Rareza (manteniendo stock > 0)
-function buscarProductosConFiltro($termino = '', $categoria = '', $rareza = '') {
+function buscarProductosConFiltro($termino = '', $categorias = [], $rarezas = []) {
     $conexion = obtenerConexion();
 
     $sql = "SELECT id, nombre, precio, stock, rareza, categoria FROM productos WHERE stock > 0";
     $parametros = [];
 
-    // Filtro por nombre
+    // Filtro por término de búsqueda (texto)
     if (!empty($termino)) {
         $sql .= " AND nombre LIKE :termino";
         $parametros[':termino'] = '%' . $termino . '%';
     }
 
-    // Filtro por categoría
-    if (!empty($categoria)) {
-        $sql .= " AND categoria = :categoria";
-        $parametros[':categoria'] = $categoria;
+    // Filtro múltiple por categoría usando IN (...)
+    if (!empty($categorias) && is_array($categorias)) {
+        // Filtrar elementos vacíos si viniera alguno
+        $categorias = array_filter($categorias);
+        if (!empty($categorias)) {
+            $placeholdersCat = [];
+            foreach ($categorias as $indice => $cat) {
+                $clave = ":cat_" . $indice;
+                $placeholdersCat[] = $clave;
+                $parametros[$clave] = $cat;
+            }
+            $sql .= " AND categoria IN (" . implode(', ', $placeholdersCat) . ")";
+        }
     }
 
-    // NUEVO: Filtro por rareza
-    if (!empty($rareza)) {
-        $sql .= " AND rareza = :rareza";
-        $parametros[':rareza'] = $rareza;
+    // Filtro múltiple por rareza usando IN (...)
+    if (!empty($rarezas) && is_array($rarezas)) {
+        $rarezas = array_filter($rarezas);
+        if (!empty($rarezas)) {
+            $placeholdersRar = [];
+            foreach ($rarezas as $indice => $rar) {
+                $clave = ":rar_" . $indice;
+                $placeholdersRar[] = $clave;
+                $parametros[$clave] = $rar;
+            }
+            $sql .= " AND rareza IN (" . implode(', ', $placeholdersRar) . ")";
+        }
     }
 
     $sql .= " ORDER BY nombre ASC";
 
-    $stmt = $conexion->prepare($sql);
-    $stmt->execute($parametros);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $sentencia = $conexion->prepare($sql);
+    $sentencia->execute($parametros);
+    return $sentencia->fetchAll(PDO::FETCH_ASSOC);
 }
 
 function obtenerProductoPorId($id) {

@@ -2,20 +2,17 @@
 require_once __DIR__ . '/../models/Producto.php';
 
 function mostrarCatalogo() {
-    // Leemos los filtros enviados por el formulario GET (si no existen, quedan vacíos)
-    $termino   = isset($_GET['buscar']) ? trim($_GET['buscar']) : '';
-    $categoria = isset($_GET['categoria']) ? trim($_GET['categoria']) : '';
-    $rareza    = isset($_GET['rareza']) ? trim($_GET['rareza']) : ''; 
+    $termino    = isset($_GET['buscar']) ? trim($_GET['buscar']) : '';
+    // Si no se envió nada o no es un array, se inicializa como array vacío
+    $categorias = isset($_GET['categoria']) && is_array($_GET['categoria']) ? $_GET['categoria'] : [];
+    $rarezas    = isset($_GET['rareza']) && is_array($_GET['rareza']) ? $_GET['rareza'] : [];
 
-    // Llamamos al modelo
-    $categorias = obtenerCategorias();
-    $rarezas    = obtenerRarezas(); 
-    $productos  = buscarProductosConFiltro($termino, $categoria, $rareza);
-    
-    // Cargamos la vista pasándole las variables anteriores
+    $listaCategorias = obtenerCategorias();
+    $listaRarezas    = obtenerRarezas();
+    $productos       = buscarProductosConFiltro($termino, $categorias, $rarezas);
+
     require_once __DIR__ . '/../views/tienda/catalogo.php';
 }
-
 function mostrarDetalleProducto() {
     $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 

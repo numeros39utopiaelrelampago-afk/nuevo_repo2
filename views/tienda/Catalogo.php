@@ -36,37 +36,51 @@ include __DIR__ . '/../../includes/header.php';
   </button>
 </div>
 
-<!-- FORMULARIO DE FILTROS -->
-<form method="GET" action="listado.php">
+<!-- FORMULARIO DE FILTROS MÚLTIPLES -->
+<form method="GET" action="listado.php" class="d-flex flex-wrap align-items-center gap-3 p-3 bg-white rounded border mb-4">
 
-    <label for="buscar">Buscar:</label>
-    <input type="text" id="buscar" name="buscar" value="<?php echo htmlspecialchars($termino); ?>" placeholder="Ej: forbidden droplet...">
+    <!-- Búsqueda por texto -->
+    <div>
+        <label for="buscar" class="form-label fw-bold mb-1">Buscar carta:</label>
+        <input type="text" id="buscar" name="buscar" class="form-control"
+               value="<?php echo htmlspecialchars($termino); ?>" 
+               placeholder="Ej: forbidden droplet...">
+    </div>
 
-    <label for="categoria">Categoría:</label>
-    <select id="categoria" name="categoria">
-        <option value="">-- Todas --</option>
-        <?php foreach ($categorias as $cat): ?>
-            <option value="<?php echo htmlspecialchars($cat['categoria']); ?>"
-                <?php echo ($categoria === $cat['categoria']) ? 'selected' : ''; ?>>
-                <?php echo htmlspecialchars($cat['categoria']); ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
+    <!-- Select múltiple de Categorías -->
+    <div>
+        <label for="categoria" class="form-label fw-bold mb-1">Categorías:</label>
+        <select id="categoria" name="categoria[]" multiple size="3" class="form-select" style="min-width: 170px;">
+            <?php foreach ($listaCategorias as $cat): ?>
+                <option value="<?php echo htmlspecialchars($cat['categoria']); ?>"
+                    <?php echo in_array($cat['categoria'], $categorias) ? 'selected' : ''; ?>>
+                    <?php echo htmlspecialchars($cat['categoria']); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        <small class="text-muted d-block" style="font-size: 11px;">Ctrl + clic para varias</small>
+    </div>
 
-    <label for="rareza">Rareza:</label>
-    <select id="rareza" name="rareza">
-        <option value="">-- Todas las rarezas --</option>
-        <?php foreach ($rarezas as $r): ?>
-            <option value="<?php echo htmlspecialchars($r['rareza']); ?>"
-                <?php echo ($rareza === $r['rareza']) ? 'selected' : ''; ?>>
-                <?php echo ucfirst(htmlspecialchars($r['rareza'])); ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
+    <!-- Select múltiple de Rarezas -->
+    <div>
+        <label for="rareza" class="form-label fw-bold mb-1">Rarezas:</label>
+        <select id="rareza" name="rareza[]" multiple size="3" class="form-select" style="min-width: 170px;">
+            <?php foreach ($listaRarezas as $r): ?>
+                <option value="<?php echo htmlspecialchars($r['rareza']); ?>"
+                    <?php echo in_array($r['rareza'], $rarezas) ? 'selected' : ''; ?>>
+                    <?php echo ucfirst(htmlspecialchars($r['rareza'])); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        <small class="text-muted d-block" style="font-size: 11px;">Ctrl + clic para varias</small>
+    </div>
 
-    <button type="submit">Filtrar</button>
-    <!-- Botón para limpiar que recarga listado.php sin parámetros -->
-    <a href="listado.php">Limpiar</a>
+    <!-- Botones -->
+    <div class="d-flex align-items-end gap-2 mt-3">
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+        <a href="listado.php" class="btn btn-outline-secondary">Limpiar</a>
+    </div>
+
 </form>
 
 <hr>
