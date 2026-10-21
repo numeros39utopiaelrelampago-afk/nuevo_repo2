@@ -4,7 +4,43 @@ include __DIR__ . '/../../includes/head.php';
 include __DIR__ . '/../../includes/header.php';
 ?>
 
-<h2>Productos disponibles</h2>
+<!-- Slider / Banner Carousel -->
+<div id="bannerCarousel" class="carousel slide my-4" data-bs-ride="carousel">
+  <!-- Indicadores inferiores -->
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  </div>
+
+  <!-- Contenido de las diapositivas -->
+  <div class="carousel-inner rounded-3 shadow-sm">
+    <!-- Slide 1 -->
+    <div class="carousel-item active" data-bs-interval="4000">
+      <img src="/../assets/img/banner1.jpg" class="d-block w-100 banner-img" alt="Cartas sueltas">
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="carousel-item" data-bs-interval="4000">
+      <img src="/../assets/img/banner2.jpg" class="d-block w-100 banner-img" alt="Accesorios">
+    </div>
+
+    <!-- Slide 3 -->
+    <div class="carousel-item" data-bs-interval="4000">
+      <img src="img/banner3.jpg" class="d-block w-100 banner-img" alt="Lotes y promociones">
+    </div>
+  </div>
+
+  <!-- Flechas de navegación -->
+  <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Anterior</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Siguiente</span>
+  </button>
+</div>
 
 <!-- FORMULARIO DE FILTROS -->
 <form method="GET" action="listado.php">
