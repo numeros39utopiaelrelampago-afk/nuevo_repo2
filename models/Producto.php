@@ -61,9 +61,9 @@ function buscarProductosConFiltro($termino = '', $categorias = [], $rarezas = []
 
     $sql .= " ORDER BY nombre ASC";
 
-    $sentencia = $conexion->prepare($sql);
-    $sentencia->execute($parametros);
-    return $sentencia->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute($parametros);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 function obtenerProductoPorId($id) {

@@ -25,11 +25,11 @@ include __DIR__ . '/../../includes/head.php';
                 </p>
                 <p>
                     <label>Precio ($):</label><br>
-                    <input type="number" step="0.01" name="precio" required style="width: 90%;">
+                    <input type="number" step="0.01" min="0.01" name="precio" required style="width: 90%;">
                 </p>
                 <p>
-                    <label>Stock inicial:</label><br>
-                    <input type="number" name="stock" value="1" required style="width: 90%;">
+                    <label>Stock:</label><br>
+                    <input type="number" name="stock" min="0" value="1" required style="width: 90%;">
                 </p>
                 <p>
                     <label>Rareza:</label><br>

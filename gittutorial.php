@@ -12,3 +12,4 @@ git status - muestra los cambios locales
 git log - muestra la historia local
 git branch - muestra todas las ramas
 git branch -D rama - elimina una rama
+

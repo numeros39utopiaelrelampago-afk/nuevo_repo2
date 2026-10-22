@@ -41,11 +41,12 @@ include __DIR__ . '/../../includes/head.php';
                     <td><?php echo htmlspecialchars($c['nombre']); ?></td>
                     <td><?php echo htmlspecialchars($c['email']); ?></td>
                     <td>
-                        <a href="index.php?accion=admin_prod_editar&id=<?php echo $p['id']; ?>" class="btn btn-primary">Modificar</a>  
-                            <a href="index.php?accion=admin_prod_eliminar&id=<?php echo $p['id']; ?>" class="btn btn-danger text-white" 
-                            style="background-color: #dc3545;"
-                            onclick="return confirm('¿Eliminar este cliente?');">Baja</a>
-                    </td>
+    <a href="index.php?accion=admin_cliente_editar&id=<?php echo $c['id']; ?>" class="btn btn-sm btn-primary">Modificar</a>  
+    <a href="index.php?accion=admin_cliente_eliminar&id=<?php echo $c['id']; ?>" 
+       class="btn btn-sm btn-danger text-white" 
+       style="background-color: #dc3545;" 
+       onclick="return confirm('¿Eliminar este cliente?');">Baja</a>
+</td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

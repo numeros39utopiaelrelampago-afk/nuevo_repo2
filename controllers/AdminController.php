@@ -135,6 +135,25 @@ function editarProductoAdmin() {
         $rareza    = trim($_POST['rareza']);
         $categoria = trim($_POST['categoria']);
 
+        // 1. Validar campos de texto requeridos
+        if (empty($nombre) || empty($rareza) || empty($categoria)) {
+            header("Location: index.php?accion=admin_prod_editar&id=$id&error=Todos los campos de texto son obligatorios");
+            exit;
+        }
+
+        // 2. Validar que el precio sea estrictamente mayor a 0
+        if ($precio <= 0) {
+            header("Location: index.php?accion=admin_prod_editar&id=$id&error=El precio debe ser un valor positivo mayor a 0");
+            exit;
+        }
+
+        // 3. Validar que el stock sea 0 o mayor (sin números negativos)
+        if ($stock < 0) {
+            header("Location: index.php?accion=admin_prod_editar&id=$id&error=El stock no puede ser un número negativo");
+            exit;
+        }
+
+        // Si pasa todas las validaciones, actualizamos en la base de datos
         actualizarProducto($id, $nombre, $precio, $stock, $rareza, $categoria);
         header("Location: index.php?accion=admin_productos&mensaje=Carta modificada con éxito");
         exit;
@@ -149,9 +168,10 @@ function editarProductoAdmin() {
         header("Location: index.php?accion=admin_productos");
         exit;
     }
+
+    $error = isset($_GET['error']) ? $_GET['error'] : '';
     require_once __DIR__ . '/../views/admin/producto_editar.php';
 }
-
 // Baja (B)[cite: 2]
 function borrarProductoAdmin() {
     verificarEsAdmin();
@@ -159,6 +179,6 @@ function borrarProductoAdmin() {
     if ($id > 0) {
         eliminarProducto($id);
     }
-    header("Location: index.php?accion=admin_productos&mensaje=Carta eliminada");
+    header("Location: index.php?accion=admin_productos&mensaje=Producto eliminado");
     exit;
 }
