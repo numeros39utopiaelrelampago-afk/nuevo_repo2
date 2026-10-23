@@ -219,3 +219,20 @@ function eliminarProducto($id) {
     $stmt = $conexion->prepare($sql);
     return $stmt->execute([':id' => $id]);
 }
+
+function contarTotalProductosAdmin() {
+    $conexion = obtenerConexion();
+    $stmt = $conexion->query("SELECT COUNT(*) as total FROM productos");
+    $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+    return intval($fila['total']);
+}
+
+function obtenerProductosPaginadosAdmin($limite = 10, $offset = 0) {
+    $conexion = obtenerConexion();
+    $sql = "SELECT * FROM productos ORDER BY id DESC LIMIT :limite OFFSET :offset";
+    $stmt = $conexion->prepare($sql);
+    $stmt->bindValue(':limite', (int)$limite, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}

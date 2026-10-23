@@ -108,3 +108,20 @@ function actualizarPerfilCompleto($id, $nombre, $apellido, $email, $telefono, $d
         ':id'        => $id
     ]);
 }
+
+function contarTotalClientesAdmin() {
+    $conexion = obtenerConexion();
+    $stmt = $conexion->query("SELECT COUNT(*) as total FROM usuarios");
+    $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+    return intval($fila['total']);
+}
+
+function obtenerClientesPaginadosAdmin($limite = 10, $offset = 0) {
+    $conexion = obtenerConexion();
+    $sql = "SELECT id, nombre, email FROM usuarios ORDER BY id DESC LIMIT :limite OFFSET :offset";
+    $stmt = $conexion->prepare($sql);
+    $stmt->bindValue(':limite', (int)$limite, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}

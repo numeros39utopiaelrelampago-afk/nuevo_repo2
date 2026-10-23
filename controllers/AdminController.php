@@ -34,9 +34,24 @@ function verFacturaDetalle() {
 // Listado (L)
 function listarClientesAdmin() {
     verificarEsAdmin();
-    $clientes = obtenerTodosLosClientes();
+
+    $porPagina = 10;
+    $paginaActual = isset($_GET['p']) ? max(1, intval($_GET['p'])) : 1;
+
+    $totalClientes = contarTotalClientesAdmin();
+    $totalPaginas  = ceil($totalClientes / $porPagina);
+    if ($totalPaginas < 1) $totalPaginas = 1;
+
+    if ($paginaActual > $totalPaginas) {
+        $paginaActual = $totalPaginas;
+    }
+
+    $offset = ($paginaActual - 1) * $porPagina;
+    $clientes = obtenerClientesPaginadosAdmin($porPagina, $offset);
+
     $mensaje = isset($_GET['mensaje']) ? $_GET['mensaje'] : '';
-    $error = isset($_GET['error']) ? $_GET['error'] : '';
+    $error   = isset($_GET['error']) ? $_GET['error'] : '';
+
     require_once __DIR__ . '/../views/admin/clientes.php';
 }
 
@@ -97,9 +112,24 @@ function borrarClienteAdmin() {
 // Listado (L)
 function listarProductosAdmin() {
     verificarEsAdmin();
-    $productos = obtenerTodosLosProductosAdmin();
+
+    $porPagina = 10;
+    $paginaActual = isset($_GET['p']) ? max(1, intval($_GET['p'])) : 1;
+
+    $totalProductos = contarTotalProductosAdmin();
+    $totalPaginas   = ceil($totalProductos / $porPagina);
+    if ($totalPaginas < 1) $totalPaginas = 1;
+
+    if ($paginaActual > $totalPaginas) {
+        $paginaActual = $totalPaginas;
+    }
+
+    $offset = ($paginaActual - 1) * $porPagina;
+    $productos = obtenerProductosPaginadosAdmin($porPagina, $offset);
+
     $mensaje = isset($_GET['mensaje']) ? $_GET['mensaje'] : '';
     $error   = isset($_GET['error']) ? $_GET['error'] : '';
+
     require_once __DIR__ . '/../views/admin/productos.php';
 }
 
