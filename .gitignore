@@ -8,8 +8,5 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Fotos subidas
-/assets/img/productos/*
-
 # Mantener el backup de la BD
 !database/miweb.sql
