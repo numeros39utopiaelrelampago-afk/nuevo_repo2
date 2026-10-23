@@ -6,7 +6,6 @@ include __DIR__ . '/../../includes/head.php';
 <?php require_once __DIR__ . '/../layouts/admin_nav.php'; ?>
 
 <main>
-    <h2>Gestión de Clientes (ABML)</h2>
 
     <?php if (!empty($mensaje)): ?>
         <p style="color: green;"><strong><?php echo htmlspecialchars($mensaje); ?></strong></p>
@@ -24,7 +23,7 @@ include __DIR__ . '/../../includes/head.php';
     </fieldset>
 
     <!-- LISTADO, MODIFICACIÓN Y BAJA -->
-    <h3>Clientes Registrados</h3>
+    <legend><strong>Clientes Registrados</strong></legend>
     <table class="table table-striped table-hover border">
         <thead class="table-dark">
             <tr>

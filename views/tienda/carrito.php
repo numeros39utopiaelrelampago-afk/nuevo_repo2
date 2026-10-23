@@ -29,7 +29,6 @@ include __DIR__ . '/../../includes/header.php';
 
 <div class="mb-4">
     <button type="button" class="btn btn-secondary" onclick="vaciarCarrito()">Vaciar Carrito</button>
-    <a href="listado.php" class="btn btn-link">← Seguir comprando</a>
 </div>
 
 <hr>
