@@ -50,8 +50,16 @@ include __DIR__ . '/../../includes/head.php';
             </p>
 
             <p>
-                <label>Categoría:</label><br>
-                <input type="text" name="categoria" value="<?php echo htmlspecialchars($producto['categoria']); ?>" required style="width: 100%;">
+                <label class="form-label fw-bold">Categoría:</label><br>
+                <select name="categoria" class="form-select" required style="width: 100%;">
+                    <option value="cartas sueltas" <?php echo ($producto['categoria'] === 'cartas sueltas') ? 'selected' : ''; ?>>Cartas sueltas</option>
+                    <option value="cartas OCG" <?php echo ($producto['categoria'] === 'cartas OCG') ? 'selected' : ''; ?>>Cartas OCG</option>
+                    <option value="binders" <?php echo ($producto['categoria'] === 'binders') ? 'selected' : ''; ?>>Binders</option>
+                    <option value="deckbox" <?php echo ($producto['categoria'] === 'deckbox') ? 'selected' : ''; ?>>Deckbox</option>
+                    <option value="lotes" <?php echo ($producto['categoria'] === 'lotes') ? 'selected' : ''; ?>>Lotes</option>
+                    <option value="playmats" <?php echo ($producto['categoria'] === 'playmats') ? 'selected' : ''; ?>>Playmats</option>
+                    <option value="tins" <?php echo ($producto['categoria'] === 'tins') ? 'selected' : ''; ?>>Tins</option>
+                </select>
             </p>
             <button type="submit" class="btn btn-primary">Guardar Cambios</button>
             <a href="index.php?accion=admin_productos" class="btn btn-primary">Cancelar</a>

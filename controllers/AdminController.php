@@ -136,6 +136,15 @@ function listarProductosAdmin() {
 // Alta (A)[cite: 2, 6]
 function crearProductoAdmin() {
     verificarEsAdmin();
+
+    $categoriasValidas = ['cartas sueltas', 'cartas OCG', 'binders', 'deckbox', 'lotes', 'playmats', 'tins'];
+$categoria = trim($_POST['categoria']);
+
+if (!in_array($categoria, $categoriasValidas, true)) {
+    header("Location: index.php?accion=admin_productos&error=Categoría no válida");
+    exit;
+}
+
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $nombre    = trim($_POST['nombre']);
         $precio    = floatval($_POST['precio']);
@@ -156,6 +165,7 @@ function crearProductoAdmin() {
 // Modificación (M)[cite: 2, 6]
 function editarProductoAdmin() {
     verificarEsAdmin();
+
     $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -183,6 +193,13 @@ function editarProductoAdmin() {
             exit;
         }
 
+        // 4. Validar categoría contra la lista blanca fija
+        $categoriasValidas = ['cartas sueltas', 'cartas OCG', 'binders', 'deckbox', 'lotes', 'playmats', 'tins'];
+        if (!in_array($categoria, $categoriasValidas, true)) {
+            header("Location: index.php?accion=admin_prod_editar&id=$id&error=Categoría no válida");
+            exit;
+        }
+
         // Si pasa todas las validaciones, actualizamos en la base de datos
         actualizarProducto($id, $nombre, $precio, $stock, $rareza, $categoria);
         header("Location: index.php?accion=admin_productos&mensaje=Carta modificada con éxito");
@@ -202,6 +219,7 @@ function editarProductoAdmin() {
     $error = isset($_GET['error']) ? $_GET['error'] : '';
     require_once __DIR__ . '/../views/admin/producto_editar.php';
 }
+
 // Baja (B)[cite: 2]
 function borrarProductoAdmin() {
     verificarEsAdmin();
