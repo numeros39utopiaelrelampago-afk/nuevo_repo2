@@ -17,7 +17,7 @@ include __DIR__ . '/../../includes/head.php';
         <legend><strong>Alta de Nuevo Cliente</strong></legend>
         <form method="POST" action="index.php?accion=admin_cliente_crear">
             <p>Usuario: <input type="text" name="nombre" required></p>
-            <p>Email: <input type="text" name="email" required></p>
+            <p>Email: <input type="email" name="email" required placeholder="ejemplo@correo.com">
             <p>Contraseña: <input type="password" name="pass" required></p>
             <button type="submit" class="btn btn-primary">Guardar Cambios</button>
         </form>
@@ -45,7 +45,7 @@ include __DIR__ . '/../../includes/head.php';
     <a href="index.php?accion=admin_cliente_eliminar&id=<?php echo $c['id']; ?>" 
        class="btn btn-sm btn-danger text-white" 
        style="background-color: #dc3545;" 
-       onclick="return confirm('¿Eliminar este cliente?');">Baja</a>
+       onclick="return confirm('¿Eliminar cliente?');">Baja</a>
 </td>
                 </tr>
             <?php endforeach; ?>

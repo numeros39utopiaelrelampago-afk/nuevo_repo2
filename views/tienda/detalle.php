@@ -48,10 +48,10 @@ if (!file_exists($rutaImagen)) {
 
         <!-- Botón que invoca la función JS nativa ya creada -->
         <button type="button" 
-                onclick="agregarProducto(<?php echo $producto['id']; ?>, '<?php echo addslashes($producto['nombre']); ?>', <?php echo $producto['precio']; ?>)"
-                style="padding: 12px 24px; font-size: 16px; background-color: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; width: fit-content;">
-            🛒 Agregar al Carrito
-        </button>
+        class="btn btn-primary"
+        onclick="agregarProducto(<?php echo $producto['id']; ?>, '<?php echo addslashes($producto['nombre']); ?>', <?php echo $producto['precio']; ?>, <?php echo $producto['stock']; ?>)">
+    🛒 Agregar al Carrito
+</button>
     </div>
 
 </section>

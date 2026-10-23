@@ -114,9 +114,11 @@ include __DIR__ . '/../../includes/header.php';
                 <p><small>Stock: <?php echo $prod['stock']; ?></small></p>
 
                 <!-- Botón directo de agregar rápido al carrito -->
-                <button type="button" onclick="agregarProducto(<?php echo $prod['id']; ?>, '<?php echo addslashes($prod['nombre']); ?>', <?php echo $prod['precio']; ?>)">
-                    Agregar al Carrito
-                </button>
+                <button type="button" 
+        class="btn btn-sm btn-dark w-100 mt-2" 
+        onclick="agregarProducto(<?php echo $prod['id']; ?>, '<?php echo addslashes($prod['nombre']); ?>', <?php echo $prod['precio']; ?>, <?php echo $prod['stock']; ?>)">
+    Agregar al Carrito
+</button>
             </div>
         <?php endforeach; ?>
     <?php endif; ?>

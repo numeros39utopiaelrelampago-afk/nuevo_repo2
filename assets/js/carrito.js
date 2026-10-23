@@ -1,57 +1,77 @@
 // ==========================================
-// 1. FUNCIONES AUXILIARES DE LOCALSTORAGE
+// 1. CLAVE DINÁMICA POR USUARIO
 // ==========================================
+function obtenerClaveStorage() {
+    // Si hay un usuario logueado usa "carrito_5", si no "carrito_invitado"
+    var id = (typeof USUARIO_ID_ACTUAL !== "undefined") ? USUARIO_ID_ACTUAL : "invitado";
+    return "carrito_" + id;
+}
 
-// Obtiene el array del carrito guardado en el navegador
 function obtenerCarritoStorage() {
-    var guardado = localStorage.getItem("carrito");
+    var clave = obtenerClaveStorage();
+    var guardado = localStorage.getItem(clave);
     if (guardado) {
-        return JSON.parse(guardado);
+        try {
+            return JSON.parse(guardado);
+        } catch (e) {
+            return [];
+        }
     }
     return [];
 }
 
-// Guarda el array actual del carrito en localStorage
 function guardarCarritoStorage(carrito) {
-    localStorage.setItem("carrito", JSON.stringify(carrito));
+    var clave = obtenerClaveStorage();
+    localStorage.setItem(clave, JSON.stringify(carrito));
 }
 
 // ==========================================
-// 2. ACCIONES DEL CARRITO
+// 2. ACCIONES CON CONTROL DE STOCK
 // ==========================================
+function agregarProducto(id, nombre, precio, stockMaximo) {
+    id = parseInt(id);
+    precio = parseFloat(precio);
+    stockMaximo = parseInt(stockMaximo);
 
-// Agrega un producto o incrementa su cantidad si ya existía
-function agregarProducto(id, nombre, precio) {
+    // Validación 1: El producto directamente no tiene stock
+    if (stockMaximo <= 0) {
+        alert("Este producto no tiene stock disponible.");
+        return;
+    }
+
     var carrito = obtenerCarritoStorage();
     var encontrado = false;
 
-    // Recorremos el carrito para ver si ya fue agregado antes
     for (var i = 0; i < carrito.length; i++) {
         if (carrito[i].id === id) {
+            // Validación 2: No permitir agregar más del stock existente
+            if (carrito[i].cantidad >= stockMaximo) {
+                alert("No podés agregar más unidades. El stock máximo disponible es: " + stockMaximo);
+                return;
+            }
             carrito[i].cantidad += 1;
             encontrado = true;
             break;
         }
     }
 
-    // Si es un producto nuevo en el carrito, lo insertamos
     if (!encontrado) {
         carrito.push({
             id: id,
             nombre: nombre,
-            precio: parseFloat(precio),
-            cantidad: 1
+            precio: precio,
+            cantidad: 1,
+            stockMaximo: stockMaximo
         });
     }
 
-    // Persistimos el cambio y actualizamos la interfaz
     guardarCarritoStorage(carrito);
     actualizarContadorCarrito();
     alert("¡" + nombre + " agregado al carrito!");
 }
 
-// Elimina por completo un producto del carrito según su id
 function eliminarProducto(id) {
+    id = parseInt(id);
     var carrito = obtenerCarritoStorage();
     var nuevoCarrito = [];
 
@@ -63,28 +83,19 @@ function eliminarProducto(id) {
 
     guardarCarritoStorage(nuevoCarrito);
     actualizarContadorCarrito();
-
-    // Si estamos en la página del carrito, repintamos la tabla
-    if (document.getElementById("tabla-carrito")) {
-        renderizarTablaCarrito();
-    }
+    renderizarTablaCarrito();
 }
 
-// Vacía todo el carrito
 function vaciarCarrito() {
-    localStorage.removeItem("carrito");
+    var clave = obtenerClaveStorage();
+    localStorage.removeItem(clave);
     actualizarContadorCarrito();
-
-    if (document.getElementById("tabla-carrito")) {
-        renderizarTablaCarrito();
-    }
+    renderizarTablaCarrito();
 }
 
 // ==========================================
 // 3. ACTUALIZACIÓN VISUAL (DOM)
 // ==========================================
-
-// Actualiza el número de ítems visible en la barra de navegación
 function actualizarContadorCarrito() {
     var elementoContador = document.getElementById("cantidad-carrito");
     if (!elementoContador) return;
@@ -99,7 +110,6 @@ function actualizarContadorCarrito() {
     elementoContador.textContent = totalItems;
 }
 
-// Dibuja los productos en la tabla de la vista views/tienda/carrito.php
 function renderizarTablaCarrito() {
     var cuerpoTabla = document.getElementById("cuerpo-tabla-carrito");
     var elementoTotal = document.getElementById("total-pagar");
@@ -112,7 +122,7 @@ function renderizarTablaCarrito() {
     var total = 0;
 
     if (carrito.length === 0) {
-        cuerpoTabla.innerHTML = "<tr><td colspan='5' style='text-align:center;'>El carrito está vacío.</td></tr>";
+        cuerpoTabla.innerHTML = "<tr><td colspan='5' class='text-center py-4 text-muted'>El carrito está vacío.</td></tr>";
         if (elementoTotal) elementoTotal.textContent = "0.00";
         if (inputCarritoJson) inputCarritoJson.value = "[]";
         return;
@@ -124,12 +134,13 @@ function renderizarTablaCarrito() {
         total += subtotal;
 
         var fila = document.createElement("tr");
+        fila.className = "align-middle";
         fila.innerHTML =
-            "<td>" + item.nombre + "</td>" +
+            "<td><strong>" + item.nombre + "</strong></td>" +
             "<td>$" + item.precio.toFixed(2) + "</td>" +
             "<td>" + item.cantidad + "</td>" +
             "<td>$" + subtotal.toFixed(2) + "</td>" +
-            "<td><button type='button' onclick='eliminarProducto(" + item.id + ")'>Eliminar</button></td>";
+            "<td><button type='button' class='btn btn-sm btn-outline-danger' onclick='eliminarProducto(" + item.id + ")'>Eliminar</button></td>";
 
         cuerpoTabla.appendChild(fila);
     }
@@ -138,20 +149,13 @@ function renderizarTablaCarrito() {
         elementoTotal.textContent = total.toFixed(2);
     }
 
-    // Asignamos el JSON al input hidden del formulario para enviarlo a PHP al pagar
     if (inputCarritoJson) {
         inputCarritoJson.value = JSON.stringify(carrito);
     }
 }
 
-// ==========================================
-// 4. INICIALIZACIÓN AL CARGAR LA PÁGINA
-// ==========================================
+// Inicialización automática al cargar cualquier pantalla
 window.addEventListener("DOMContentLoaded", function() {
     actualizarContadorCarrito();
-
-    // Si la página actual contiene la tabla del carrito, la dibujamos
-    if (document.getElementById("tabla-carrito")) {
-        renderizarTablaCarrito();
-    }
+    renderizarTablaCarrito();
 });

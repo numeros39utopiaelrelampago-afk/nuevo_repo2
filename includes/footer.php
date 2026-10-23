@@ -1,14 +1,18 @@
 </main>
 
 <footer>
-    <hr>
-    <p style="text-align: center; color: #777; font-size: 13px; margin: 20px 0;">
-        © <?php echo date('Y'); ?> Matías Quinteros - Trabajo Final Programación 2
-    </p>
+    <p>© <?php echo date('Y'); ?> Matías Quinteros - Trabajo Final Programación 2</p>
 </footer>
 
-<!-- Carga global del script JS nativo con localStorage -->
+<!-- 1. JS de Bootstrap -->
 <script src="assets/js/bootstrap.bundle.min.js"></script>
+
+<!-- 2. Variable global para aislar el carrito por usuario -->
+<script>
+    var USUARIO_ID_ACTUAL = "<?php echo isset($_SESSION['id_user']) ? $_SESSION['id_user'] : 'invitado'; ?>";
+</script>
+
+<!-- Carga global del script JS nativo con localStorage -->
 <script src="assets/js/carrito.js"></script>
 </body>
 </html>
