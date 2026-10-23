@@ -124,6 +124,46 @@ include __DIR__ . '/../../includes/header.php';
     <?php endif; ?>
 </section>
 
+<!-- CONTROLES DE PAGINACIÓN -->
+<?php if ($totalPaginas > 1): ?>
+    <nav aria-label="Navegación de páginas" class="my-4">
+        <ul class="pagination justify-content-center">
+
+            <!-- Botón Anterior -->
+            <li class="page-item <?php echo ($paginaActual <= 1) ? 'disabled' : ''; ?>">
+                <?php 
+                    $parametrosUrl['p'] = $paginaActual - 1;
+                    $urlAnterior = 'listado.php?' . http_build_query($parametrosUrl);
+                ?>
+                <a class="page-link" href="<?php echo htmlspecialchars($urlAnterior); ?>">« Anterior</a>
+            </li>
+
+            <!-- Números de Página -->
+            <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+                <?php 
+                    $parametrosUrl['p'] = $i;
+                    $urlPagina = 'listado.php?' . http_build_query($parametrosUrl);
+                ?>
+                <li class="page-item <?php echo ($i === $paginaActual) ? 'active' : ''; ?>">
+                    <a class="page-link" href="<?php echo htmlspecialchars($urlPagina); ?>">
+                        <?php echo $i; ?>
+                    </a>
+                </li>
+            <?php endfor; ?>
+
+            <!-- Botón Siguiente -->
+            <li class="page-item <?php echo ($paginaActual >= $totalPaginas) ? 'disabled' : ''; ?>">
+                <?php 
+                    $parametrosUrl['p'] = $paginaActual + 1;
+                    $urlSiguiente = 'listado.php?' . http_build_query($parametrosUrl);
+                ?>
+                <a class="page-link" href="<?php echo htmlspecialchars($urlSiguiente); ?>">Siguiente »</a>
+            </li>
+
+        </ul>
+    </nav>
+<?php endif; ?>
+
 <?php 
 include __DIR__ . '/../../includes/footer.php'; 
 ?>

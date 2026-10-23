@@ -1,6 +1,101 @@
 <?php
 require_once __DIR__ . '/../config/conexion.php';
 
+// 1. Contar el total de productos coincidentes
+function contarProductosConFiltro($termino = '', $categorias = [], $rarezas = []) {
+    $conexion = obtenerConexion();
+    $sql = "SELECT COUNT(*) as total FROM productos WHERE stock > 0";
+    $parametros = [];
+
+    if (!empty($termino)) {
+        $sql .= " AND nombre LIKE :termino";
+        $parametros[':termino'] = '%' . $termino . '%';
+    }
+
+    if (!empty($categorias) && is_array($categorias)) {
+        $categorias = array_filter($categorias);
+        if (!empty($categorias)) {
+            $placeholdersCat = [];
+            foreach ($categorias as $i => $cat) {
+                $clave = ":cat_" . $i;
+                $placeholdersCat[] = $clave;
+                $parametros[$clave] = $cat;
+            }
+            $sql .= " AND categoria IN (" . implode(', ', $placeholdersCat) . ")";
+        }
+    }
+
+    if (!empty($rarezas) && is_array($rarezas)) {
+        $rarezas = array_filter($rarezas);
+        if (!empty($rarezas)) {
+            $placeholdersRar = [];
+            foreach ($rarezas as $i => $rar) {
+                $clave = ":rar_" . $i;
+                $placeholdersRar[] = $clave;
+                $parametros[$clave] = $rar;
+            }
+            $sql .= " AND rareza IN (" . implode(', ', $placeholdersRar) . ")";
+        }
+    }
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute($parametros);
+    $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+    return intval($fila['total']);
+}
+
+// 2. Traer la porción (página) de 50 registros usando LIMIT y OFFSET
+function buscarProductosPaginados($termino = '', $categorias = [], $rarezas = [], $limite = 50, $offset = 0) {
+    $conexion = obtenerConexion();
+    $sql = "SELECT id, nombre, precio, stock, rareza, categoria FROM productos WHERE stock > 0";
+    $parametros = [];
+
+    if (!empty($termino)) {
+        $sql .= " AND nombre LIKE :termino";
+        $parametros[':termino'] = '%' . $termino . '%';
+    }
+
+    if (!empty($categorias) && is_array($categorias)) {
+        $categorias = array_filter($categorias);
+        if (!empty($categorias)) {
+            $placeholdersCat = [];
+            foreach ($categorias as $i => $cat) {
+                $clave = ":cat_" . $i;
+                $placeholdersCat[] = $clave;
+                $parametros[$clave] = $cat;
+            }
+            $sql .= " AND categoria IN (" . implode(', ', $placeholdersCat) . ")";
+        }
+    }
+
+    if (!empty($rarezas) && is_array($rarezas)) {
+        $rarezas = array_filter($rarezas);
+        if (!empty($rarezas)) {
+            $placeholdersRar = [];
+            foreach ($rarezas as $i => $rar) {
+                $clave = ":rar_" . $i;
+                $placeholdersRar[] = $clave;
+                $parametros[$clave] = $rar;
+            }
+            $sql .= " AND rareza IN (" . implode(', ', $placeholdersRar) . ")";
+        }
+    }
+
+    // PDO requiere pasar LIMIT y OFFSET como enteros
+    $sql .= " ORDER BY nombre ASC LIMIT :limite OFFSET :offset";
+
+    $stmt = $conexion->prepare($sql);
+
+    foreach ($parametros as $clave => $valor) {
+        $stmt->bindValue($clave, $valor);
+    }
+    $stmt->bindValue(':limite', (int)$limite, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 // Obtiene todas las categorías disponibles
 function obtenerCategorias() {
     $conexion = obtenerConexion();
