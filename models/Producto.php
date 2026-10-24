@@ -229,7 +229,7 @@ function contarTotalProductosAdmin() {
 
 function obtenerProductosPaginadosAdmin($limite = 10, $offset = 0) {
     $conexion = obtenerConexion();
-    $sql = "SELECT * FROM productos ORDER BY id DESC LIMIT :limite OFFSET :offset";
+    $sql = "SELECT * FROM productos ORDER BY id ASC LIMIT :limite OFFSET :offset";
     $stmt = $conexion->prepare($sql);
     $stmt->bindValue(':limite', (int)$limite, PDO::PARAM_INT);
     $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
