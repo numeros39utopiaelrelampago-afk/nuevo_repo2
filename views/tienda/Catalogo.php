@@ -48,7 +48,7 @@ include __DIR__ . '/../../includes/header.php';
 
     <!-- Select múltiple de Categorías -->
     <div>
-        <label for="categoria" class="form-label fw-bold mb-1">Categorías:</label>
+        <label for="categoria" class="form-label fw-bold mb-1">Categoría:</label>
         <select id="categoria" name="categoria[]" multiple size="1" class="form-select" style="min-width: 170px;">
             <?php foreach ($listaCategorias as $cat): ?>
                 <option value="<?php echo htmlspecialchars($cat['categoria']); ?>"
@@ -61,7 +61,7 @@ include __DIR__ . '/../../includes/header.php';
 
     <!-- Select múltiple de Rarezas -->
     <div>
-        <label for="rareza" class="form-label fw-bold mb-1">Rarezas:</label>
+        <label for="rareza" class="form-label fw-bold mb-1">Rareza:</label>
         <select id="rareza" name="rareza[]" multiple size="1" class="form-select" style="min-width: 170px;">
             <?php foreach ($listaRarezas as $r): ?>
                 <option value="<?php echo htmlspecialchars($r['rareza']); ?>"

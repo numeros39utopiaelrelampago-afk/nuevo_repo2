@@ -62,7 +62,7 @@ include __DIR__ . '/../../includes/head.php';
                                         <a href="index.php?accion=admin_cliente_eliminar&id=<?php echo $c['id']; ?>" 
                                            class="btn btn-sm btn-danger text-white" 
                                            style="background-color: #dc3545 !important;"
-                                           onclick="return confirm('¿Seguro que querés eliminar este cliente?');">Baja</a>
+                                           onclick="return confirm('¿Eliminar cliente?');">Baja</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

@@ -1,61 +1,66 @@
 <?php
-require_once __DIR__ . '/../config/conexion.php';
+require_once __DIR__ . '/../config/conexion.php'; // Ajustá la ruta a tu archivo de conexión
 
-function registrarVentaCompleta($idUser, $itemsCarrito) {
+function registrarVentaCompleta($idUsuario, $itemsCarrito) {
     $conexion = obtenerConexion();
 
     try {
-        // Iniciamos la transacción atómica
+        // Iniciamos la transacción
         $conexion->beginTransaction();
 
-        // 1. Calcular el total acumulado
-        $totalVenta = 0;
+        // 1. Calcular el total general verificando precios y stock real
+        $totalGeneral = 0;
         foreach ($itemsCarrito as $item) {
-            $totalVenta += ($item['precio'] * $item['cantidad']);
+            $stmt = $conexion->prepare("SELECT precio, stock FROM productos WHERE id = :id FOR UPDATE");
+            $stmt->execute([':id' => $item['id']]);
+            $prodBd = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$prodBd) {
+                throw new Exception("El producto ID " . $item['id'] . " ya no existe.");
+            }
+
+            if ($prodBd['stock'] < $item['cantidad']) {
+                throw new Exception("Stock insuficiente para: " . $item['nombre']);
+            }
+
+            $totalGeneral += floatval($prodBd['precio']) * intval($item['cantidad']);
         }
 
-        // 2. Insertar en la tabla 'ventas'
-        $sqlVenta = "INSERT INTO ventas (id_user, total) VALUES (:id_user, :total)";
-        $stmtVenta = $conexion->prepare($sqlVenta);
+        // 2. Insertar la venta en la tabla 'ventas'
+        $stmtVenta = $conexion->prepare("INSERT INTO ventas (id_usuario, total, fecha) VALUES (:id_usuario, :total, NOW())");
         $stmtVenta->execute([
-            ':id_user' => $idUser,
-            ':total'   => $totalVenta
+            ':id_usuario' => $idUsuario,
+            ':total'      => $totalGeneral
         ]);
 
-        // Obtenemos el id autoincremental de la venta recién creada
-        $idVentaGenerada = $conexion->lastInsertId();
+        $idVenta = $conexion->lastInsertId();
 
-        // 3. Preparar sentencias para insertar en 'item' y descontar stock
-        $sqlItem = "INSERT INTO item (id_prod, id_venta, cantidad, precio) 
-                    VALUES (:id_prod, :id_venta, :cantidad, :precio)";
-        $stmtItem = $conexion->prepare($sqlItem);
+        // 3. Insertar cada ítem y descontar stock
+        $stmtItem = $conexion->prepare("INSERT INTO items (id_venta, id_producto, cantidad, precio_unitario) VALUES (:id_venta, :id_producto, :cantidad, :precio_unitario)");
+        $stmtStock = $conexion->prepare("UPDATE productos SET stock = stock - :cantidad WHERE id = :id");
 
-        $sqlStock = "UPDATE productos SET stock = stock - :cantidad WHERE id = :id";
-        $stmtStock = $conexion->prepare($sqlStock);
-
-        // 4. Recorrer cada producto del carrito
-        foreach ($itemsCarrito as $prod) {
-            // Insertar detalle de factura en 'item'
+        foreach ($itemsCarrito as $item) {
+            // Guardar detalle
             $stmtItem->execute([
-                ':id_prod'   => $prod['id'],
-                ':id_venta'  => $idVentaGenerada,
-                ':cantidad'  => $prod['cantidad'],
-                ':precio'    => $prod['precio']
+                ':id_venta'        => $idVenta,
+                ':id_producto'     => $item['id'],
+                ':cantidad'        => $item['cantidad'],
+                ':precio_unitario' => $item['precio']
             ]);
 
-            // Descontar el stock en la tabla 'productos'
+            // Descontar stock
             $stmtStock->execute([
-                ':cantidad'  => $prod['cantidad'],
-                ':id'        => $prod['id']
+                ':cantidad' => $item['cantidad'],
+                ':id'       => $item['id']
             ]);
         }
 
-        // Si todo salió bien, consolidamos los cambios
+        // Si todo salió bien, confirmamos la operación
         $conexion->commit();
-        return $idVentaGenerada;
+        return $idVenta;
 
     } catch (Exception $e) {
-        // Si algo falló, revertimos todo para no dejar registros corruptos
+        // Si algo falla, revertimos todos los cambios
         $conexion->rollBack();
         return false;
     }

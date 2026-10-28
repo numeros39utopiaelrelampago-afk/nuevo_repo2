@@ -1,40 +1,45 @@
 <?php
 require_once __DIR__ . '/../models/Venta.php';
 
-function finalizarCompra() {
-    // 1. Verificar que el usuario tenga sesión iniciada
+function procesarCompra() {
+    // 1. Verificar sesión activa
     if (!isset($_SESSION['id_user'])) {
-        header("Location: index.php?accion=login&error=Inicia sesion para finalizar la compra");
+        header("Location: index.php?accion=login");
         exit;
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // 2. Tomar el texto JSON enviado desde el input hidden del carrito
-        $carritoJson = isset($_POST['carrito_datos']) ? $_POST['carrito_datos'] : '';
-        $items = json_decode($carritoJson, true);
+        $idUsuario = $_SESSION['id_user'];
+        $datosJson = isset($_POST['carrito_datos']) ? $_POST['carrito_datos'] : '[]';
+        $items = json_decode($datosJson, true);
 
-        // 3. Validar que no venga vacío o malformado
         if (empty($items) || !is_array($items)) {
-            header("Location: index.php?accion=carrito&error=El carrito esta vacio");
+            header("Location: index.php?accion=carrito&error=El carrito está vacío");
             exit;
         }
 
-        $idUsuario = $_SESSION['id_user'];
-
-        // 4. Delegar la inserción en base de datos al Modelo
         $idVenta = registrarVentaCompleta($idUsuario, $items);
 
         if ($idVenta) {
-            // Guardamos el ID de la venta en una variable para la vista
-            require_once __DIR__ . '/../views/tienda/compra_exitosa.php';
+            // Vaciar el carrito de este usuario en localStorage y redirigir
+            $claveStorage = 'carrito_' . $idUsuario;
+            echo "<!DOCTYPE html>
+            <html lang='es'>
+            <head><meta charset='UTF-8'></head>
+            <body>
+                <script>
+                    localStorage.removeItem('{$claveStorage}');
+                    alert('¡Compra #{$idVenta} confirmada con éxito!');
+                    window.location.href = 'index.php?accion=historial_pedidos&mensaje=Compra exitosa';
+                </script>
+            </body>
+            </html>";
+            exit;
         } else {
-            header("Location: index.php?accion=carrito&error=Ocurrio un error al procesar la venta");
+            header("Location: index.php?accion=carrito&error=Hubo un problema al procesar la compra o no hay stock disponible");
+            exit;
         }
-        exit;
     }
-
-    header("Location: index.php?accion=catalogo");
-    exit;
 }
 
 // Muestra el listado de compras realizadas por el cliente logueado

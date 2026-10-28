@@ -15,7 +15,7 @@
             </div>
 
             <?php if (isset($_SESSION['tipo']) && $_SESSION['tipo'] === 'admin'): ?>
-                <a href="index.php?accion=admin_ventas" style="color: #ffc107;">Panel Admin</a>
+                <a href="index.php?accion=admin_ventas" style="color: #554d35;">Panel Admin</a>
             <?php endif; ?>
 
             <a href="index.php?accion=logout">Cerrar Sesión</a>

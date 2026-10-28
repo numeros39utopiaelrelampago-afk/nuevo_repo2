@@ -32,12 +32,12 @@ switch ($accion) {
         mostrarCarrito();
         break;
     case 'procesar_compra':
-        finalizarCompra();
+        procesarCompra();
         break;
     case 'detalle':
         mostrarDetalleProducto();
         break;
-        case 'mis_pedidos':
+    case 'mis_pedidos':
         mostrarMisPedidos();
         break;
     case 'detalle_pedido':

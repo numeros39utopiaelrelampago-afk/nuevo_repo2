@@ -89,7 +89,7 @@ include __DIR__ . '/../../includes/head.php';
                                         <a href="index.php?accion=admin_prod_eliminar&id=<?php echo $p['id']; ?>" 
                                            class="btn btn-sm btn-danger text-white" 
                                            style="background-color: #dc3545 !important;"
-                                           onclick="return confirm('¿Seguro que querés eliminar esta carta?');">Baja</a>
+                                           onclick="return confirm('¿Eliminar producto?');">Baja</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

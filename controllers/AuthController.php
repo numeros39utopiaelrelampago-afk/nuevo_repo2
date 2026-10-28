@@ -74,10 +74,7 @@ function procesarRegistro() {
 
 // Cierra la sesión y redirige al catálogo
 function cerrarSesion() {
-    // 1. Obtenemos el ID del usuario antes de destruir la sesión
-    $idUsuario = isset($_SESSION['id_user']) ? $_SESSION['id_user'] : null;
-
-    // 2. Destruimos la sesión en el servidor
+    // 1. Destruimos la sesión en el servidor
     $_SESSION = [];
     if (ini_get("session.use_cookies")) {
         $params = session_get_cookie_params();
@@ -88,27 +85,8 @@ function cerrarSesion() {
     }
     session_destroy();
 
-    // 3. Si había un usuario, borramos su clave específica de localStorage en el navegador
-    if ($idUsuario) {
-        $claveStorage = 'carrito_' . $idUsuario;
-        echo "<!DOCTYPE html>
-        <html lang='es'>
-        <head><meta charset='UTF-8'></head>
-        <body>
-            <script>
-                // Borra el carrito del usuario saliente
-                localStorage.removeItem('{$claveStorage}');
-                // También aseguramos dejar el de invitado limpio si hiciera falta
-                localStorage.removeItem('carrito_invitado');
-                // Redirige al catálogo
-                window.location.href = 'listado.php';
-            </script>
-        </body>
-        </html>";
-        exit;
-    }
-
-    // Redirección por defecto si no había sesión iniciada
+    // 2. Redirigir directamente al catálogo
+    // NO borramos la clave de localStorage para que persista al reingresar
     header("Location: listado.php");
     exit;
 }

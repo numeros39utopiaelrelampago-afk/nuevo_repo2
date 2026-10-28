@@ -1,4 +1,4 @@
-        <?php 
+<?php 
 $tituloPagina = "Mi Carrito";
 include __DIR__ . '/../../includes/head.php';
 include __DIR__ . '/../../includes/header.php';
@@ -33,9 +33,15 @@ include __DIR__ . '/../../includes/header.php';
 
 <hr>
 
-<section>
+<section class="mt-4">
+    <?php if (isset($_GET['error'])): ?>
+        <div class="alert alert-danger" style="max-width: 500px;">
+            <?php echo htmlspecialchars($_GET['error']); ?>
+        </div>
+    <?php endif; ?>
+
     <?php if (isset($_SESSION['id_user'])): ?>
-        <form method="POST" action="index.php?accion=procesar_compra" onsubmit="return validarEnvioCompra();">
+        <form id="form-compra" method="POST" action="index.php?accion=procesar_compra" onsubmit="return prepararEnvioCompra();">
             <input type="hidden" name="carrito_datos" id="input-carrito-datos" value="">
 
             <p>Comprador: <strong><?php echo htmlspecialchars($_SESSION['nombre']); ?></strong></p>
@@ -54,12 +60,14 @@ include __DIR__ . '/../../includes/header.php';
 </section>
 
 <script>
-function validarEnvioCompra() {
+function prepararEnvioCompra() {
     var carrito = obtenerCarritoStorage();
-    if (carrito.length === 0) {
+    if (!carrito || carrito.length === 0) {
         alert("Tu carrito está vacío.");
         return false;
     }
+    // Aseguramos que el input oculto tenga la versión más reciente del carrito
+    document.getElementById("input-carrito-datos").value = JSON.stringify(carrito);
     return true;
 }
 </script>
