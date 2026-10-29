@@ -2,9 +2,19 @@
 require_once __DIR__ . '/../models/Producto.php';
 
 function mostrarCatalogo() {
-    $termino    = isset($_GET['buscar']) ? trim($_GET['buscar']) : '';
-    $categorias = isset($_GET['categoria']) && is_array($_GET['categoria']) ? $_GET['categoria'] : [];
-    $rarezas    = isset($_GET['rareza']) && is_array($_GET['rareza']) ? $_GET['rareza'] : [];
+    $termino = isset($_GET['buscar']) ? trim($_GET['buscar']) : '';
+
+    // Normalización de categorías para recibir siempre un array con IDs enteros
+    $categorias = [];
+    if (isset($_GET['categoria'])) {
+        if (is_array($_GET['categoria'])) {
+            $categorias = array_map('intval', $_GET['categoria']);
+        } elseif (!empty($_GET['categoria'])) {
+            $categorias = [intval($_GET['categoria'])];
+        }
+    }
+
+    $rarezas = isset($_GET['rareza']) && is_array($_GET['rareza']) ? $_GET['rareza'] : [];
 
     // Parámetros de paginación
     $porPagina = 50;
@@ -46,7 +56,6 @@ function mostrarDetalleProducto() {
     require_once __DIR__ . '/../views/tienda/detalle.php';
 }
 
-// En controllers/CatalogoController.php
 function mostrarCarrito() {
     require_once __DIR__ . '/../views/tienda/carrito.php';
 }

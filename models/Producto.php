@@ -13,17 +13,18 @@ function contarProductosConFiltro($termino = '', $categorias = [], $rarezas = []
     }
 
     if (!empty($categorias) && is_array($categorias)) {
-        $categorias = array_filter($categorias);
-        if (!empty($categorias)) {
-            $placeholdersCat = [];
-            foreach ($categorias as $i => $cat) {
-                $clave = ":cat_" . $i;
-                $placeholdersCat[] = $clave;
-                $parametros[$clave] = $cat;
-            }
-            $sql .= " AND categoria IN (" . implode(', ', $placeholdersCat) . ")";
+    $categorias = array_filter($categorias);
+    if (!empty($categorias)) {
+        $placeholdersCat = [];
+        foreach ($categorias as $i => $catId) {
+            $clave = ":cat_" . $i;
+            $placeholdersCat[] = $clave;
+            $parametros[$clave] = (int)$catId;
         }
+        // En el conteo usamos id_categoria
+        $sql .= " AND id_categoria IN (" . implode(', ', $placeholdersCat) . ")";
     }
+}
 
     if (!empty($rarezas) && is_array($rarezas)) {
         $rarezas = array_filter($rarezas);
@@ -47,24 +48,31 @@ function contarProductosConFiltro($termino = '', $categorias = [], $rarezas = []
 // 2. Traer la porción (página) de 50 registros usando LIMIT y OFFSET
 function buscarProductosPaginados($termino = '', $categorias = [], $rarezas = [], $limite = 50, $offset = 0) {
     $conexion = obtenerConexion();
-    $sql = "SELECT id, nombre, precio, stock, rareza, categoria FROM productos WHERE stock > 0";
+
+    // Hacemos JOIN para traer los datos del producto y el nombre de la categoria
+    $sql = "SELECT p.id, p.nombre, p.precio, p.stock, p.rareza, p.id_categoria, c.nombre AS categoria 
+        FROM productos p
+        LEFT JOIN categorias c ON p.id_categoria = c.id
+        WHERE p.stock > 0";
+    
     $parametros = [];
 
     if (!empty($termino)) {
-        $sql .= " AND nombre LIKE :termino";
+        $sql .= " AND p.nombre LIKE :termino";
         $parametros[':termino'] = '%' . $termino . '%';
     }
 
+    // Filtrar por ID de categoría (los valores que vienen del select)
     if (!empty($categorias) && is_array($categorias)) {
         $categorias = array_filter($categorias);
         if (!empty($categorias)) {
             $placeholdersCat = [];
-            foreach ($categorias as $i => $cat) {
+            foreach ($categorias as $i => $catId) {
                 $clave = ":cat_" . $i;
                 $placeholdersCat[] = $clave;
-                $parametros[$clave] = $cat;
+                $parametros[$clave] = $catId;
             }
-            $sql .= " AND categoria IN (" . implode(', ', $placeholdersCat) . ")";
+            $sql .= " AND p.id_categoria IN (" . implode(', ', $placeholdersCat) . ")";
         }
     }
 
@@ -77,12 +85,11 @@ function buscarProductosPaginados($termino = '', $categorias = [], $rarezas = []
                 $placeholdersRar[] = $clave;
                 $parametros[$clave] = $rar;
             }
-            $sql .= " AND rareza IN (" . implode(', ', $placeholdersRar) . ")";
+            $sql .= " AND p.rareza IN (" . implode(', ', $placeholdersRar) . ")";
         }
     }
 
-    // PDO requiere pasar LIMIT y OFFSET como enteros
-    $sql .= " ORDER BY nombre ASC LIMIT :limite OFFSET :offset";
+    $sql .= " ORDER BY p.nombre ASC LIMIT :limite OFFSET :offset";
 
     $stmt = $conexion->prepare($sql);
 
@@ -95,12 +102,10 @@ function buscarProductosPaginados($termino = '', $categorias = [], $rarezas = []
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
-
 // Obtiene todas las categorías disponibles
 function obtenerCategorias() {
     $conexion = obtenerConexion();
-    $sql = "SELECT DISTINCT categoria FROM productos ORDER BY categoria ASC";
-    $stmt = $conexion->query($sql);
+    $stmt = $conexion->query("SELECT id, nombre FROM categorias ORDER BY nombre ASC");
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
@@ -125,20 +130,21 @@ function buscarProductosConFiltro($termino = '', $categorias = [], $rarezas = []
         $parametros[':termino'] = '%' . $termino . '%';
     }
 
-    // Filtro múltiple por categoría usando IN (...)
+    // Filtro múltiple de categorías
     if (!empty($categorias) && is_array($categorias)) {
-        // Filtrar elementos vacíos si viniera alguno
-        $categorias = array_filter($categorias);
-        if (!empty($categorias)) {
-            $placeholdersCat = [];
-            foreach ($categorias as $indice => $cat) {
-                $clave = ":cat_" . $indice;
-                $placeholdersCat[] = $clave;
-                $parametros[$clave] = $cat;
-            }
-            $sql .= " AND categoria IN (" . implode(', ', $placeholdersCat) . ")";
+    // Limpiamos elementos vacíos o 0
+    $categorias = array_filter($categorias);
+    if (!empty($categorias)) {
+        $placeholdersCat = [];
+        foreach ($categorias as $i => $catId) {
+            $clave = ":cat_" . $i;
+            $placeholdersCat[] = $clave;
+            $parametros[$clave] = (int)$catId;
         }
+        // Usamos p.id_categoria
+        $sql .= " AND p.id_categoria IN (" . implode(', ', $placeholdersCat) . ")";
     }
+}
 
     // Filtro múltiple por rareza usando IN (...)
     if (!empty($rarezas) && is_array($rarezas)) {
@@ -229,7 +235,14 @@ function contarTotalProductosAdmin() {
 
 function obtenerProductosPaginadosAdmin($limite = 10, $offset = 0) {
     $conexion = obtenerConexion();
-    $sql = "SELECT * FROM productos ORDER BY id ASC LIMIT :limite OFFSET :offset";
+    
+    // Hacemos LEFT JOIN para traer el nombre de la categoría como 'categoria'
+    $sql = "SELECT p.*, c.nombre AS categoria 
+            FROM productos p 
+            LEFT JOIN categorias c ON p.id_categoria = c.id 
+            ORDER BY p.id ASC 
+            LIMIT :limite OFFSET :offset";
+
     $stmt = $conexion->prepare($sql);
     $stmt->bindValue(':limite', (int)$limite, PDO::PARAM_INT);
     $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);

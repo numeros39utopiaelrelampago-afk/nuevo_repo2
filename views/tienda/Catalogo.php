@@ -12,14 +12,14 @@ include __DIR__ . '/../../includes/header.php';
    shadow-sm">
     <!-- Slide 1 -->
     <div class="carousel-item active" data-bs-interval="4000">
-        <a href="listado.php?categoria[]=cartas+sueltas&categoria[]=cartas+OCG&categoria[]=lotes">
+        <a href="listado.php?categoria[]=2&categoria[]=3&categoria[]=5">
             <img src="/../assets/img/banner1.jpg" class="d-block w-100 object-fit-cover" style="height: 200px;" alt="Cartas sueltas">
         </a> 
     </div>
 
     <!-- Slide 2 -->
     <div class="carousel-item" data-bs-interval="4000">
-        <a href="listado.php?categoria[]=binders&categoria[]=deckbox&categoria[]=playmats&categoria[]=tins">
+        <a href="listado.php?categoria[]=1&categoria[]=4&categoria[]=6&categoria[]=7">
             <img src="/../assets/img/banner2.jpg" class="d-block w-100 object-fit-cover" style="height: 200px;" alt="Accesorios">
         </a>
     </div>
@@ -47,17 +47,17 @@ include __DIR__ . '/../../includes/header.php';
 </div>
 
     <!-- Select múltiple de Categorías -->
-    <div>
-        <label for="categoria" class="form-label fw-bold mb-1">Categoría:</label>
-        <select id="categoria" name="categoria[]" multiple size="1" class="form-select" style="min-width: 170px;">
-            <?php foreach ($listaCategorias as $cat): ?>
-                <option value="<?php echo htmlspecialchars($cat['categoria']); ?>"
-                    <?php echo in_array($cat['categoria'], $categorias) ? 'selected' : ''; ?>>
-                    <?php echo ucfirst($cat['categoria']); ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </div>
+<div>
+    <label for="categoria" class="form-label fw-bold mb-1">Categoría:</label>
+    <select id="categoria" name="categoria[]" multiple size="1" class="form-select" style="min-width: 170px;">
+        <?php foreach ($listaCategorias as $cat): ?>
+            <option value="<?php echo $cat['id']; ?>"
+                <?php echo in_array($cat['id'], $categorias) ? 'selected' : ''; ?>>
+                <?php echo ucfirst(htmlspecialchars($cat['nombre'])); ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+</div>
 
     <!-- Select múltiple de Rarezas -->
     <div>
@@ -159,7 +159,6 @@ include __DIR__ . '/../../includes/header.php';
                 ?>
                 <a class="page-link" href="<?php echo htmlspecialchars($urlSiguiente); ?>">Siguiente »</a>
             </li>
-
         </ul>
     </nav>
 <?php endif; ?>
