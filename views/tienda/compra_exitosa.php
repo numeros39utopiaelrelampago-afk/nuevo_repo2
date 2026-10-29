@@ -1,34 +1,27 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>¡Compra Confirmada!</title>
-    <link rel="stylesheet" href="assets/css/estilos.css">
-</head>
-<body>
-    <header>
-        <a href="listado.php" class="logo-link" title="Volver al inicio">
-        <img src="assets/img/logo.jpg" alt="Logo Tienda" class="logo-tienda">
-    </a>
-        <nav>
-    <a href="listado.php">Volver al catálogo</a>
-        </nav>
-    </header>
-<main style="text-align: center; margin-top: 40px;">
-        <div style="border: 1px solid #c3e6cb; background-color: #d4edda; color: #155724; display: inline-block; padding: 30px; border-radius: 5px;">
-            <h2>¡Gracias por tu compra, <?php echo htmlspecialchars($_SESSION['nombre']); ?>!</h2>
-            <p>Tu orden ha sido registrada con éxito bajo el comprobante <strong>#<?php echo $idVenta; ?></strong>.</p>
-            <p>Ya puedes consultar el estado o realizar una nueva compra.</p>
-            <br>
-            <a href="index.php?accion=catalogo" style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 3px;">
+<?php 
+$tituloPagina = "Compra Exitosa";
+include __DIR__ . '/../../includes/head.php';
+include __DIR__ . '/../../includes/header.php';
+?>
+
+<div class="container my-5 text-center">
+    <div class="card shadow-sm mx-auto p-4 border-success" style="max-width: 600px; background-color: #d4edda; color: #155724;">
+        <h2 class="mb-3">¡Gracias por tu compra, <?php echo htmlspecialchars($_SESSION['nombre']); ?>!</h2>
+        <p class="fs-5">Tu orden ha sido registrada con éxito bajo el comprobante <strong>#<?php echo htmlspecialchars($idVenta); ?></strong>.</p>
+        <p>Ya podés consultar el estado de tu pedido o realizar una nueva compra.</p>
+        <div class="mt-4">
+            <a href="listado.php" class="btn btn-success btn-lg">
                 Seguir comprando
             </a>
         </div>
-    </main>
+    </div>
+</div>
 
-    <!-- JS para vaciar localStorage una vez confirmada la compra en el servidor -->
-    <script>
-        localStorage.removeItem("carrito");
-    </script>
-</body>
-</html>
+<script>
+    var claveStorage = "carrito_" + "<?php echo isset($_SESSION['id_user']) ? $_SESSION['id_user'] : 'invitado'; ?>";
+    localStorage.removeItem(claveStorage);
+</script>
+
+<?php 
+include __DIR__ . '/../../includes/footer.php'; 
+?>

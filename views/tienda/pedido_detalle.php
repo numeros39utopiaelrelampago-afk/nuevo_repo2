@@ -4,8 +4,6 @@ include __DIR__ . '/../../includes/head.php';
 include __DIR__ . '/../../includes/header.php';
 ?>
 
-<p><a href="index.php?accion=mis_pedidos" style="color: #2563eb; text-decoration: none;">← Volver a Mis Pedidos</a></p>
-
 <section style="background: white; padding: 25px; border-radius: 8px; border: 1px solid #e2e8f0; max-width: 700px; margin-top: 15px;">
     <h2>Comprobante de Compra #<?php echo $pedido['id_ventas']; ?></h2>
     <p><strong>Fecha:</strong> <?php echo date("d/m/Y H:i", strtotime($pedido['fecha'])); ?> hs</p>

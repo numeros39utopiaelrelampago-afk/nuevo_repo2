@@ -27,25 +27,25 @@ function registrarVentaCompleta($idUsuario, $itemsCarrito) {
         }
 
         // 2. Insertar la venta en la tabla 'ventas'
-        $stmtVenta = $conexion->prepare("INSERT INTO ventas (id_usuario, total, fecha) VALUES (:id_usuario, :total, NOW())");
+        $stmtVenta = $conexion->prepare("INSERT INTO ventas (id_user, total, fecha) VALUES (:id_user, :total, NOW())");
         $stmtVenta->execute([
-            ':id_usuario' => $idUsuario,
+            ':id_user' => $idUsuario,
             ':total'      => $totalGeneral
         ]);
 
         $idVenta = $conexion->lastInsertId();
 
         // 3. Insertar cada ítem y descontar stock
-        $stmtItem = $conexion->prepare("INSERT INTO items (id_venta, id_producto, cantidad, precio_unitario) VALUES (:id_venta, :id_producto, :cantidad, :precio_unitario)");
+        $stmtItem = $conexion->prepare("INSERT INTO items (id_venta, id_prod, cantidad, precio) VALUES (:id_venta, :id_prod, :cantidad, :precio)");
         $stmtStock = $conexion->prepare("UPDATE productos SET stock = stock - :cantidad WHERE id = :id");
 
         foreach ($itemsCarrito as $item) {
             // Guardar detalle
             $stmtItem->execute([
-                ':id_venta'        => $idVenta,
-                ':id_producto'     => $item['id'],
-                ':cantidad'        => $item['cantidad'],
-                ':precio_unitario' => $item['precio']
+                ':id_venta' => $idVenta,
+                ':id_prod'  => $item['id'],
+                ':cantidad' => $item['cantidad'],
+                ':precio'   => $item['precio']
             ]);
 
             // Descontar stock
@@ -60,7 +60,6 @@ function registrarVentaCompleta($idUsuario, $itemsCarrito) {
         return $idVenta;
 
     } catch (Exception $e) {
-        // Si algo falla, revertimos todos los cambios
         $conexion->rollBack();
         return false;
     }
@@ -93,7 +92,7 @@ function obtenerVentaPorId($idVenta) {
 function obtenerDetalleItemsVenta($idVenta) {
     $conexion = obtenerConexion();
     $sql = "SELECT i.id_item, i.cantidad, i.precio, p.nombre AS producto
-            FROM item i
+            FROM items i
             JOIN productos p ON i.id_prod = p.id
             WHERE i.id_venta = :id_venta";
     $stmt = $conexion->prepare($sql);
