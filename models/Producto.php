@@ -169,12 +169,29 @@ function buscarProductosConFiltro($termino = '', $categorias = [], $rarezas = []
 
 function obtenerProductoPorId($id) {
     $conexion = obtenerConexion();
-    $sql = "SELECT id, nombre, precio, stock, rareza, categoria 
-            FROM productos 
-            WHERE id = :id AND stock > 0 
+    
+    $sql = "SELECT p.*, c.nombre AS categoria 
+            FROM productos p 
+            LEFT JOIN categorias c ON p.id_categoria = c.id 
+            WHERE p.id = :id AND p.stock > 0 
             LIMIT 1";
+
     $stmt = $conexion->prepare($sql);
-    $stmt->execute([':id' => $id]);
+    $stmt->execute([':id' => (int)$id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+function obtenerProductoPorIdAdmin($id) {
+    $conexion = obtenerConexion();
+    
+    $sql = "SELECT p.*, c.nombre AS categoria 
+            FROM productos p 
+            LEFT JOIN categorias c ON p.id_categoria = c.id 
+            WHERE p.id = :id 
+            LIMIT 1";
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->execute([':id' => (int)$id]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
@@ -207,19 +224,25 @@ function crearProducto($nombre, $precio, $stock, $rareza, $idCategoria) {
 }
 
 // Modificación (M): Actualiza los datos de una carta por su ID
-function actualizarProducto($id, $nombre, $precio, $stock, $rareza, $categoria) {
+function actualizarProducto($id, $nombre, $precio, $stock, $rareza, $idCategoria) {
     $conexion = obtenerConexion();
+    
     $sql = "UPDATE productos 
-            SET nombre = :nombre, precio = :precio, stock = :stock, rareza = :rareza, categoria = :categoria 
+            SET nombre = :nombre, 
+                precio = :precio, 
+                stock = :stock, 
+                rareza = :rareza, 
+                id_categoria = :id_categoria 
             WHERE id = :id";
+            
     $stmt = $conexion->prepare($sql);
     return $stmt->execute([
-        ':nombre'    => $nombre,
-        ':precio'    => $precio,
-        ':stock'     => $stock,
-        ':rareza'    => $rareza,
-        ':categoria' => $categoria,
-        ':id'        => $id
+        ':id'           => (int)$id,
+        ':nombre'       => $nombre,
+        ':precio'       => $precio,
+        ':stock'        => (int)$stock,
+        ':rareza'       => $rareza,
+        ':id_categoria' => (int)$idCategoria
     ]);
 }
 

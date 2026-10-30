@@ -77,8 +77,12 @@ switch ($accion) {
         crearProductoAdmin();
         break;
     case 'admin_prod_editar':
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        modificarProductoAdmin();
+    } else {
         editarProductoAdmin();
-        break;
+    }
+    break;
     case 'admin_prod_eliminar':
         borrarProductoAdmin();
         break;

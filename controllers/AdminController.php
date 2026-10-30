@@ -31,7 +31,7 @@ function verFacturaDetalle() {
 // SECCIÓN: ABML CLIENTES
 // ==========================================
 
-// Listado (L)
+// Listado
 function listarClientesAdmin() {
     verificarEsAdmin();
 
@@ -55,7 +55,7 @@ function listarClientesAdmin() {
     require_once __DIR__ . '/../views/admin/clientes.php';
 }
 
-// Alta (A)
+// Alta
 function crearClienteAdmin() {
     verificarEsAdmin();
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -73,7 +73,7 @@ function crearClienteAdmin() {
     }
 }
 
-// Modificación (M)
+// Modificación
 function editarClienteAdmin() {
     verificarEsAdmin();
     $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -94,7 +94,7 @@ function editarClienteAdmin() {
     require_once __DIR__ . '/../views/admin/cliente_editar.php';
 }
 
-// Baja (B)
+// Baja
 function borrarClienteAdmin() {
     verificarEsAdmin();
     $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -109,7 +109,7 @@ function borrarClienteAdmin() {
 // SECCIÓN: ABML PRODUCTOS
 // ==========================================
 
-// Listado (L)
+// Listado
 function listarProductosAdmin() {
     verificarEsAdmin();
 
@@ -136,7 +136,7 @@ function listarProductosAdmin() {
     require_once __DIR__ . '/../views/admin/productos.php';
 }
 
-// Alta (A)[cite: 2, 6]
+// Alta
 function crearProductoAdmin() {
     verificarEsAdmin();
 
@@ -144,18 +144,30 @@ function crearProductoAdmin() {
         $nombre      = isset($_POST['nombre']) ? trim($_POST['nombre']) : '';
         $precio      = isset($_POST['precio']) ? floatval($_POST['precio']) : 0.0;
         $stock       = isset($_POST['stock']) ? intval($_POST['stock']) : 0;
-        $rareza      = isset($_POST['rareza']) ? trim($_POST['rareza']) : '';
+        $rareza      = isset($_POST['rareza']) ? strtoupper(trim($_POST['rareza'])) : '';
         $idCategoria = isset($_POST['categoria']) ? intval($_POST['categoria']) : 0;
 
-        // 1. Obtener los IDs válidos desde la base de datos para la lista blanca defensiva
-        $categoriasBD = obtenerCategorias(); // Devuelve [['id' => 1, 'nombre' => '...'], ...]
+        // 1. Obtener y validar categorías contra la base de datos
+        $categoriasBD = obtenerCategorias();
         $idsValidos   = array_column($categoriasBD, 'id');
 
-        // 2. Validación de categoría contra los IDs existentes
         if (!in_array($idCategoria, $idsValidos, false) || $idCategoria <= 0) {
             header("Location: index.php?accion=admin_productos&error=Categoría no válida");
             exit;
         }
+
+        // 2. Validación de rarezas predeterminadas contra lista blanca
+        $rareza = isset($_POST['rareza']) ? strtolower(trim($_POST['rareza'])) : '';
+
+$rarezasValidas = [
+    'common', 'rare', 'super', 'ultra', 'secret', 'ultimate', 'ghost',
+    'gold', 'platinum', 'prismatic collector', 'prismatic secret', 
+    'qcr', 'shatterfoil', 'collector', 'otra'
+];
+
+if (!in_array($rareza, $rarezasValidas, true)) {
+    // Redirección de error...
+}
 
         // 3. Validación de campos obligatorios, stock no negativo y precio positivo
         if (!empty($nombre) && $precio > 0 && $stock >= 0) {
@@ -168,65 +180,89 @@ function crearProductoAdmin() {
     }
 }
 
-// Modificación (M)[cite: 2, 6]
+// Cargar la vista de edición (GET)
 function editarProductoAdmin() {
     verificarEsAdmin();
-
     $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $nombre    = trim($_POST['nombre']);
-        $precio    = floatval($_POST['precio']);
-        $stock     = intval($_POST['stock']);
-        $rareza    = trim($_POST['rareza']);
-        $categoria = trim($_POST['categoria']);
-
-        // 1. Validar campos de texto requeridos
-        if (empty($nombre) || empty($rareza) || empty($categoria)) {
-            header("Location: index.php?accion=admin_prod_editar&id=$id&error=Todos los campos de texto son obligatorios");
-            exit;
-        }
-
-        // 2. Validar que el precio sea estrictamente mayor a 0
-        if ($precio <= 0) {
-            header("Location: index.php?accion=admin_prod_editar&id=$id&error=El precio debe ser un valor positivo mayor a 0");
-            exit;
-        }
-
-        // 3. Validar que el stock sea 0 o mayor (sin números negativos)
-        if ($stock < 0) {
-            header("Location: index.php?accion=admin_prod_editar&id=$id&error=El stock no puede ser un número negativo");
-            exit;
-        }
-
-        // 4. Validar categoría contra la lista blanca fija
-        $categoriasValidas = ['cartas sueltas', 'cartas OCG', 'binders', 'deckbox', 'lotes', 'playmats', 'tins'];
-        if (!in_array($categoria, $categoriasValidas, true)) {
-            header("Location: index.php?accion=admin_prod_editar&id=$id&error=Categoría no válida");
-            exit;
-        }
-
-        // Si pasa todas las validaciones, actualizamos en la base de datos
-        actualizarProducto($id, $nombre, $precio, $stock, $rareza, $categoria);
-        header("Location: index.php?accion=admin_productos&mensaje=Carta modificada con éxito");
-        exit;
-    }
-
-    $conexion = obtenerConexion();
-    $stmt = $conexion->prepare("SELECT * FROM productos WHERE id = :id");
-    $stmt->execute([':id' => $id]);
-    $producto = $stmt->fetch(PDO::FETCH_ASSOC);
-
+    $producto = obtenerProductoPorIdAdmin($id);
     if (!$producto) {
-        header("Location: index.php?accion=admin_productos");
+        header("Location: index.php?accion=admin_productos&error=Producto no encontrado");
         exit;
     }
 
-    $error = isset($_GET['error']) ? $_GET['error'] : '';
+    // Traer la lista de categorías para el desplegable
+    $listaCategorias = obtenerCategorias();
+
     require_once __DIR__ . '/../views/admin/producto_editar.php';
 }
 
-// Baja (B)[cite: 2]
+// Modificación 
+// Modificación 
+// Modificación 
+function modificarProductoAdmin() {
+    verificarEsAdmin();
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $id          = isset($_POST['id']) ? intval($_POST['id']) : 0;
+        $nombre      = isset($_POST['nombre']) ? trim($_POST['nombre']) : '';
+        $precio      = isset($_POST['precio']) ? floatval($_POST['precio']) : 0.0;
+        $stock       = isset($_POST['stock']) ? intval($_POST['stock']) : 0;
+        $rareza      = isset($_POST['rareza']) ? strtoupper(trim($_POST['rareza'])) : '';
+        $idCategoria = isset($_POST['categoria']) ? intval($_POST['categoria']) : 0;
+
+        // 1. Validar que el ID del producto sea válido
+        if ($id <= 0) {
+            header("Location: index.php?accion=admin_productos&error=ID de producto inválido");
+            exit;
+        }
+
+        // 2. Validar campos requeridos básicos
+        if (empty($nombre) || empty($rareza) || empty($idCategoria)) {
+            header("Location: index.php?accion=admin_prod_editar&id={$id}&error=Todos los campos de texto son obligatorios");
+            exit;
+        }
+
+        // 3. Validar precio y stock numéricos
+        if ($precio <= 0) {
+            header("Location: index.php?accion=admin_prod_editar&id={$id}&error=El precio debe ser un valor positivo mayor a 0");
+            exit;
+        }
+
+        if ($stock < 0) {
+            header("Location: index.php?accion=admin_prod_editar&id={$id}&error=El stock no puede ser un número negativo");
+            exit;
+        }
+
+        // 4. Validar categoría contra la base de datos
+        $categoriasBD = obtenerCategorias();
+        $idsValidos   = array_column($categoriasBD, 'id');
+
+        if (!in_array($idCategoria, $idsValidos, false)) {
+            header("Location: index.php?accion=admin_prod_editar&id={$id}&error=Categoría no válida");
+            exit;
+        }
+
+        // 5. Validar rareza contra lista blanca estricta
+        $rarezasValidas = [
+            'COMMON', 'RARE', 'SUPER', 'ULTRA', 'SECRET', 'ULTIMATE', 
+            'GOLD', 'PLATINUM', 'PRISMATIC COLLECTOR', 'PRISMATIC SECRET', 
+            'QCR', 'SHATTERFOIL', 'COLLECTOR', 'OTRA'
+        ];
+
+        if (!in_array($rareza, $rarezasValidas, true)) {
+            header("Location: index.php?accion=admin_prod_editar&id={$id}&error=Rareza no válida seleccionada");
+            exit;
+        }
+
+        // Si pasa todas las validaciones, actualiza en la base de datos
+        actualizarProducto($id, $nombre, $precio, $stock, $rareza, $idCategoria);
+        header("Location: index.php?accion=admin_productos&mensaje=Producto modificado con éxito");
+        exit;
+    }
+}
+
+// Baja
 function borrarProductoAdmin() {
     verificarEsAdmin();
     $id = isset($_GET['id']) ? intval($_GET['id']) : 0;

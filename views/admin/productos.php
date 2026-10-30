@@ -32,10 +32,27 @@ include __DIR__ . '/../../includes/head.php';
                         <label class="form-label fw-bold">Stock inicial:</label>
                         <input type="number" step="1" min="0" name="stock" value="1" class="form-control" required>
                     </div>
-                    <div class="mb-2">
-                        <label class="form-label fw-bold">Rareza:</label>
-                        <input type="text" name="rareza" class="form-control" placeholder="Ej: ultra, secret..." required>
-                    </div>
+                    <div class="mb-3">
+    <label for="rareza" class="form-label">Rareza:</label>
+    <select name="rareza" id="rareza" class="form-select" required>
+        <option value="">Seleccione una rareza</option>
+        <option value="common">Common</option>
+        <option value="rare">Rare</option>
+        <option value="super">Super</option>
+        <option value="ultra">Ultra</option>
+        <option value="secret">Secret</option>
+        <option value="ultimate">Ultimate</option>
+        <option value="ghost">Ghost</option>
+        <option value="gold">Gold</option>
+        <option value="platinum">Platinum</option>
+        <option value="prismatic collector">Prismatic Collector</option>
+        <option value="prismatic secret">Prismatic Secret</option>
+        <option value="qcr">QCR</option>
+        <option value="shatterfoil">Shatterfoil</option>
+        <option value="collector">Collector</option>
+        <option value="otra">Otra</option>
+    </select>
+</div>
                     <div class="mb-3">
                         <label for="categoria" class="form-label">Categoría:</label>
 <select name="categoria" id="categoria" class="form-select" required>
@@ -55,7 +72,7 @@ include __DIR__ . '/../../includes/head.php';
         <!-- COLUMNA DERECHA: LISTADO Y PAGINADOR -->
         <div class="col-lg-8 col-md-7">
             <div class="card shadow-sm border p-3">
-                <h4>Listado de Stock</h4>
+                <h4>Listado de Productos</h4>
                 <div class="table-responsive">
                     <table class="table table-striped table-hover border align-middle mt-2">
                         <thead class="table-dark">

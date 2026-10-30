@@ -17,7 +17,7 @@ function mostrarCatalogo() {
     $rarezas = isset($_GET['rareza']) && is_array($_GET['rareza']) ? $_GET['rareza'] : [];
 
     // Parámetros de paginación
-    $porPagina = 50;
+    $porPagina = 20;
     $paginaActual = isset($_GET['p']) ? max(1, intval($_GET['p'])) : 1;
 
     $totalProductos = contarProductosConFiltro($termino, $categorias, $rarezas);
