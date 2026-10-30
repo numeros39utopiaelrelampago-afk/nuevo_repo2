@@ -37,16 +37,15 @@ include __DIR__ . '/../../includes/head.php';
                         <input type="text" name="rareza" class="form-control" placeholder="Ej: ultra, secret..." required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Categoría:</label>
-                        <select name="categoria" class="form-select" required>
-                            <option value="cartas sueltas" selected>Cartas sueltas</option>
-                            <option value="cartas OCG">Cartas OCG</option>
-                            <option value="binders">Binders</option>
-                            <option value="deckbox">Deckbox</option>
-                            <option value="lotes">Lotes</option>
-                            <option value="playmats">Playmats</option>
-                            <option value="tins">Tins</option>
-                        </select>
+                        <label for="categoria" class="form-label">Categoría:</label>
+<select name="categoria" id="categoria" class="form-select" required>
+    <option value="">Seleccione una categoría</option>
+    <?php foreach ($listaCategorias as $cat): ?>
+        <option value="<?php echo $cat['id']; ?>">
+            <?php echo htmlspecialchars($cat['nombre']); ?>
+        </option>
+    <?php endforeach; ?>
+</select>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Agregar Producto</button>
                 </form>

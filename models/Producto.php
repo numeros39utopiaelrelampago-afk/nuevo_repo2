@@ -187,18 +187,23 @@ function obtenerTodosLosProductosAdmin() {
 }
 
 // Alta (A): Inserta una nueva carta
-function crearProducto($nombre, $precio, $stock, $rareza, $categoria) {
+function crearProducto($nombre, $precio, $stock, $rareza, $idCategoria) {
     $conexion = obtenerConexion();
-    $sql = "INSERT INTO productos (nombre, precio, stock, rareza, categoria) 
-            VALUES (:nombre, :precio, :stock, :rareza, :categoria)";
+    
+    // Cambiamos 'categoria' por 'id_categoria'
+    $sql = "INSERT INTO productos (nombre, precio, stock, rareza, id_categoria) 
+            VALUES (:nombre, :precio, :stock, :rareza, :id_categoria)";
+            
     $stmt = $conexion->prepare($sql);
-    return $stmt->execute([
-        ':nombre'    => $nombre,
-        ':precio'    => $precio,
-        ':stock'     => $stock,
-        ':rareza'    => $rareza,
-        ':categoria' => $categoria
+    $stmt->execute([
+        ':nombre'       => $nombre,
+        ':precio'       => $precio,
+        ':stock'        => $stock,
+        ':rareza'       => $rareza,
+        ':id_categoria' => (int)$idCategoria
     ]);
+
+    return $conexion->lastInsertId();
 }
 
 // Modificación (M): Actualiza los datos de una carta por su ID

@@ -127,6 +127,9 @@ function listarProductosAdmin() {
     $offset = ($paginaActual - 1) * $porPagina;
     $productos = obtenerProductosPaginadosAdmin($porPagina, $offset);
 
+    // OBTENER LA LISTA DE CATEGORÍAS PARA EL SELECT:
+    $listaCategorias = obtenerCategorias();
+
     $mensaje = isset($_GET['mensaje']) ? $_GET['mensaje'] : '';
     $error   = isset($_GET['error']) ? $_GET['error'] : '';
 
@@ -137,26 +140,29 @@ function listarProductosAdmin() {
 function crearProductoAdmin() {
     verificarEsAdmin();
 
-    $categoriasValidas = ['cartas sueltas', 'cartas OCG', 'binders', 'deckbox', 'lotes', 'playmats', 'tins'];
-$categoria = trim($_POST['categoria']);
-
-if (!in_array($categoria, $categoriasValidas, true)) {
-    header("Location: index.php?accion=admin_productos&error=Categoría no válida");
-    exit;
-}
-
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $nombre    = trim($_POST['nombre']);
-        $precio    = floatval($_POST['precio']);
-        $stock     = intval($_POST['stock']);
-        $rareza    = trim($_POST['rareza']);
-        $categoria = trim($_POST['categoria']);
+        $nombre      = isset($_POST['nombre']) ? trim($_POST['nombre']) : '';
+        $precio      = isset($_POST['precio']) ? floatval($_POST['precio']) : 0.0;
+        $stock       = isset($_POST['stock']) ? intval($_POST['stock']) : 0;
+        $rareza      = isset($_POST['rareza']) ? trim($_POST['rareza']) : '';
+        $idCategoria = isset($_POST['categoria']) ? intval($_POST['categoria']) : 0;
 
-        if (!empty($nombre) && $precio > 0 && !empty($categoria)) {
-            crearProducto($nombre, $precio, $stock, $rareza, $categoria);
+        // 1. Obtener los IDs válidos desde la base de datos para la lista blanca defensiva
+        $categoriasBD = obtenerCategorias(); // Devuelve [['id' => 1, 'nombre' => '...'], ...]
+        $idsValidos   = array_column($categoriasBD, 'id');
+
+        // 2. Validación de categoría contra los IDs existentes
+        if (!in_array($idCategoria, $idsValidos, false) || $idCategoria <= 0) {
+            header("Location: index.php?accion=admin_productos&error=Categoría no válida");
+            exit;
+        }
+
+        // 3. Validación de campos obligatorios, stock no negativo y precio positivo
+        if (!empty($nombre) && $precio > 0 && $stock >= 0) {
+            crearProducto($nombre, $precio, $stock, $rareza, $idCategoria);
             header("Location: index.php?accion=admin_productos&mensaje=Carta agregada con éxito");
         } else {
-            header("Location: index.php?accion=admin_productos&error=Completá todos los campos obligatorios");
+            header("Location: index.php?accion=admin_productos&error=Completá todos los campos obligatorios y asegurate de ingresar valores válidos");
         }
         exit;
     }
