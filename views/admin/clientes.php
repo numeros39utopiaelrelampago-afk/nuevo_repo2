@@ -15,7 +15,7 @@ include __DIR__ . '/../../includes/head.php';
     <?php endif; ?>
 
     <div class="row mt-3">
-        <!-- COLUMNA IZQUIERDA: ALTA DE NUEVO CLIENTE -->
+        <!-- ALTA DE NUEVO CLIENTE -->
         <div class="col-lg-4 col-md-5 mb-4">
             <div class="card shadow-sm border p-3">
                 <h4 class="mb-3">Alta de Nuevo Cliente</h4>
@@ -26,7 +26,15 @@ include __DIR__ . '/../../includes/head.php';
                     </div>
                     <div class="mb-2">
                         <label class="form-label fw-bold">Email:</label>
-                        <input type="email" name="email" class="form-control" required placeholder="ejemplo@correo.com">
+                        <input 
+    type="text" 
+    name="email" 
+    id="email" 
+    class="form-control" 
+    placeholder="ejemplo@correo.com"
+    pattern="^[a-zA-Z0-9._%+-]{3,}@[a-zA-Z]{5,}\.com$"
+    title="Debe tener mínimo 3 caracteres antes del @, al menos 5 letras en el dominio y terminar exactamente en .com"
+    required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Contraseña:</label>
@@ -37,7 +45,7 @@ include __DIR__ . '/../../includes/head.php';
             </div>
         </div>
 
-        <!-- COLUMNA DERECHA: LISTADO Y PAGINADOR -->
+        <!-- LISTADO Y PAGINADOR -->
         <div class="col-lg-8 col-md-7">
             <div class="card shadow-sm border p-3">
                 <h4>Clientes Registrados</h4>

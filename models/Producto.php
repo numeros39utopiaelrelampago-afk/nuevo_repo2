@@ -21,7 +21,6 @@ function contarProductosConFiltro($termino = '', $categorias = [], $rarezas = []
             $placeholdersCat[] = $clave;
             $parametros[$clave] = (int)$catId;
         }
-        // En el conteo usamos id_categoria
         $sql .= " AND id_categoria IN (" . implode(', ', $placeholdersCat) . ")";
     }
 }
@@ -45,16 +44,15 @@ function contarProductosConFiltro($termino = '', $categorias = [], $rarezas = []
     return intval($fila['total']);
 }
 
-// 2. Traer la porción (página) de 50 registros usando LIMIT y OFFSET
+// 2. Traer registros usando LIMIT y OFFSET
 function buscarProductosPaginados($termino = '', $categorias = [], $rarezas = [], $limite = 50, $offset = 0) {
     $conexion = obtenerConexion();
 
     // Hacemos JOIN para traer los datos del producto y el nombre de la categoria
-    $sql = "SELECT p.id, p.nombre, p.precio, p.stock, p.rareza, p.id_categoria, c.nombre AS categoria 
-        FROM productos p
-        LEFT JOIN categorias c ON p.id_categoria = c.id
-        WHERE p.stock > 0";
-    
+$sql = "SELECT p.*, c.nombre AS categoria 
+        FROM productos p 
+        LEFT JOIN categorias c ON p.id_categoria = c.id 
+        WHERE p.activo = 1 AND p.stock > 0";
     $parametros = [];
 
     if (!empty($termino)) {
@@ -62,7 +60,7 @@ function buscarProductosPaginados($termino = '', $categorias = [], $rarezas = []
         $parametros[':termino'] = '%' . $termino . '%';
     }
 
-    // Filtrar por ID de categoría (los valores que vienen del select)
+    // Filtrar por ID de categoría 
     if (!empty($categorias) && is_array($categorias)) {
         $categorias = array_filter($categorias);
         if (!empty($categorias)) {
@@ -109,7 +107,7 @@ function obtenerCategorias() {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// NUEVA: Obtiene todas las rarezas disponibles para armar el <select>
+// Obtiene todas las rarezas disponibles para armar el <select>
 function obtenerRarezas() {
     $conexion = obtenerConexion();
     $sql = "SELECT DISTINCT rareza FROM productos WHERE rareza IS NOT NULL AND rareza != '' ORDER BY rareza ASC";
@@ -117,7 +115,7 @@ function obtenerRarezas() {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Búsqueda con filtros de Texto, Categoría y Rareza (manteniendo stock > 0)
+// Búsqueda con filtros de Texto, Categoría y Rareza 
 function buscarProductosConFiltro($termino = '', $categorias = [], $rarezas = []) {
     $conexion = obtenerConexion();
 
@@ -141,7 +139,6 @@ function buscarProductosConFiltro($termino = '', $categorias = [], $rarezas = []
             $placeholdersCat[] = $clave;
             $parametros[$clave] = (int)$catId;
         }
-        // Usamos p.id_categoria
         $sql .= " AND p.id_categoria IN (" . implode(', ', $placeholdersCat) . ")";
     }
 }
@@ -185,17 +182,17 @@ function obtenerProductoPorIdAdmin($id) {
     $conexion = obtenerConexion();
     
     $sql = "SELECT p.*, c.nombre AS categoria 
-            FROM productos p 
-            LEFT JOIN categorias c ON p.id_categoria = c.id 
-            WHERE p.id = :id 
-            LIMIT 1";
+        FROM productos p 
+        LEFT JOIN categorias c ON p.id_categoria = c.id 
+        WHERE p.id = :id AND p.activo = 1 AND p.stock > 0 
+        LIMIT 1";
 
     $stmt = $conexion->prepare($sql);
     $stmt->execute([':id' => (int)$id]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-// Listado (L): Obtiene TODOS los productos sin filtrar por stock para el panel admin[cite: 2]
+// Listado (L)
 function obtenerTodosLosProductosAdmin() {
     $conexion = obtenerConexion();
     $sql = "SELECT id, nombre, precio, stock, rareza, categoria FROM productos ORDER BY id DESC";
@@ -203,11 +200,10 @@ function obtenerTodosLosProductosAdmin() {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Alta (A): Inserta una nueva carta
+// Alta (A)
 function crearProducto($nombre, $precio, $stock, $rareza, $idCategoria) {
     $conexion = obtenerConexion();
     
-    // Cambiamos 'categoria' por 'id_categoria'
     $sql = "INSERT INTO productos (nombre, precio, stock, rareza, id_categoria) 
             VALUES (:nombre, :precio, :stock, :rareza, :id_categoria)";
             
@@ -223,7 +219,7 @@ function crearProducto($nombre, $precio, $stock, $rareza, $idCategoria) {
     return $conexion->lastInsertId();
 }
 
-// Modificación (M): Actualiza los datos de una carta por su ID
+// Modificación (M)
 function actualizarProducto($id, $nombre, $precio, $stock, $rareza, $idCategoria) {
     $conexion = obtenerConexion();
     
@@ -246,25 +242,24 @@ function actualizarProducto($id, $nombre, $precio, $stock, $rareza, $idCategoria
     ]);
 }
 
-// Baja (B): Elimina una carta[cite: 2]
+// Baja (B)
 function eliminarProducto($id) {
     $conexion = obtenerConexion();
-    $sql = "DELETE FROM productos WHERE id = :id";
+    $sql = "UPDATE productos SET activo = 0 WHERE id = :id";
     $stmt = $conexion->prepare($sql);
-    return $stmt->execute([':id' => $id]);
+    return $stmt->execute([':id' => (int)$id]);
 }
 
 function contarTotalProductosAdmin() {
     $conexion = obtenerConexion();
-    $stmt = $conexion->query("SELECT COUNT(*) as total FROM productos");
+    $stmt = $conexion->query("SELECT COUNT(*) as total FROM productos WHERE activo = 1");
     $fila = $stmt->fetch(PDO::FETCH_ASSOC);
-    return intval($fila['total']);
+    return $fila ? (int)$fila['total'] : 0;
 }
 
 function obtenerProductosPaginadosAdmin($limite = 10, $offset = 0) {
     $conexion = obtenerConexion();
     
-    // Hacemos LEFT JOIN para traer el nombre de la categoría como 'categoria'
     $sql = "SELECT p.*, c.nombre AS categoria 
             FROM productos p 
             LEFT JOIN categorias c ON p.id_categoria = c.id 

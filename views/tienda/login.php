@@ -38,7 +38,7 @@
                 <!-- FORMULARIO 2: CREAR CUENTA NUEVA -->
                 <div style="border: 1px solid #ccc; padding: 20px; width: 300px;">
                     <h3>Crear Cuenta Nueva</h3>
-                    <form method="POST" action="index.php?accion=registrar">
+                    <form method="POST" action="index.php?accion=registro">
                         <p>
                             <label>Nombre de usuario:</label><br>
                             <input type="text" name="nombre" required style="width: 90%;">

@@ -19,9 +19,13 @@ switch ($accion) {
     case 'login':
         mostrarLogin();
         break;
-    case 'registrar':           
+    case 'registro':
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         procesarRegistro();
-        break;
+    } else {
+        mostrarLogin();
+    }
+    break;
     case 'autenticar':
         procesarLogin();
         break;

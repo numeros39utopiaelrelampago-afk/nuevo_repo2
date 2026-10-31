@@ -3,13 +3,17 @@ require_once __DIR__ . '/../models/Usuario.php';
 
 // Muestra la vista con el formulario
 function mostrarLogin() {
-    $error = isset($_GET['error']) ? $_GET['error'] : '';
+    $error   = isset($_GET['error']) ? $_GET['error'] : '';
     $mensaje = isset($_GET['mensaje']) ? $_GET['mensaje'] : '';
-    require_once __DIR__ . '/../views/tienda/login.php';
+    require_once __DIR__ . '/../views/tienda/login.php'; 
 }
 
 // Procesa el formulario de Login
 function procesarLogin() {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $nombre = trim($_POST['nombre']);
         $pass   = trim($_POST['pass']);
@@ -49,32 +53,39 @@ function procesarLogin() {
     }
 }
 
-// Procesa el formulario de Registro rápido
+// Procesa el formulario de Registro rápido de clientes
 function procesarRegistro() {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $nombre = trim($_POST['nombre']);
-        $email  = trim($_POST['email']);
-        $pass   = trim($_POST['pass']);
+        $nombre = isset($_POST['nombre']) ? trim($_POST['nombre']) : '';
+        $email  = isset($_POST['email']) ? trim($_POST['email']) : '';
+        $pass   = isset($_POST['pass']) ? trim($_POST['pass']) : '';
 
+        // 1. Validar campos obligatorios
         if (empty($nombre) || empty($email) || empty($pass)) {
-            header("Location: index.php?accion=login&error=Todos los campos son obligatorios");
+            header("Location: index.php?accion=registro&error=Todos los campos son obligatorios");
             exit;
         }
 
-        $creado = registrarUsuario($nombre, $pass, $email);
-
-        if ($creado) {
-            header("Location: index.php?accion=login&mensaje=Cuenta creada con éxito. Ahora podés iniciar sesión");
-        } else {
-            header("Location: index.php?accion=login&error=El usuario ya existe, elegí otro");
+        // 2. Validar formato estricto de correo
+        $patronEmail = '/^[a-zA-Z0-9._%+-]{3,}@[a-zA-Z]{5,}\.com$/i';
+        if (!preg_match($patronEmail, $email)) {
+            header("Location: index.php?accion=registro&error=" . urlencode("El email debe tener al menos 3 caracteres antes del @, un dominio de mínimo 5 letras y terminar en .com"));
+            exit;
         }
+
+        // 3. Registrar al usuario
+        registrarUsuario($nombre, $pass, $email);
+        header("Location: index.php?accion=login&mensaje=" . urlencode("Cuenta creada con éxito"));
         exit;
     }
 }
 
 // Cierra la sesión y redirige al catálogo
 function cerrarSesion() {
-    // 1. Destruimos la sesión en el servidor
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
     $_SESSION = [];
     if (ini_get("session.use_cookies")) {
         $params = session_get_cookie_params();
@@ -85,14 +96,16 @@ function cerrarSesion() {
     }
     session_destroy();
 
-    // 2. Redirigir directamente al catálogo
-    // NO borramos la clave de localStorage para que persista al reingresar
     header("Location: listado.php");
     exit;
 }
 
 // Función auxiliar para proteger rutas de Administrador
 function verificarEsAdmin() {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
     if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'admin') {
         header("Location: index.php?accion=login&error=Acceso denegado. Se requieren permisos de administrador.");
         exit;
@@ -100,6 +113,10 @@ function verificarEsAdmin() {
 }
 
 function mostrarMiPerfil() {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
     if (!isset($_SESSION['id_user'])) {
         header("Location: index.php?accion=login");
         exit;
@@ -113,6 +130,10 @@ function mostrarMiPerfil() {
 }
 
 function procesarGuardarPerfil() {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
     if (!isset($_SESSION['id_user'])) {
         header("Location: index.php?accion=login");
         exit;
@@ -131,7 +152,6 @@ function procesarGuardarPerfil() {
 
         actualizarPerfilCompleto($id, $nombre, $apellido, $email, $telefono, $direccion, $provincia, $ciudad, $cp);
         
-        // Actualizamos el nombre en la sesión por si lo cambió
         $_SESSION['nombre'] = $nombre;
 
         header("Location: index.php?accion=mi_perfil&mensaje=Datos guardados correctamente");

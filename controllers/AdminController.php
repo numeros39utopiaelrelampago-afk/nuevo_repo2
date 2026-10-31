@@ -59,16 +59,23 @@ function listarClientesAdmin() {
 function crearClienteAdmin() {
     verificarEsAdmin();
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $nombre = trim($_POST['nombre']);
-        $email  = trim($_POST['email']);
-        $pass   = trim($_POST['pass']);
+        $nombre = isset($_POST['nombre']) ? trim($_POST['nombre']) : '';
+        $email  = isset($_POST['email']) ? trim($_POST['email']) : '';
+        $pass   = isset($_POST['pass']) ? trim($_POST['pass']) : '';
 
-        if (!empty($nombre) && !empty($email) && !empty($pass)) {
-            registrarUsuario($nombre, $pass, $email);
-            header("Location: index.php?accion=admin_clientes&mensaje=Cliente agregado con exito");
-        } else {
+        if (empty($nombre) || empty($email) || empty($pass)) {
             header("Location: index.php?accion=admin_clientes&error=Todos los campos son obligatorios");
+            exit;
         }
+
+        $patronEmail = '/^[a-zA-Z0-9._%+-]{3,}@[a-zA-Z]{5,}\.com$/';
+        if (!preg_match($patronEmail, $email)) {
+            header("Location: index.php?accion=admin_clientes&error=El email no cumple con el formato solicitado (mínimo 3 caracteres antes del @, dominio de 5 letras y terminar en .com)");
+            exit;
+        }
+
+        registrarUsuario($nombre, $pass, $email);
+        header("Location: index.php?accion=admin_clientes&mensaje=Cliente agregado con éxito");
         exit;
     }
 }
@@ -269,6 +276,6 @@ function borrarProductoAdmin() {
     if ($id > 0) {
         eliminarProducto($id);
     }
-    header("Location: index.php?accion=admin_productos&mensaje=Producto eliminado");
+    header("Location: index.php?accion=admin_productos&mensaje=Producto dado de baja con éxito");
     exit;
 }

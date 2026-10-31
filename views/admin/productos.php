@@ -83,32 +83,42 @@ include __DIR__ . '/../../includes/head.php';
                                 <th>Stock</th>
                                 <th>Rareza</th>
                                 <th>Categoría</th>
+                                <th>Estado></th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($productos as $p): ?>
-                                <tr <?php echo ($p['stock'] == 0) ? 'style="background-color: #ffebee;"' : ''; ?>>
-                                    <td><?php echo $p['id']; ?></td>
-                                    <td><?php echo htmlspecialchars($p['nombre']); ?></td>
-                                    <td>$<?php echo number_format($p['precio'], 2); ?></td>
-                                    <td>
-                                        <strong><?php echo $p['stock']; ?></strong>
-                                        <?php if ($p['stock'] == 0): ?>
-                                            <span class="text-danger small">(Agotado)</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td class="text-uppercase"><?php echo htmlspecialchars($p['rareza']); ?></td>
-                                    <td><?php echo htmlspecialchars($p['categoria']); ?></td>
-                                    <td class="text-nowrap">
-                                        <a href="index.php?accion=admin_prod_editar&id=<?php echo $p['id']; ?>" class="btn btn-sm btn-primary">Modificar</a>  
-                                        <a href="index.php?accion=admin_prod_eliminar&id=<?php echo $p['id']; ?>" 
-                                           class="btn btn-sm btn-danger text-white" 
-                                           style="background-color: #dc3545 !important;"
-                                           onclick="return confirm('¿Eliminar producto?');">Baja</a>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
+    <tr <?php echo ($p['stock'] == 0) ? 'style="background-color: #ffebee;"' : ''; ?>>
+        <td><?php echo $p['id']; ?></td>
+        <td><?php echo htmlspecialchars($p['nombre']); ?></td>
+        <td>$<?php echo number_format($p['precio'], 2); ?></td>
+        <td>
+            <strong><?php echo $p['stock']; ?></strong>
+            <?php if ($p['stock'] == 0): ?>
+                <span class="text-danger small">(Agotado)</span>
+            <?php endif; ?>
+        </td>
+        <td class="text-uppercase"><?php echo htmlspecialchars($p['rareza']); ?></td>
+        <td><?php echo htmlspecialchars($p['categoria']); ?></td>
+        
+        <td>
+            <?php if (!empty($p['activo']) && $p['stock'] > 0): ?>
+                <span class="badge bg-success">Activo</span>
+            <?php else: ?>
+                <span class="badge bg-secondary">Inactivo</span>
+            <?php endif; ?>
+        </td>
+
+        <td class="text-nowrap">
+            <a href="index.php?accion=admin_prod_editar&id=<?php echo $p['id']; ?>" class="btn btn-sm btn-primary">Modificar</a>  
+            <a href="index.php?accion=admin_prod_eliminar&id=<?php echo $p['id']; ?>" 
+               class="btn btn-sm btn-danger text-white" 
+               style="background-color: #dc3545 !important;"
+               onclick="return confirm('¿Eliminar producto?');">Baja</a>
+        </td>
+    </tr>
+<?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
