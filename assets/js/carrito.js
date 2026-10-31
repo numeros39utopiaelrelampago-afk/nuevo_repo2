@@ -2,7 +2,6 @@
 // 1. CLAVE DINÁMICA POR USUARIO
 // ==========================================
 function obtenerClaveStorage() {
-    // Si hay un usuario logueado usa "carrito_5", si no "carrito_invitado"
     var id = (typeof USUARIO_ID_ACTUAL !== "undefined") ? USUARIO_ID_ACTUAL : "invitado";
     return "carrito_" + id;
 }
@@ -33,7 +32,6 @@ function agregarProducto(id, nombre, precio, stockMaximo) {
     precio = parseFloat(precio);
     stockMaximo = parseInt(stockMaximo);
 
-    // Validación 1: El producto directamente no tiene stock
     if (stockMaximo <= 0) {
         alert("Este producto no tiene stock disponible.");
         return;
@@ -44,7 +42,6 @@ function agregarProducto(id, nombre, precio, stockMaximo) {
 
     for (var i = 0; i < carrito.length; i++) {
         if (carrito[i].id === id) {
-            // Validación 2: No permitir agregar más del stock existente
             if (carrito[i].cantidad >= stockMaximo) {
                 alert("No podés agregar más unidades. El stock máximo disponible es: " + stockMaximo);
                 return;
@@ -70,16 +67,45 @@ function agregarProducto(id, nombre, precio, stockMaximo) {
     alert("¡" + nombre + " agregado al carrito!");
 }
 
+function sumarCantidad(idProducto) {
+    idProducto = parseInt(idProducto);
+    var carrito = obtenerCarritoStorage();
+    var item = carrito.find(function(p) { return p.id === idProducto; });
+
+    if (item) {
+        if (item.stockMaximo !== undefined && item.cantidad >= item.stockMaximo) {
+            alert("No hay más stock disponible. Máximo: " + item.stockMaximo);
+            return;
+        }
+
+        item.cantidad++;
+        guardarCarritoStorage(carrito);
+        actualizarContadorCarrito();
+        renderizarTablaCarrito();
+    }
+}
+
+function restarCantidad(idProducto) {
+    idProducto = parseInt(idProducto);
+    var carrito = obtenerCarritoStorage();
+    var item = carrito.find(function(p) { return p.id === idProducto; });
+
+    if (item) {
+        if (item.cantidad > 1) {
+            item.cantidad--;
+        } else {
+            carrito = carrito.filter(function(p) { return p.id !== idProducto; });
+        }
+        guardarCarritoStorage(carrito);
+        actualizarContadorCarrito();
+        renderizarTablaCarrito();
+    }
+}
+
 function eliminarProducto(id) {
     id = parseInt(id);
     var carrito = obtenerCarritoStorage();
-    var nuevoCarrito = [];
-
-    for (var i = 0; i < carrito.length; i++) {
-        if (carrito[i].id !== id) {
-            nuevoCarrito.push(carrito[i]);
-        }
-    }
+    var nuevoCarrito = carrito.filter(function(item) { return item.id !== id; });
 
     guardarCarritoStorage(nuevoCarrito);
     actualizarContadorCarrito();
@@ -130,17 +156,27 @@ function renderizarTablaCarrito() {
 
     for (var i = 0; i < carrito.length; i++) {
         var item = carrito[i];
-        var subtotal = item.precio * item.cantidad;
+        var precioUnitario = parseFloat(item.precio);
+        var subtotal = precioUnitario * item.cantidad;
         total += subtotal;
 
         var fila = document.createElement("tr");
         fila.className = "align-middle";
-        fila.innerHTML =
-            "<td><strong>" + item.nombre + "</strong></td>" +
-            "<td>$" + item.precio.toFixed(2) + "</td>" +
-            "<td>" + item.cantidad + "</td>" +
-            "<td>$" + subtotal.toFixed(2) + "</td>" +
-            "<td><button type='button' class='btn btn-sm btn-outline-danger' onclick='eliminarProducto(" + item.id + ")'>Eliminar</button></td>";
+        fila.innerHTML = `
+            <td>${item.nombre}</td>
+            <td>$${precioUnitario.toFixed(2)}</td>
+            <td>
+                <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary px-2 py-0 fw-bold" onclick="restarCantidad(${item.id})">-</button>
+                    <span class="fw-bold px-1">${item.cantidad}</span>
+                    <button type="button" class="btn btn-sm btn-outline-primary px-2 py-0 fw-bold" onclick="sumarCantidad(${item.id})">+</button>
+                </div>
+            </td>
+            <td>$${subtotal.toFixed(2)}</td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm" onclick="eliminarProducto(${item.id})">Eliminar</button>
+            </td>
+        `;
 
         cuerpoTabla.appendChild(fila);
     }
@@ -154,7 +190,7 @@ function renderizarTablaCarrito() {
     }
 }
 
-// Inicialización automática al cargar cualquier pantalla
+// Inicialización automática al cargar
 window.addEventListener("DOMContentLoaded", function() {
     actualizarContadorCarrito();
     renderizarTablaCarrito();
