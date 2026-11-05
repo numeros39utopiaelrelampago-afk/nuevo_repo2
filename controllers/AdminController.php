@@ -134,7 +134,6 @@ function listarProductosAdmin() {
     $offset = ($paginaActual - 1) * $porPagina;
     $productos = obtenerProductosPaginadosAdmin($porPagina, $offset);
 
-    // OBTENER LA LISTA DE CATEGORÍAS PARA EL SELECT:
     $listaCategorias = obtenerCategorias();
 
     $mensaje = isset($_GET['mensaje']) ? $_GET['mensaje'] : '';
@@ -154,7 +153,6 @@ function crearProductoAdmin() {
         $rareza      = isset($_POST['rareza']) ? strtoupper(trim($_POST['rareza'])) : '';
         $idCategoria = isset($_POST['categoria']) ? intval($_POST['categoria']) : 0;
 
-        // 1. Obtener y validar categorías contra la base de datos
         $categoriasBD = obtenerCategorias();
         $idsValidos   = array_column($categoriasBD, 'id');
 
@@ -163,7 +161,6 @@ function crearProductoAdmin() {
             exit;
         }
 
-        // 2. Validación de rarezas predeterminadas contra lista blanca
         $rareza = isset($_POST['rareza']) ? strtolower(trim($_POST['rareza'])) : '';
 
 $rarezasValidas = [

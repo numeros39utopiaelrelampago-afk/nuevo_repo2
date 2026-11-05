@@ -1,14 +1,12 @@
 <?php
-require_once __DIR__ . '/../config/conexion.php'; // Ajustá la ruta a tu archivo de conexión
+require_once __DIR__ . '/../config/conexion.php'; 
 
 function registrarVentaCompleta($idUsuario, $itemsCarrito) {
     $conexion = obtenerConexion();
 
     try {
-        // Iniciamos la transacción
         $conexion->beginTransaction();
 
-        // 1. Calcular el total general verificando precios y stock real
         $totalGeneral = 0;
         foreach ($itemsCarrito as $item) {
             $stmt = $conexion->prepare("SELECT precio, stock FROM productos WHERE id = :id FOR UPDATE");
@@ -26,7 +24,6 @@ function registrarVentaCompleta($idUsuario, $itemsCarrito) {
             $totalGeneral += floatval($prodBd['precio']) * intval($item['cantidad']);
         }
 
-        // 2. Insertar la venta en la tabla 'ventas'
         $stmtVenta = $conexion->prepare("INSERT INTO ventas (id_user, total, fecha) VALUES (:id_user, :total, NOW())");
         $stmtVenta->execute([
             ':id_user' => $idUsuario,
@@ -35,12 +32,10 @@ function registrarVentaCompleta($idUsuario, $itemsCarrito) {
 
         $idVenta = $conexion->lastInsertId();
 
-        // 3. Insertar cada ítem y descontar stock
         $stmtItem = $conexion->prepare("INSERT INTO items (id_venta, id_prod, cantidad, precio) VALUES (:id_venta, :id_prod, :cantidad, :precio)");
         $stmtStock = $conexion->prepare("UPDATE productos SET stock = stock - :cantidad WHERE id = :id");
 
         foreach ($itemsCarrito as $item) {
-            // Guardar detalle
             $stmtItem->execute([
                 ':id_venta' => $idVenta,
                 ':id_prod'  => $item['id'],
@@ -48,14 +43,12 @@ function registrarVentaCompleta($idUsuario, $itemsCarrito) {
                 ':precio'   => $item['precio']
             ]);
 
-            // Descontar stock
             $stmtStock->execute([
                 ':cantidad' => $item['cantidad'],
                 ':id'       => $item['id']
             ]);
         }
 
-        // Si todo salió bien, confirmamos la operación
         $conexion->commit();
         return $idVenta;
 
@@ -65,7 +58,6 @@ function registrarVentaCompleta($idUsuario, $itemsCarrito) {
     }
 }
 
-// Obtiene el historial general de ventas con el nombre del comprador
 function obtenerTodasLasVentas() {
     $conexion = obtenerConexion();
     $sql = "SELECT v.id_ventas, v.fecha, v.total, u.nombre AS cliente, u.email
@@ -76,7 +68,6 @@ function obtenerTodasLasVentas() {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Obtiene los datos de la cabecera de una factura específica
 function obtenerVentaPorId($idVenta) {
     $conexion = obtenerConexion();
     $sql = "SELECT v.id_ventas, v.fecha, v.total, u.nombre AS cliente, u.email
@@ -88,7 +79,6 @@ function obtenerVentaPorId($idVenta) {
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-// Obtiene el detalle de renglones/ítems de una factura
 function obtenerDetalleItemsVenta($idVenta) {
     $conexion = obtenerConexion();
     $sql = "SELECT i.id_item, i.cantidad, i.precio, p.nombre AS producto
@@ -100,7 +90,6 @@ function obtenerDetalleItemsVenta($idVenta) {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Obtiene el historial de compras exclusivo de un cliente específico
 function obtenerVentasPorCliente($idUser) {
     $conexion = obtenerConexion();
     $sql = "SELECT id_ventas, fecha, total 
@@ -112,7 +101,6 @@ function obtenerVentasPorCliente($idUser) {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Obtiene los datos de una venta comprobando que pertenezca al usuario logueado
 function obtenerVentaClientePorId($idVenta, $idUser) {
     $conexion = obtenerConexion();
     $sql = "SELECT id_ventas, fecha, total 
