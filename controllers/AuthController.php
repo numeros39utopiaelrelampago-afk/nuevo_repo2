@@ -43,7 +43,7 @@ function procesarLogin() {
             if ($usuario['tipo'] === 'admin') {
                 header("Location: index.php?accion=admin_ventas");
             } else {
-                header("Location: listado.php");
+                header("Location: index.php?accion=carrito");
             }
             exit;
         } else {

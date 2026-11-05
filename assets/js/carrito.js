@@ -25,6 +25,56 @@ function guardarCarritoStorage(carrito) {
 }
 
 // ==========================================
+// MIGRAR / FUSIONAR CARRITO DE INVITADO
+// ==========================================
+function migrarCarritoInvitado() {
+    // Solo migramos si el usuario está autenticado
+    if (typeof USUARIO_ID_ACTUAL === "undefined" || USUARIO_ID_ACTUAL === "invitado") {
+        return;
+    }
+
+    var claveInvitado = "carrito_invitado";
+    var guardadoInvitado = localStorage.getItem(claveInvitado);
+
+    if (!guardadoInvitado) return;
+
+    var carritoInvitado = [];
+    try {
+        carritoInvitado = JSON.parse(guardadoInvitado);
+    } catch (e) {
+        carritoInvitado = [];
+    }
+
+    if (carritoInvitado.length > 0) {
+        var carritoUsuario = obtenerCarritoStorage(); // Obtiene el carrito del usuario logueado
+
+        // Recorremos los ítems que agregó como invitado
+        carritoInvitado.forEach(function(itemInvitado) {
+            var itemExistente = carritoUsuario.find(function(p) { return p.id === itemInvitado.id; });
+
+            if (itemExistente) {
+                // Si ya lo tenía en su cuenta, sumamos cantidades respetando el stock máximo
+                var nuevaCantidad = itemExistente.cantidad + itemInvitado.cantidad;
+                if (itemExistente.stockMaximo !== undefined && nuevaCantidad > itemExistente.stockMaximo) {
+                    itemExistente.cantidad = itemExistente.stockMaximo;
+                } else {
+                    itemExistente.cantidad = nuevaCantidad;
+                }
+            } else {
+                // Si no lo tenía, lo incorporamos
+                carritoUsuario.push(itemInvitado);
+            }
+        });
+
+        // Guardamos el carrito unificado en la clave del usuario
+        guardarCarritoStorage(carritoUsuario);
+
+        // Eliminamos el carrito de invitado para que no vuelva a duplicarse
+        localStorage.removeItem(claveInvitado);
+    }
+}
+
+// ==========================================
 // 2. ACCIONES CON CONTROL DE STOCK
 // ==========================================
 function agregarProducto(id, nombre, precio, stockMaximo) {
@@ -192,6 +242,7 @@ function renderizarTablaCarrito() {
 
 // Inicialización automática al cargar
 window.addEventListener("DOMContentLoaded", function() {
-    actualizarContadorCarrito();
-    renderizarTablaCarrito();
+    migrarCarritoInvitado();   // Fusiona lo de invitado con lo del usuario
+    actualizarContadorCarrito(); // Actualiza el contador del header
+    renderizarTablaCarrito(); // Renderiza la tabla si está en la vista del carrito
 });
