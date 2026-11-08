@@ -4,7 +4,6 @@ require_once __DIR__ . '/../models/Producto.php';
 function mostrarCatalogo() {
     $termino = isset($_GET['buscar']) ? trim($_GET['buscar']) : '';
 
-    // Normalización de categorías para recibir siempre un array con IDs enteros
     $categorias = [];
     if (isset($_GET['categoria'])) {
         if (is_array($_GET['categoria'])) {
@@ -16,7 +15,6 @@ function mostrarCatalogo() {
 
     $rarezas = isset($_GET['rareza']) && is_array($_GET['rareza']) ? $_GET['rareza'] : [];
 
-    // Parámetros de paginación
     $porPagina = 20;
     $paginaActual = isset($_GET['p']) ? max(1, intval($_GET['p'])) : 1;
 
@@ -30,14 +28,12 @@ function mostrarCatalogo() {
 
     $offset = ($paginaActual - 1) * $porPagina;
 
-    // Obtener los datos
     $listaCategorias = obtenerCategorias();
     $listaRarezas    = obtenerRarezas();
     $productos       = buscarProductosPaginados($termino, $categorias, $rarezas, $porPagina, $offset);
 
-    // Reutilizar parámetros de búsqueda para los enlaces de paginación
     $parametrosUrl = $_GET;
-    unset($parametrosUrl['p']); // Quitamos la página actual para que cada enlace ponga la suya
+    unset($parametrosUrl['p']); 
 
     require_once __DIR__ . '/../views/tienda/catalogo.php';
 }
@@ -47,7 +43,6 @@ function mostrarDetalleProducto() {
 
     $producto = obtenerProductoPorId($id);
 
-    // Si el producto no existe o se quedó sin stock, volvemos al listado
     if (!$producto) {
         header("Location: listado.php");
         exit;

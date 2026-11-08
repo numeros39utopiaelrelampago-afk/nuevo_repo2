@@ -1,5 +1,4 @@
 <?php
-// Punto de entrada único a toda la aplicación
 session_start();
 require_once 'includes/init.php';
 
@@ -9,7 +8,6 @@ require_once 'controllers/CatalogoController.php';
 require_once 'controllers/VentaController.php';
 require_once 'controllers/AdminController.php';
 
-// Definir la acción solicitada por URL (por defecto va al catálogo)
 $accion = isset($_GET['accion']) ? $_GET['accion'] : 'catalogo';
 
 switch ($accion) {

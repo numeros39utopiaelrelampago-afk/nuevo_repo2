@@ -14,7 +14,6 @@ include __DIR__ . '/../../includes/header.php';
 
 <form method="POST" action="index.php?accion=guardar_perfil" style="max-width: 650px;">
     
-    <!-- SECCIÓN 1: DATOS PERSONALES -->
     <fieldset style="border: 1px solid #cbd5e1; padding: 20px; border-radius: 6px; margin-bottom: 25px;">
         <legend style="font-weight: bold; padding: 0 8px; color: #1e293b;">Datos Personales</legend>
         
@@ -36,7 +35,6 @@ include __DIR__ . '/../../includes/header.php';
         </p>
     </fieldset>
 
-    <!-- SECCIÓN 2: DATOS DE FACTURACIÓN -->
     <fieldset style="border: 1px solid #cbd5e1; padding: 20px; border-radius: 6px; margin-bottom: 25px;">
         <legend style="font-weight: bold; padding: 0 8px; color: #1e293b;">Datos de Facturación</legend>
         

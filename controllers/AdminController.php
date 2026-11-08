@@ -170,10 +170,8 @@ $rarezasValidas = [
 ];
 
 if (!in_array($rareza, $rarezasValidas, true)) {
-    // Redirección de error...
 }
 
-        // 3. Validación de campos obligatorios, stock no negativo y precio positivo
         if (!empty($nombre) && $precio > 0 && $stock >= 0) {
             crearProducto($nombre, $precio, $stock, $rareza, $idCategoria);
             header("Location: index.php?accion=admin_productos&mensaje=Carta agregada con éxito");
@@ -184,7 +182,6 @@ if (!in_array($rareza, $rarezasValidas, true)) {
     }
 }
 
-// Cargar la vista de edición (GET)
 function editarProductoAdmin() {
     verificarEsAdmin();
     $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -195,15 +192,11 @@ function editarProductoAdmin() {
         exit;
     }
 
-    // Traer la lista de categorías para el desplegable
     $listaCategorias = obtenerCategorias();
 
     require_once __DIR__ . '/../views/admin/producto_editar.php';
 }
 
-// Modificación 
-// Modificación 
-// Modificación 
 function modificarProductoAdmin() {
     verificarEsAdmin();
 
@@ -215,19 +208,16 @@ function modificarProductoAdmin() {
         $rareza      = isset($_POST['rareza']) ? strtoupper(trim($_POST['rareza'])) : '';
         $idCategoria = isset($_POST['categoria']) ? intval($_POST['categoria']) : 0;
 
-        // 1. Validar que el ID del producto sea válido
         if ($id <= 0) {
             header("Location: index.php?accion=admin_productos&error=ID de producto inválido");
             exit;
         }
 
-        // 2. Validar campos requeridos básicos
         if (empty($nombre) || empty($rareza) || empty($idCategoria)) {
             header("Location: index.php?accion=admin_prod_editar&id={$id}&error=Todos los campos de texto son obligatorios");
             exit;
         }
 
-        // 3. Validar precio y stock numéricos
         if ($precio <= 0) {
             header("Location: index.php?accion=admin_prod_editar&id={$id}&error=El precio debe ser un valor positivo mayor a 0");
             exit;
@@ -238,7 +228,6 @@ function modificarProductoAdmin() {
             exit;
         }
 
-        // 4. Validar categoría contra la base de datos
         $categoriasBD = obtenerCategorias();
         $idsValidos   = array_column($categoriasBD, 'id');
 
@@ -247,7 +236,6 @@ function modificarProductoAdmin() {
             exit;
         }
 
-        // 5. Validar rareza contra lista blanca estricta
         $rarezasValidas = [
             'COMMON', 'RARE', 'SUPER', 'ULTRA', 'SECRET', 'ULTIMATE', 
             'GOLD', 'PLATINUM', 'PRISMATIC COLLECTOR', 'PRISMATIC SECRET', 
@@ -259,7 +247,6 @@ function modificarProductoAdmin() {
             exit;
         }
 
-        // Si pasa todas las validaciones, actualiza en la base de datos
         actualizarProducto($id, $nombre, $precio, $stock, $rareza, $idCategoria);
         header("Location: index.php?accion=admin_productos&mensaje=Producto modificado con éxito");
         exit;

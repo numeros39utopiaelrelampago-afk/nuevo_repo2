@@ -15,9 +15,9 @@ include __DIR__ . '/../../includes/header.php';
     <table class="table table-striped table-hover border">
     <thead class="table-dark">
             <tr>
-                <th>Carta / Artículo</th>
+                <th>Artículo</th>
                 <th>Cantidad</th>
-                <th>Precio Unit.</th>
+                <th>Precio Unidad.</th>
                 <th>Subtotal</th>
             </tr>
         </thead>

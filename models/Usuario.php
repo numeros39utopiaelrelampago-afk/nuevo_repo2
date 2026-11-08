@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/conexion.php';
 
-// Busca un usuario por su nombre para el login
 function obtenerUsuarioPorNombre($nombre) {
     $conexion = obtenerConexion();
     $sql = "SELECT id, nombre, pass, email, tipo FROM usuarios WHERE nombre = :nombre LIMIT 1";
@@ -31,7 +30,6 @@ function registrarUsuario($nombre, $pass, $email) {
     ]);
 }
 
-// Listar únicamente los usuarios que sean clientes
 function obtenerTodosLosClientes() {
     $conexion = obtenerConexion();
     $sql = "SELECT id, nombre, email, tipo FROM usuarios WHERE tipo = 'cliente' ORDER BY id DESC";
@@ -39,7 +37,6 @@ function obtenerTodosLosClientes() {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Obtener cliente por ID (para editar)
 function obtenerClientePorId($id) {
     $conexion = obtenerConexion();
     $sql = "SELECT id, nombre, email, tipo FROM usuarios WHERE id = :id AND tipo = 'cliente'";

@@ -4,7 +4,6 @@
             include __DIR__ . '/../../includes/header.php';
         ?>
 
-        <!-- Mensajes de alerta -->
         <div style="width: 100%;">
             <?php if (!empty($error)): ?>
                 <div style="background: #f8d7da; color: #721c24; padding: 10px; margin-bottom: 15px;">
@@ -19,7 +18,6 @@
             <?php endif; ?>
 
                 <div style="display: flex; gap: 50px;">
-                <!-- FORMULARIO 1: INICIAR SESIÓN -->
                 <div style="border: 1px solid #ccc; padding: 20px; width: 300px;">
                     <h3>Iniciar Sesión</h3>
                     <form method="POST" action="index.php?accion=autenticar">
@@ -35,7 +33,6 @@
                     </form>
                 </div>
 
-                <!-- FORMULARIO 2: CREAR CUENTA NUEVA -->
                 <div style="border: 1px solid #ccc; padding: 20px; width: 300px;">
                     <h3>Crear Cuenta Nueva</h3>
                     <form method="POST" action="index.php?accion=registro">

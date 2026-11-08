@@ -2,7 +2,6 @@
 require_once __DIR__ . '/../models/Venta.php';
 
 function procesarCompra() {
-    // 1. Verificar sesión activa
     if (!isset($_SESSION['id_user'])) {
         header("Location: index.php?accion=login");
         exit;
@@ -21,7 +20,6 @@ function procesarCompra() {
         $idVenta = registrarVentaCompleta($idUsuario, $items);
 
         if ($idVenta) {
-            // Vaciar el carrito de este usuario en localStorage y redirigir
             $claveStorage = 'carrito_' . $idUsuario;
             echo "<!DOCTYPE html>
             <html lang='es'>
@@ -42,7 +40,6 @@ function procesarCompra() {
     }
 }
 
-// Muestra el listado de compras realizadas por el cliente logueado
 function mostrarMisPedidos() {
     if (!isset($_SESSION['id_user'])) {
         header("Location: index.php?accion=login&error=Inicia sesión para ver tus pedidos");
@@ -55,7 +52,6 @@ function mostrarMisPedidos() {
     require_once __DIR__ . '/../views/tienda/mis_pedidos.php';
 }
 
-// Muestra el detalle / comprobante de una compra específica
 function verDetallePedidoCliente() {
     if (!isset($_SESSION['id_user'])) {
         header("Location: index.php?accion=login");
@@ -65,7 +61,6 @@ function verDetallePedidoCliente() {
     $idUser = $_SESSION['id_user'];
     $idVenta = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-    // Buscamos la venta validando que pertenezca al usuario en sesión por seguridad
     $pedido = obtenerVentaClientePorId($idVenta, $idUser);
 
     if (!$pedido) {

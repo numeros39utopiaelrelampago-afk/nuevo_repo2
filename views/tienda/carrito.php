@@ -17,7 +17,6 @@ include __DIR__ . '/../../includes/header.php';
         </tr>
     </thead>
     <tbody id="cuerpo-tabla-carrito">
-        <!-- carrito.js inyecta aquí los productos -->
     </tbody>
     <tfoot>
         <tr>
@@ -66,7 +65,6 @@ function prepararEnvioCompra() {
         alert("Tu carrito está vacío.");
         return false;
     }
-    // Aseguramos que el input oculto tenga la versión más reciente del carrito
     document.getElementById("input-carrito-datos").value = JSON.stringify(carrito);
     return true;
 }

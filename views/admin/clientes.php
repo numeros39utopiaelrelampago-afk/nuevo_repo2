@@ -15,7 +15,6 @@ include __DIR__ . '/../../includes/head.php';
     <?php endif; ?>
 
     <div class="row mt-3">
-        <!-- ALTA DE NUEVO CLIENTE -->
         <div class="col-lg-4 col-md-5 mb-4">
             <div class="card shadow-sm border p-3">
                 <h4 class="mb-3">Alta de Nuevo Cliente</h4>

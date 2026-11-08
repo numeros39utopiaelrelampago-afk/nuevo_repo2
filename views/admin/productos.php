@@ -15,7 +15,6 @@ include __DIR__ . '/../../includes/head.php';
     <?php endif; ?>
 
     <div class="row mt-3">
-        <!-- COLUMNA IZQUIERDA: FORMULARIO DE ALTA -->
         <div class="col-lg-4 col-md-5 mb-4">
             <div class="card shadow-sm border p-3">
                 <h4 class="mb-3">Cargar Nuevo Producto</h4>
@@ -69,7 +68,6 @@ include __DIR__ . '/../../includes/head.php';
             </div>
         </div>
 
-        <!-- COLUMNA DERECHA: LISTADO Y PAGINADOR -->
         <div class="col-lg-8 col-md-7">
             <div class="card shadow-sm border p-3">
                 <h4>Listado de Productos</h4>
@@ -123,7 +121,6 @@ include __DIR__ . '/../../includes/head.php';
                     </table>
                 </div>
 
-                <!-- PAGINADOR DEL INVENTARIO -->
                 <?php if ($totalPaginas > 1): ?>
                     <nav class="mt-3">
                         <ul class="pagination justify-content-center">

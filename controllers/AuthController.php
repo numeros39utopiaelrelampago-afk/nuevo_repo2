@@ -1,14 +1,12 @@
 <?php
 require_once __DIR__ . '/../models/Usuario.php';
 
-// Muestra la vista con el formulario
 function mostrarLogin() {
     $error   = isset($_GET['error']) ? $_GET['error'] : '';
     $mensaje = isset($_GET['mensaje']) ? $_GET['mensaje'] : '';
     require_once __DIR__ . '/../views/tienda/login.php'; 
 }
 
-// Procesa el formulario de Login
 function procesarLogin() {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
@@ -25,12 +23,11 @@ function procesarLogin() {
 
         $usuario = obtenerUsuarioPorNombre($nombre);
 
-        // Comprobación doble: primero verifica si es hash; si no, si coincide en texto plano
         $claveValida = false;
         if ($usuario) {
             if (password_verify($pass, $usuario['pass'])) {
                 $claveValida = true;
-            } elseif ($pass === $usuario['pass']) { // Respaldo para usuarios creados a mano en phpMyAdmin
+            } elseif ($pass === $usuario['pass']) { 
                 $claveValida = true;
             }
         }
@@ -53,34 +50,29 @@ function procesarLogin() {
     }
 }
 
-// Procesa el formulario de Registro rápido de clientes
 function procesarRegistro() {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $nombre = isset($_POST['nombre']) ? trim($_POST['nombre']) : '';
         $email  = isset($_POST['email']) ? trim($_POST['email']) : '';
         $pass   = isset($_POST['pass']) ? trim($_POST['pass']) : '';
 
-        // 1. Validar campos obligatorios
         if (empty($nombre) || empty($email) || empty($pass)) {
             header("Location: index.php?accion=registro&error=Todos los campos son obligatorios");
             exit;
         }
 
-        // 2. Validar formato estricto de correo
         $patronEmail = '/^[a-zA-Z0-9._%+-]{3,}@[a-zA-Z]{5,}\.com$/i';
         if (!preg_match($patronEmail, $email)) {
             header("Location: index.php?accion=registro&error=" . urlencode("El email debe tener al menos 3 caracteres antes del @, un dominio de mínimo 5 letras y terminar en .com"));
             exit;
         }
 
-        // 3. Registrar al usuario
         registrarUsuario($nombre, $pass, $email);
         header("Location: index.php?accion=login&mensaje=" . urlencode("Cuenta creada con éxito"));
         exit;
     }
 }
 
-// Cierra la sesión y redirige al catálogo
 function cerrarSesion() {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
@@ -100,7 +92,6 @@ function cerrarSesion() {
     exit;
 }
 
-// Función auxiliar para proteger rutas de Administrador
 function verificarEsAdmin() {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();

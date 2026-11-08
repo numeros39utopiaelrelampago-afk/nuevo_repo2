@@ -11,9 +11,7 @@ if (!file_exists($rutaImagen)) {
 
 <section style="display: flex; gap: 40px; margin-top: 20px; background: white; padding: 25px; border-radius: 8px; border: 1px solid #e2e8f0; max-width: 800px;">
     
-    <!-- Imagen grande de la carta -->
 <div style="flex: 1; text-align: center;">
-    <!-- Al hacer clic en la foto, se abre en pestaña nueva -->
     <a href="<?php echo $rutaImagen; ?>" target="_blank" title="Hacé clic para ver la imagen completa">
         <img src="<?php echo $rutaImagen; ?>" 
              alt="<?php echo htmlspecialchars($producto['nombre']); ?>" 
@@ -21,7 +19,6 @@ if (!file_exists($rutaImagen)) {
     </a>
 </div>
 
-    <!-- Información detallada y compra -->
     <div style="flex: 1.2; display: flex; flex-direction: column; justify-content: center;">
         <h2 style="font-size: 24px; margin-bottom: 10px;"><?php echo htmlspecialchars($producto['nombre']); ?></h2>
         
@@ -46,7 +43,6 @@ if (!file_exists($rutaImagen)) {
             $<?php echo number_format($producto['precio'], 2); ?>
         </h3>
 
-        <!-- Botón que invoca la función JS nativa ya creada -->
         <button type="button" 
         class="btn btn-primary"
         onclick="agregarProducto(<?php echo $producto['id']; ?>, '<?php echo addslashes($producto['nombre']); ?>', <?php echo $producto['precio']; ?>, <?php echo $producto['stock']; ?>)">

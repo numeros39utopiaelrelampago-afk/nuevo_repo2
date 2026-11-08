@@ -5,7 +5,6 @@
     <nav>
     <a href="index.php?accion=carrito">Carrito (<span id="cantidad-carrito">0</span>)</a>
 <?php if (isset($_SESSION['id_user'])): ?>
-            <!-- Menú desplegable del usuario -->
             <div class="usuario-dropdown">
                 <span class="usuario-btn">Hola, <strong><?php echo htmlspecialchars($_SESSION['nombre']); ?></strong> ▾</span>
                 <div class="dropdown-contenido">

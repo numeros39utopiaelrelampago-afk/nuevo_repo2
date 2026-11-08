@@ -11,7 +11,7 @@ include __DIR__ . '/../../includes/header.php';
         <p>Todavía no realizaste ninguna compra en la tienda.</p>
         <br>
         <a href="listado.php" style="padding: 8px 16px; background-color: #2563eb; color: white; text-decoration: none; border-radius: 4px;">
-            Ver Catálogo de Cartas
+            Ver Catálogo
         </a>
     </div>
 <?php else: ?>
