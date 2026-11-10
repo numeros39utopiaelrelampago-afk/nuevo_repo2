@@ -87,7 +87,7 @@ function agregarProducto(id, nombre, precio, stockMaximo) {
     for (var i = 0; i < carrito.length; i++) {
         if (carrito[i].id === id) {
             if (carrito[i].cantidad >= stockMaximo) {
-                alert("No podés agregar más unidades. El stock máximo disponible es: " + stockMaximo);
+                alert("No podés agregar más unidades. El stock máximo es: " + stockMaximo);
                 return;
             }
             carrito[i].cantidad += 1;
