@@ -43,7 +43,7 @@ function contarProductosConFiltro($termino = '', $categorias = [], $rarezas = []
     return intval($fila['total']);
 }
 
-function buscarProductosPaginados($termino = '', $categorias = [], $rarezas = [], $limite = 50, $offset = 0) {
+function buscarProductosPaginados($termino = '', $categorias = [], $rarezas = [], $limite = 20, $offset = 0) {
     $conexion = obtenerConexion();
 
 $sql = "SELECT p.*, c.nombre AS categoria 
@@ -107,50 +107,6 @@ function obtenerRarezas() {
     $conexion = obtenerConexion();
     $sql = "SELECT DISTINCT rareza FROM productos WHERE rareza IS NOT NULL AND rareza != '' ORDER BY rareza ASC";
     $stmt = $conexion->query($sql);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-function buscarProductosConFiltro($termino = '', $categorias = [], $rarezas = []) {
-    $conexion = obtenerConexion();
-
-    $sql = "SELECT id, nombre, precio, stock, rareza, categoria FROM productos WHERE stock > 0";
-    $parametros = [];
-
-    if (!empty($termino)) {
-        $sql .= " AND nombre LIKE :termino";
-        $parametros[':termino'] = '%' . $termino . '%';
-    }
-
-    if (!empty($categorias) && is_array($categorias)) {
-    $categorias = array_filter($categorias);
-    if (!empty($categorias)) {
-        $placeholdersCat = [];
-        foreach ($categorias as $i => $catId) {
-            $clave = ":cat_" . $i;
-            $placeholdersCat[] = $clave;
-            $parametros[$clave] = (int)$catId;
-        }
-        $sql .= " AND p.id_categoria IN (" . implode(', ', $placeholdersCat) . ")";
-    }
-}
-
-    if (!empty($rarezas) && is_array($rarezas)) {
-        $rarezas = array_filter($rarezas);
-        if (!empty($rarezas)) {
-            $placeholdersRar = [];
-            foreach ($rarezas as $indice => $rar) {
-                $clave = ":rar_" . $indice;
-                $placeholdersRar[] = $clave;
-                $parametros[$clave] = $rar;
-            }
-            $sql .= " AND rareza IN (" . implode(', ', $placeholdersRar) . ")";
-        }
-    }
-
-    $sql .= " ORDER BY nombre ASC";
-
-    $stmt = $conexion->prepare($sql);
-    $stmt->execute($parametros);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
