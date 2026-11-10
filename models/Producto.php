@@ -64,7 +64,7 @@ $sql = "SELECT p.*, c.nombre AS categoria
             foreach ($categorias as $i => $catId) {
                 $clave = ":cat_" . $i;
                 $placeholdersCat[] = $clave;
-                $parametros[$clave] = $catId;
+                $parametros[$clave] = (int)$catId;
             }
             $sql .= " AND p.id_categoria IN (" . implode(', ', $placeholdersCat) . ")";
         }
